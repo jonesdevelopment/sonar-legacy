@@ -14,16 +14,15 @@
  *  limitations under the License.
  */
 
-package jones.sonar.data.connection;
+package jones.sonar.detection;
 
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+public interface Detections {
+    Detection FIRST_JOIN_KICK    = new Detection(DetectionResult.DENIED,
+            "disconnect.first-join");
 
-import java.net.InetAddress;
+    Detection INVALID_NAME       = new Detection(DetectionResult.DENIED,
+            "disconnect.invalid-name");
 
-@RequiredArgsConstructor
-public final class ConnectionData {
-    public final InetAddress inetAddress;
-    public final ProxiedPlayer player;
-    public boolean proxy = false, checked = false;
+    Detection ALLOW              = new Detection(DetectionResult.ALLOWED,
+            "");
 }

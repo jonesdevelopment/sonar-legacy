@@ -44,6 +44,6 @@ public final class ActionBar {
                     exception.printStackTrace();
                 }
             }
-        }).start();
+        }, "sonar#counter").start();
     }
 }

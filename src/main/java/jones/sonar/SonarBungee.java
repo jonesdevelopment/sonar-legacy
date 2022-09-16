@@ -78,7 +78,7 @@ public enum SonarBungee {
         JAVA_VERSION = Reflection.getVersion();
 
         if (!Reflection.inject(new BungeeInterceptor(proxy.getProtocolVersion()), JAVA_VERSION)) {
-            Logger.INFO.log(" §cError injecting into the proxy!");
+            Logger.INFO.log(" §cError setting up the connection interceptor! [" + JAVA_VERSION + "]");
             Logger.INFO.log(" §cMake sure you are using the correct version of the proxy and Java.");
             Logger.INFO.log(" ");
             Logger.INFO.log(LINE);

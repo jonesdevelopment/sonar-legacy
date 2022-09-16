@@ -14,16 +14,12 @@
  *  limitations under the License.
  */
 
-package jones.sonar.data.connection;
+package jones.sonar.detection;
 
 import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
-
-import java.net.InetAddress;
 
 @RequiredArgsConstructor
-public final class ConnectionData {
-    public final InetAddress inetAddress;
-    public final ProxiedPlayer player;
-    public boolean proxy = false, checked = false;
+public final class Detection {
+    public final DetectionResult result;
+    public final String disconnectMessageKey;
 }

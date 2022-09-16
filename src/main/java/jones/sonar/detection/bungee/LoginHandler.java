@@ -14,16 +14,18 @@
  *  limitations under the License.
  */
 
-package jones.sonar.data.connection;
+package jones.sonar.detection.bungee;
 
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
+import jones.sonar.data.connection.ConnectionData;
+import jones.sonar.detection.Detection;
+import jones.sonar.detection.Detections;
 
-import java.net.InetAddress;
+public final class LoginHandler {
+    public Detection check(final ConnectionData connectionData) {
+        if (!connectionData.player.getName().matches("")) {
+            return Detections.INVALID_NAME;
+        }
 
-@RequiredArgsConstructor
-public final class ConnectionData {
-    public final InetAddress inetAddress;
-    public final ProxiedPlayer player;
-    public boolean proxy = false, checked = false;
+        return Detections.ALLOW;
+    }
 }
