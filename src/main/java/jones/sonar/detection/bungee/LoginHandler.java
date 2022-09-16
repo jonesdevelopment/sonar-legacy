@@ -22,7 +22,7 @@ import jones.sonar.detection.Detections;
 
 public final class LoginHandler {
     public Detection check(final ConnectionData connectionData) {
-        if (!connectionData.name.matches("")) {
+        if (!connectionData.name.matches("^[a-zA-Z0-9_.]*$")) {
             return Detections.INVALID_NAME;
         }
 

@@ -15,6 +15,8 @@
  */
 package jones.sonar;
 
+import jones.sonar.config.Config;
+import jones.sonar.config.Messages;
 import jones.sonar.counter.ActionBar;
 import jones.sonar.network.bungee.BungeeInterceptor;
 import jones.sonar.util.FastException;
@@ -66,6 +68,27 @@ public enum SonarBungee {
         /*
          * Load all configurations
          */
+
+        if (!plugin.getDataFolder().exists()) {
+            if (!plugin.getDataFolder().mkdir()) {
+                Logger.INFO.log(" §cCould not create data folder §7(No permission?)");
+                Logger.INFO.log(" ");
+            }
+        }
+
+        Config.initialize();
+
+        if (!Config.Values.load()) {
+            Logger.INFO.log(" §cError loading configuration! §7(config.yml)");
+            Logger.INFO.log(" ");
+        }
+
+        Messages.initialize();
+
+        if (!Messages.Values.load()) {
+            Logger.INFO.log(" §cError loading message configuration! §7(messages.yml)");
+            Logger.INFO.log(" ");
+        }
 
         Logger.INFO.log(" §7Getting everything ready...");
         Logger.INFO.log(" ");

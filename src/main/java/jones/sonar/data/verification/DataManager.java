@@ -16,5 +16,9 @@
 
 package jones.sonar.data.verification;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class DataManager {
+    public long TOTAL_CONNECTIONS = 0L, BLOCKED_CONNECTIONS = 0L;
 }

@@ -2,8 +2,28 @@ prefix: '&e&lSonar &7» &f'
 
 counter:
   action-bar:
-    enabled: ''
-    disabled: ''
+    enabled: '%prefix%&7You are &anow &7viewing the counter.'
+    disabled: '%prefix%&7You are &cno longer &7viewing the counter.'
 
-    format: '%prefix%&7CPS: %cps% &a∙ &7IPs: %ips% &a∙ &7Joins: %joins% &a∙ &7Pings: %pings% &a∙ &7Verification: %verify% &a∙ &7Blocked: %blocked%'
+    # You can use the following variables:
+    #   %ips% - Current ips per second count (formatted)
+    #   %cps% - Current connections per second count (formatted)
+    #   %joins% - Current joins per second count (formatted)
+    #   %pings% - Current pings per second count (formatted)
+    #   %verify% - Number of verifying players (formatted)
+    #   %blocked% - Number of blocked connections (formatted)
+    #   %total% - Number of total connections this session (formatted)
+    # The correct color is automatically applied to each variable
+    format: '%prefix%&7CPS: &f%cps% &a∙ &7IPs: &f%ips% &a∙ &7Joins: &f%joins% &a∙ &7Pings: &f%pings% &a∙ &7Verification: &f%verify% &a∙ &7Blocked: &f%blocked%'
+
+    # You cannot use any variables from the counter format here because
+    # this is just the message that appears when there's no bot attack
     waiting: '&7» &aWaiting for new attacks to arrive... &7«'
+
+    # Set this to false if you always want to see the full counter
+    enable-waiting-message: true
+
+  boss-bar:
+    format: '&7CPU &8[%cpu%&8] &a∙ &7MEMORY &8[%memory%&8]'
+
+disconnect:

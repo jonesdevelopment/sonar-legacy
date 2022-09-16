@@ -17,7 +17,9 @@
 package jones.sonar.counter;
 
 import jones.sonar.SonarBungee;
-import net.md_5.bungee.api.ChatColor;
+import jones.sonar.config.Messages;
+import jones.sonar.data.connection.manager.ConnectionDataManager;
+import jones.sonar.data.verification.DataManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -28,11 +30,15 @@ public final class ActionBar {
         new Thread(() -> {
             while (SonarBungee.INSTANCE.running) {
                 try {
-                    final TextComponent counter = new TextComponent(ChatColor.translateAlternateColorCodes('&',
-                            "&e&lSonar &7» &7CPS: &r%cps% &a∙ &7IPs: &r%ips% &a∙ &7Joins: &r%joins% &a∙ &7Pings: &r%pings% &a∙ &7Verification: &r%verify% &a∙ &7Blocked: &r%blocked%"
+                    final TextComponent counter = new TextComponent(Messages.Values.COUNTER_FORMAT
                                     .replaceAll("%cps%", sonar.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()))
                                     .replaceAll("%pings%", sonar.FORMAT.format(Counter.PINGS_PER_SECOND.get()))
-                                    .replaceAll("%joins%", sonar.FORMAT.format(Counter.JOINS_PER_SECOND.get()))));
+                                    .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.DATA.values().stream().filter(connectionData -> !connectionData.checked).count()))
+                                    .replaceAll("%blocked%", sonar.FORMAT.format(DataManager.BLOCKED_CONNECTIONS))
+                                    .replaceAll("%ips%", sonar.FORMAT.format(Counter.IPS_PER_SECOND.get()))
+                                    .replaceAll("%total%", sonar.FORMAT.format(DataManager.TOTAL_CONNECTIONS))
+                                    .replaceAll("%encryptions%", sonar.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get()))
+                                    .replaceAll("%joins%", sonar.FORMAT.format(Counter.JOINS_PER_SECOND.get())));
 
                     sonar.proxy.getPlayers().stream()
                             .filter(player -> player.hasPermission("sonar.verbose"))

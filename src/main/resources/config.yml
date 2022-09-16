@@ -20,4 +20,26 @@ checks:
 
   # The re-connect check is really powerful and probably defeats most bot attacks
   # If you don't like this, you can disable it, but it's not recommended to do that
-  enable-reconnect-check: true
+  reconnect-check:
+    enabled: true
+
+    # Delay in milliseconds a player need to wait before being able to successfully
+    # rejoin the server (Recommended values: 500 - 5000)
+    rejoin-delay: 1000
+
+  invalid-name:
+    enabled: true
+
+    # This is the regex for invalid names
+    # Names with special characters are automatically detected by this regex
+    # If you want to add more, custom regexes, you can do that below this option
+    regex: '^[a-zA-Z0-9_.]*$'
+
+    # You can provide your custom regex here.
+    # Only edit this if you know what you're doing.
+    custom-regexes:
+      - 'MCSTORM_IO_+.{1,7}'           # This blocks all McStorm names
+      - '.{1,5}StormStresser.{1,5}'    # This blocks all Storm stresser names
+      - 'SNBKBOOT_+.{1,7}'             # This blocks all SNBKBoot names
+      - 'XDDD_OK_+.{1,8}'              # This blocks some other weird names
+      # Feel free to add more regexes or submit one as a GitHub feature request
