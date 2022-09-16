@@ -40,7 +40,7 @@ public final class SonarCommand extends Command {
             sender.sendMessage(Messages.Values.HEADER_BAR);
 
             CommandManager.SUB_COMMANDS.stream()
-                    .filter(command -> command.name.equals("notify") || sender instanceof ProxiedPlayer)
+                    .filter(command -> !command.name.equals("notify") || sender instanceof ProxiedPlayer)
                     .forEach(command ->
                             sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
                                     .replaceAll("%command%", command.name)
