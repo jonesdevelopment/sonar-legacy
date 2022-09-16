@@ -85,7 +85,7 @@ public class Messages {
             try {
                 // general
                 PREFIX = ColorUtil.format(config.getString("prefix", "&e&lSonar &7» &f"));
-                LIST_SYMBOL = config.getString("commands.listing", "∙");
+                LIST_SYMBOL = config.getString("commands.listing", "▪");
 
                 if (PREFIX.length() > 32) PREFIX = PREFIX.substring(0, 32);
 
@@ -102,7 +102,7 @@ public class Messages {
                 RELOADED = format(config.getString("commands.reload.reloaded", "Reloaded in %time% ms"));
 
                 if (LIST_SYMBOL.length() > 2) LIST_SYMBOL = LIST_SYMBOL.substring(0, 2);
-                else if (LIST_SYMBOL.isEmpty()) LIST_SYMBOL = "∙";
+                else if (LIST_SYMBOL.isEmpty()) LIST_SYMBOL = "▪";
 
                 // counter
                 COUNTER_ENABLED = format(config.getString("counter.action-bar.enabled"));
