@@ -15,7 +15,11 @@
  */
 package jones.sonar;
 
+import jones.sonar.network.bungee.BungeeInterceptor;
+import jones.sonar.util.Reflection;
+import jones.sonar.util.logging.Logger;
 import lombok.Getter;
+import net.md_5.bungee.api.ProxyServer;
 
 public enum Sonar {
 
@@ -23,6 +27,10 @@ public enum Sonar {
 
     @Getter
     private SonarBungee plugin;
+
+    public final ProxyServer proxy = ProxyServer.getInstance();
+
+    public int JAVA_VERSION = 0;
 
     public void onLoad(final SonarBungee plugin) {
         assert plugin != null : "Error loading Sonar!";
@@ -32,6 +40,46 @@ public enum Sonar {
 
     public void onEnable(final SonarBungee plugin) {
         assert plugin != null : "Error starting Sonar!";
+
+        /*
+         * Start-up message
+         */
+
+        final String LINE = "§7§m«-------------------------------------------»§r";
+
+        Logger.INFO.log(LINE);
+        Logger.INFO.log(" ");
+        Logger.INFO.log(" §7Starting §eSonar §7version §f" + plugin.getDescription().getVersion() + "§7...");
+
+        /*
+         * Load all configurations
+         */
+
+        Logger.INFO.log(" §7Getting everything ready...");
+        Logger.INFO.log(" ");
+
+        /*
+         * Inject in the netty to intercept packets
+         * and use Waterfall functions
+         */
+
+        JAVA_VERSION = Reflection.getVersion();
+
+        if (!Reflection.inject(new BungeeInterceptor(proxy.getProtocolVersion()), JAVA_VERSION)) {
+            Logger.INFO.log(" §cError injecting into the proxy!");
+            Logger.INFO.log(" §cMake sure you are using the correct version of the proxy and Java.");
+            Logger.INFO.log(" ");
+            Logger.INFO.log(LINE);
+            return;
+        }
+
+        /*
+         * Process finished
+         */
+
+        Logger.INFO.log(" §aSuccessfully started Sonar!");
+        Logger.INFO.log(" ");
+        Logger.INFO.log(LINE);
     }
 
     public void onDisable(final SonarBungee plugin) {
