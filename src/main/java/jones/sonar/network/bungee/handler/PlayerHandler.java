@@ -16,9 +16,11 @@
 
 package jones.sonar.network.bungee.handler;
 
+import com.google.gson.Gson;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
+import jones.sonar.caching.ServerPingCache;
 import jones.sonar.config.Config;
 import jones.sonar.config.Messages;
 import jones.sonar.counter.Counter;
@@ -29,8 +31,15 @@ import jones.sonar.detection.Detection;
 import jones.sonar.detection.DetectionResult;
 import jones.sonar.detection.bungee.LoginHandler;
 import jones.sonar.network.bungee.handler.state.ConnectionState;
+import jones.sonar.util.LegacyGsonFormat;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.BungeeServerInfo;
+import net.md_5.bungee.api.Callback;
+import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ListenerInfo;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.PendingConnection;
+import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.protocol.PacketWrapper;
@@ -48,6 +57,8 @@ public final class PlayerHandler extends InitialHandler {
     }
 
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
+
+    private final BungeeCord bungee = BungeeCord.getInstance();
 
     private final SonarBungee sonar = SonarBungee.INSTANCE;
 
@@ -138,6 +149,65 @@ public final class PlayerHandler extends InitialHandler {
         } else {
             ctx.close();
         }
+    }
+
+    @Override
+    public void handle(final StatusRequest statusRequest) throws Exception {
+        if (currentState != ConnectionState.PINGING) {
+            throw sonar.EXCEPTION;
+        }
+
+        currentState = ConnectionState.PROCESSING;
+
+        final Handshake handshake = getHandshake();
+        final ListenerInfo listener = getListener();
+
+        final ServerInfo forced = getForcedHost(listener, this);
+
+        final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion()))
+                ? handshake.getProtocolVersion() : sonar.proxy.getProtocolVersion();
+
+        final Callback<ServerPing> pingBack = (result, error) -> {
+            if (error != null) return;
+
+            if (!ctx.channel().isActive()) return;
+
+            final Callback<ProxyPingEvent> callback = (pingResult, error1) -> {
+                if (error1 != null) return;
+
+                if (!ctx.channel().isActive()) return;
+
+                final Gson gson = handshake.getProtocolVersion() <= 4 ? LegacyGsonFormat.LEGACY : bungee.gson;
+
+                unsafe().sendPacket(new StatusResponse(gson.toJson(pingResult.getResponse())));
+
+                if (bungee.getConnectionThrottle() != null) {
+                    bungee.getConnectionThrottle().unthrottle(getSocketAddress());
+                }
+            };
+
+            sonar.proxy.getPluginManager().callEvent(new ProxyPingEvent(this, result, callback));
+        };
+
+        if (forced != null && listener.isPingPassthrough()) {
+            ((BungeeServerInfo) forced).ping(pingBack, handshake.getProtocolVersion());
+        } else {
+            final String messageOfTheDay = forced != null ? forced.getMotd() : listener.getMotd();
+
+            pingBack.done(ServerPingCache.getCached(listener, messageOfTheDay, protocol), null);
+        }
+
+        currentState = ConnectionState.PINGING;
+    }
+
+    private ServerInfo getForcedHost(final ListenerInfo listener, final PendingConnection connection) {
+        String forced = (connection.getVirtualHost() == null) ? null : listener.getForcedHosts().get(connection.getVirtualHost().getHostString());
+
+        if (forced == null && listener.isForceDefault()) {
+            forced = listener.getDefaultServer();
+        }
+
+        return (forced == null) ? null : sonar.proxy.getServerInfo(forced);
     }
 
     @Override

@@ -18,9 +18,9 @@ package jones.sonar.caching;
 
 import jones.sonar.SonarBungee;
 import jones.sonar.config.Config;
-import jones.sonar.network.bungee.handler.PlayerHandler;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.config.ListenerInfo;
 
 @UtilityClass
 public class ServerPingCache {
@@ -29,32 +29,30 @@ public class ServerPingCache {
 
     public boolean needsUpdate = true;
 
-    public ServerPing getCached(final PlayerHandler adapter, final String motd, final int protocol) {
+    public ServerPing getCached(final ListenerInfo server, final String motd, final int protocol) {
         if (!Config.Values.CACHE_MOTDS) {
-            return getServerPing(adapter, motd, protocol);
+            return getServerPing(server, motd, protocol);
         }
 
         if (needsUpdate || cachedServerPing == null) {
             needsUpdate = false;
 
-            System.out.println("[!] updating server motd & icon");
-            return update(adapter, motd, protocol);
+            return update(server, motd, protocol);
         }
 
-        System.out.println("[?] using cached server motd & icon");
         return cachedServerPing;
     }
 
-    private ServerPing update(final PlayerHandler adapter, final String motd, final int protocol) {
-        cachedServerPing = getServerPing(adapter, motd, protocol);
+    private ServerPing update(final ListenerInfo server, final String motd, final int protocol) {
+        cachedServerPing = getServerPing(server, motd, protocol);
 
         return cachedServerPing;
     }
 
-    private ServerPing getServerPing(final PlayerHandler adapter, final String motd, final int protocol) {
+    private ServerPing getServerPing(final ListenerInfo server, final String motd, final int protocol) {
         return new ServerPing(
                 new ServerPing.Protocol(Config.Values.SERVER_BRAND, protocol),
-                new ServerPing.Players(adapter.getListener().getMaxPlayers(), SonarBungee.INSTANCE.proxy.getOnlineCount(), null),
+                new ServerPing.Players(server.getMaxPlayers(), SonarBungee.INSTANCE.proxy.getOnlineCount(), null),
                 motd, SonarBungee.INSTANCE.proxy.getConfig().getFaviconObject());
     }
 }
