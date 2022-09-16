@@ -42,6 +42,8 @@ public enum SonarBungee {
 
     public final FastException EXCEPTION = new FastException();
 
+    public String VERSION = "unknown";
+
     public boolean running = false;
 
     public int JAVA_VERSION = 0;
@@ -91,6 +93,8 @@ public enum SonarBungee {
 
         Logger.INFO.log(" §7Getting everything ready...");
         Logger.INFO.log(" ");
+
+        VERSION = plugin.getDescription().getVersion();
 
         proxy.getPluginManager().registerCommand(plugin, new SonarCommand());
 

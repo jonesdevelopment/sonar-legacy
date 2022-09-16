@@ -46,7 +46,7 @@ public final class SonarCommand extends Command {
                                     .replaceAll("%command%", command.name)
                                     .replaceAll("%description%", command.description)));
 
-            sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + SonarBungee.INSTANCE.getPlugin().getDescription().getVersion() + " §f§oby §f§ojonesdev.xyz§r");
+            sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + SonarBungee.INSTANCE.VERSION + " §f§oby §f§ojonesdev.xyz§r");
             sender.sendMessage(Messages.Values.FOOTER_BAR);
             return;
         }
