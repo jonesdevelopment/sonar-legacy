@@ -32,6 +32,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
     compileOnly 'io.github.waterfallmc:waterfall-api:1.18-R0.1-SNAPSHOT'
+    compileOnly 'com.velocitypowered:velocity-api:3.0.1'
 
     compileOnly files('/home/jones/IdeaProjects/waterfall-1.19-504.jar')
 }

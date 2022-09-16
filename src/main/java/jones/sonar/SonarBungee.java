@@ -23,8 +23,8 @@ import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBar;
 import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.util.Reflection;
+import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.util.FastException;
-import jones.sonar.universal.util.logging.Logger;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 

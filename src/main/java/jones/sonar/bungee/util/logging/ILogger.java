@@ -13,7 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.universal.util.logging;
+package jones.sonar.bungee.util.logging;
 
 public interface ILogger {
     void log(final String data);
