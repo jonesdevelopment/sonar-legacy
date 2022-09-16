@@ -1,0 +1,9 @@
+prefix: '&e&lSonar &7» &f'
+
+counter:
+  action-bar:
+    enabled: ''
+    disabled: ''
+
+    format: '%prefix%&7CPS: %cps% &a∙ &7IPs: %ips% &a∙ &7Joins: %joins% &a∙ &7Pings: %pings% &a∙ &7Verification: %verify% &a∙ &7Blocked: %blocked%'
+    waiting: '&7» &aWaiting for new attacks to arrive... &7«'

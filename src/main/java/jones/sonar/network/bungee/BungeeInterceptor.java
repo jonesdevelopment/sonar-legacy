@@ -21,22 +21,28 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
+import jones.sonar.counter.Counter;
 import jones.sonar.network.bungee.handler.BungeeHandler;
-import jones.sonar.util.FastException;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BungeeCord;
+import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.config.ListenerInfo;
+import net.md_5.bungee.api.event.ClientConnectEvent;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+
 @RequiredArgsConstructor
 public final class BungeeInterceptor extends ChannelInitializer<Channel> implements SonarPipeline {
 
-    private final KickStringWriter legacyKicker = new KickStringWriter();
+    private final ConnectionThrottle throttler = BungeeCord.getInstance().getConnectionThrottle();
 
-    private final FastException EXCEPTION = new FastException();
+    private final KickStringWriter legacyKicker = new KickStringWriter();
 
     private final int protocol;
 
@@ -63,9 +69,26 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
         try {
+            final SocketAddress remoteAddress = ctx.channel().remoteAddress();
+
+            if (remoteAddress == null) {
+                ctx.close();
+                return;
+            }
+
+            Counter.CONNECTIONS_PER_SECOND.increment();
+
+            final InetAddress inetAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress();
+
             ctx.pipeline().addFirst(HANDLER, new BungeeHandler());
 
             ctx.channel().config().setOption(ChannelOption.TCP_FASTOPEN, 3);
+
+            if (throttler != null
+                    && throttler.throttle(ctx.channel().remoteAddress())) {
+                ctx.close();
+                return;
+            }
 
             final ListenerInfo listener = ctx.channel().attr(PipelineUtils.LISTENER).get();
 
@@ -80,6 +103,10 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             if (listener.isProxyProtocol()) {
                 ctx.pipeline().addFirst(new HAProxyMessageDecoder());
+            }
+
+            if (BungeeCord.getInstance().getPluginManager().callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
+                ctx.close();
             }
         } finally {
             if (!ctx.isRemoved()) {

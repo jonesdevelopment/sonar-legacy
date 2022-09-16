@@ -15,12 +15,15 @@
  */
 package jones.sonar;
 
+import jones.sonar.counter.ActionBar;
 import jones.sonar.network.bungee.BungeeInterceptor;
 import jones.sonar.util.FastException;
 import jones.sonar.util.Reflection;
 import jones.sonar.util.logging.Logger;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
+
+import java.text.DecimalFormat;
 
 public enum SonarBungee {
 
@@ -31,7 +34,11 @@ public enum SonarBungee {
 
     public final ProxyServer proxy = ProxyServer.getInstance();
 
+    public final DecimalFormat FORMAT = new DecimalFormat("#,###");
+
     public final FastException EXCEPTION = new FastException();
+
+    public boolean running = false;
 
     public int JAVA_VERSION = 0;
 
@@ -39,6 +46,8 @@ public enum SonarBungee {
         assert plugin != null : "Error loading Sonar!";
 
         this.plugin = plugin;
+
+        running = true;
     }
 
     public void onEnable(final SonarBungeePlugin plugin) {
@@ -80,6 +89,8 @@ public enum SonarBungee {
          * Process finished
          */
 
+        new ActionBar(this);
+
         Logger.INFO.log(" §aSuccessfully started Sonar!");
         Logger.INFO.log(" ");
         Logger.INFO.log(LINE);
@@ -87,5 +98,9 @@ public enum SonarBungee {
 
     public void onDisable(final SonarBungeePlugin plugin) {
         assert plugin != null : "Error stopping Sonar!";
+
+        running = false;
+
+        proxy.getScheduler().cancel(plugin);
     }
 }

@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package jones.sonar.data;
+package jones.sonar.counter;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public final class ConnectionData {
+public interface Counter {
+    CounterMap CONNECTIONS_PER_SECOND = new CounterMap(1000).build();
+    CounterMap JOINS_PER_SECOND = new CounterMap(1000).build();
+    CounterMap PINGS_PER_SECOND = new CounterMap(1000).build();
 }
