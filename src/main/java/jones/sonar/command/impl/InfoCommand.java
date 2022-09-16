@@ -40,23 +40,23 @@ public final class InfoCommand extends SubCommand {
 
         final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 
-        execution.sender.sendMessage("§7» §fOperating system: " + OperatingSystem.getOSName());
+        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fOperating system: " + OperatingSystem.getOSName());
 
-        execution.sender.sendMessage("§7» §fAvailable processors: " + operatingSystem.getAvailableProcessors() + " cores");
+        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fAvailable processors: " + operatingSystem.getAvailableProcessors() + " cores");
 
-        execution.sender.sendMessage("§7» §fGlobal CPU load (all cores): " + PerformanceMonitor.formatCPULoad() + "%");
-        execution.sender.sendMessage("§7» §fAverage CPU load (all cores): " + PerformanceMonitor.formatAverageCPULoad() + "%");
+        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fGlobal CPU load (all cores): " + PerformanceMonitor.formatCPULoad() + "%");
+        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fAverage CPU load (all cores): " + PerformanceMonitor.formatAverageCPULoad() + "%");
 
-        execution.sender.sendMessage("§7» §fTotal available memory: " + PerformanceMonitor.getTotalMemory() + " MB");
-        execution.sender.sendMessage("§7» §fMemory (used/free): " + PerformanceMonitor.getUsedMemory() + " MB / " + PerformanceMonitor.getFreeMemory() + " MB");
+        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fTotal available memory: " + PerformanceMonitor.getTotalMemory() + " MB");
+        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fMemory (used/free): " + PerformanceMonitor.getUsedMemory() + " MB / " + PerformanceMonitor.getFreeMemory() + " MB");
 
         if (SonarBungee.INSTANCE.proxy.getPlayers().size() > 0) {
-            execution.sender.sendMessage("§7» §fAverage §flatency §fof §fall §fplayers: "
+            execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fAverage §flatency §fof §fall §fplayers: "
                     + SonarBungee.INSTANCE.FORMAT.format(SonarBungee.INSTANCE.proxy.getPlayers().stream()
                     .mapToLong(ProxiedPlayer::getPing).sum() / SonarBungee.INSTANCE.proxy.getPlayers().size()) + " ms");
         }
 
-        execution.sender.sendMessage("§7» §fIs §fyour §fserver §funder §fattack? " + (Sensibility.isUnderAttack() ? "§cYes" : "§aNo"));
+        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fIs §fyour §fserver §funder §fattack? " + (Sensibility.isUnderAttack() ? "§cYes" : "§aNo"));
         execution.sender.sendMessage(Messages.Values.FOOTER_BAR);
     }
 }

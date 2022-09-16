@@ -20,6 +20,8 @@ import jones.sonar.SonarBungee;
 import jones.sonar.config.Messages;
 import jones.sonar.data.ServerStatistics;
 import jones.sonar.data.connection.manager.ConnectionDataManager;
+import jones.sonar.util.ColorUtil;
+import jones.sonar.util.Sensibility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -31,17 +33,25 @@ public final class ActionBar {
             while (SonarBungee.INSTANCE.running) {
                 try {
                     try {
-                        final TextComponent counter = new TextComponent(Messages.Values.COUNTER_FORMAT
-                                .replaceAll("%cps%", sonar.FORMAT.format(Math.max(Counter.CONNECTIONS_PER_SECOND.get(), 0)))
-                                .replaceAll("%pings%", sonar.FORMAT.format(Math.max(Counter.PINGS_PER_SECOND.get(), 0)))
+                        final long cps = Math.max(Counter.CONNECTIONS_PER_SECOND.get(), 0),
+                                pps = Math.max(Counter.PINGS_PER_SECOND.get(), 0),
+                                eps = Math.max(Counter.ENCRYPTIONS_PER_SECOND.get(), 0),
+                                ips = Math.max(Counter.IPS_PER_SECOND.get(), 0),
+                                jps = Math.max(Counter.JOINS_PER_SECOND.get(), 0);
+
+                        final TextComponent counter = new TextComponent((!Sensibility.isUnderAttack() && Messages.Values.ENABLE_COUNTER_WAITING_FORMAT ? Messages.Values.COUNTER_WAITING_FORMAT
+                                : "  §r   §r   §r   §r   §r  " + Messages.Values.COUNTER_FORMAT) // this is needed to make the action bar align in the middle
+                                .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
+                                .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + sonar.FORMAT.format(pps))
                                 .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.DATA.values().stream()
                                         .filter(connectionData -> connectionData.checked <= 1)
                                         .count()))
                                 .replaceAll("%blocked%", sonar.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS))
-                                .replaceAll("%ips%", sonar.FORMAT.format(Math.max(Counter.IPS_PER_SECOND.get(), 0)))
+                                .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + sonar.FORMAT.format(ips))
                                 .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
-                                .replaceAll("%encryptions%", sonar.FORMAT.format(Math.max(Counter.ENCRYPTIONS_PER_SECOND.get(), 0)))
-                                .replaceAll("%joins%", sonar.FORMAT.format(Math.max(Counter.JOINS_PER_SECOND.get(), 0))));
+                                .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
+                                .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
+                                .replaceAll("%joins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
 
                         sonar.proxy.getPlayers().stream()
                                 .filter(player -> player.hasPermission("sonar.verbose"))

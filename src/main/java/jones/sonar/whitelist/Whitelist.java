@@ -25,6 +25,10 @@ import java.util.Set;
 public class Whitelist {
     public final Set<InetAddress> WHITELISTED = new HashSet<>();
 
+    public long size() {
+        return WHITELISTED.size();
+    }
+
     public void addToWhitelist(final InetAddress inetAddress) {
         if (isWhitelisted(inetAddress)) return;
 

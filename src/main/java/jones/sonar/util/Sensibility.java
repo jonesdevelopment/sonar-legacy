@@ -23,6 +23,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class Sensibility {
     public boolean isUnderAttack() {
-        return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND;
+        return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND
+                || Counter.CONNECTIONS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND * 3L;
     }
 }

@@ -25,6 +25,10 @@ import java.util.Set;
 public class Blacklist {
     public final Set<InetAddress> BLACKLISTED = new HashSet<>();
 
+    public long size() {
+        return BLACKLISTED.size();
+    }
+
     public void addToBlacklist(final InetAddress inetAddress) {
         if (isBlacklisted(inetAddress)) return;
 

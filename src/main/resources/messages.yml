@@ -13,8 +13,8 @@ counter:
     enabled: '%prefix%&7You are &anow &7viewing the counter.'
     disabled: '%prefix%&7You are &cno longer &7viewing the counter.'
 
-    enabled_other: '%prefix%&f%player% &7is &anow &7viewing the counter.'
-    disabled_other: '%prefix%&f%player% &7is &cno longer &7viewing the counter.'
+    enabled-other: '%prefix%%player% &7is &anow &7viewing the counter.'
+    disabled-other: '%prefix%%player% &7is &cno longer &7viewing the counter.'
 
     # You can use the following variables:
     #   %ips% - Current ips per second count (formatted)
@@ -24,15 +24,16 @@ counter:
     #   %verify% - Number of verifying players (formatted)
     #   %blocked% - Number of blocked connections (formatted)
     #   %total% - Number of total connections this session (formatted)
+    #   %filter-symbol% - Symbol of the current filter status
     # The correct color is automatically applied to each variable
-    format: '%prefix%&7CPS: &f%cps% &a∙ &7IPs: &f%ips% &a∙ &7Joins: &f%joins% &a∙ &7Pings: &f%pings% &a∙ &7Verification: &f%verify% &a∙ &7Blocked: &f%blocked%'
+    format: '%prefix%&7CPS: &f%cps% &a∙ &7IPs: &f%ips% &a∙ &7Joins: &f%joins% &a∙ &7Pings: &f%pings% &a∙ &7Verification: &f%verify% &a∙ &7Blocked: &f%blocked% &a∙ &7Total: &f%total% &a∙ &7(&f%filter-symbol%&7)'
+    waiting: '&7» &7CPS: &f%cps% &a∙ &7IPs: &f%ips% &a∙ &fWaiting for new attacks to &narrive&r&7... &7«'
 
-    # You cannot use any variables from the counter format here because
-    # this is just the message that appears when there's no bot attack
-    waiting: '&7» &aWaiting for new attacks to arrive... &7«'
+    filter-enabled-symbol: '&a✔'
+    filter-disabled-symbol: '&c✘'
 
     # Set this to false if you always want to see the full counter
-    enable-waiting-message: true
+    enable-waiting-message: false
 
 disconnect:
   reconnect-check:
@@ -58,8 +59,14 @@ disconnect:
     - ' '
 
 commands:
+
+  # This is always the symbol that is used when listing stuff
+  # like server statistics. It is automatically being used, but you
+  # can implement it in your custom messages by using '%list%'
+  listing: '∙'
+
   help:
-    layout: '&7» &f/ab &f%command% &a∙ &f%description%'
+    layout: ' &7%list% &f/ab &f%command% &7- &f%description%'
 
   blacklist:
     empty: '%prefix%&cThe blacklist is currently empty!'
@@ -67,23 +74,23 @@ commands:
     not: '%prefix%&cThat ip address is not blacklisted!'
     already: '%prefix%&cThat ip address is already blacklisted!'
     remove: '%prefix%%ip% &7is &cno longer &7blacklisted.'
-    add_player: '%prefix%%player% &7(%ip%) is &anow &7blacklisted.'
-    add_ip: '%prefix%%ip% &7is &anow &7blacklisted.'
+    add-player: '%prefix%%player% &7(%ip%) is &anow &7blacklisted.'
+    add-ip: '%prefix%%ip% &7is &anow &7blacklisted.'
 
   whitelist:
     empty: '%prefix%&cThe whitelist is currently empty!'
     invalid: '%prefix%&cPlease enter a valid ip address or username.'
     not: '%prefix%&cThat ip address is not whitelisted!'
     already: '%prefix%&cThat ip address is already whitelisted!'
-    add_player: '%prefix%&f%player% &7(%ip%) is &anow &7whitelisted.'
-    add_ip: '%prefix%&f%ip% &7is &anow &7whitelisted.'
-    remove: '%prefix%&f%ip% &7is &cno longer &7whitelisted.'
+    add-player: '%prefix%%player% &7(%ip%) is &anow &7whitelisted.'
+    add-ip: '%prefix%%ip% &7is &anow &7whitelisted.'
+    remove: '%prefix%%ip% &7is &cno longer &7whitelisted.'
 
   reload:
     reloading: '%prefix%&7Reloading &fSonar&7...'
-    reloaded: '%prefix%&7Reloaded &fSonar &7in &f%time% &7ms.'
+    reloaded: '%prefix%&aSuccessfully reloaded Sonar. &7(%seconds% s)'
 
   ping:
     specify: '%prefix%&cYou need to specify a player when executing this command through console.'
     you: '%prefix%&7You currently have a ping of &f%ping% ms&7.'
-    other: '%prefix%&f%player% &7currently has a ping of &f%ping% ms&7.'
+    other: '%prefix%%player% &7currently has a ping of &f%ping% ms&7.'

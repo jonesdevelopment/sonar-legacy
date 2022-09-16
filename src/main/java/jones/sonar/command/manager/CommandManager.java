@@ -18,6 +18,8 @@ package jones.sonar.command.manager;
 
 import jones.sonar.command.SubCommand;
 import jones.sonar.command.impl.InfoCommand;
+import jones.sonar.command.impl.ReloadCommand;
+import jones.sonar.command.impl.StatsCommand;
 import lombok.experimental.UtilityClass;
 
 import java.util.ArrayList;
@@ -29,7 +31,7 @@ public class CommandManager {
     public final List<SubCommand> SUB_COMMANDS = new ArrayList<>();
 
     public void initialize() {
-        addCommands(new InfoCommand());
+        addCommands(new InfoCommand(), new StatsCommand(), new ReloadCommand());
     }
 
     private void addCommands(final SubCommand... command) {

@@ -66,7 +66,8 @@ public class Messages {
 
     private String format(final String message) {
         return ColorUtil.format(message)
-                .replaceAll("%prefix%", Values.PREFIX);
+                .replaceAll("%prefix%", Values.PREFIX)
+                .replaceAll("%list%", Values.LIST_SYMBOL);
     }
 
     @UtilityClass
@@ -75,7 +76,8 @@ public class Messages {
                 COUNTER_ENABLED, COUNTER_DISABLED, DISCONNECT_TOO_FAST_RECONNECT,
                 DISCONNECT_FIRST_JOIN, DISCONNECT_INVALID_NAME, NO_PERMISSION,
                 ONLY_PLAYERS, FOOTER_BAR, HEADER_BAR, HELP_COMMAND_LAYOUT,
-                NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND;
+                NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND, RELOADING,
+                RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -83,6 +85,10 @@ public class Messages {
             try {
                 // general
                 PREFIX = ColorUtil.format(config.getString("prefix", "&e&lSonar &7» &f"));
+                LIST_SYMBOL = config.getString("commands.listing", "∙");
+
+                if (PREFIX.length() > 32) PREFIX = PREFIX.substring(0, 32);
+
                 NO_PERMISSION = format(config.getString("no-permission", "&cNo permission!"));
                 NO_PERMISSION_SUB_COMMAND = format(config.getString("no-permission-sub", "&cNo permission!"));
                 UNKNOWN_SUB_COMMAND = format(config.getString("unknown-sub-command", "&cUnknown sub-command."));
@@ -91,7 +97,12 @@ public class Messages {
                 HEADER_BAR = format(config.getString("header-bar", "&7---&r"));
 
                 // commands
-                HELP_COMMAND_LAYOUT = ColorUtil.format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
+                HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
+                RELOADING = format(config.getString("commands.reload.reloading", "Reloading..."));
+                RELOADED = format(config.getString("commands.reload.reloaded", "Reloaded in %time% ms"));
+
+                if (LIST_SYMBOL.length() > 2) LIST_SYMBOL = LIST_SYMBOL.substring(0, 2);
+                else if (LIST_SYMBOL.isEmpty()) LIST_SYMBOL = "∙";
 
                 // counter
                 COUNTER_ENABLED = format(config.getString("counter.action-bar.enabled"));
@@ -99,6 +110,8 @@ public class Messages {
                 COUNTER_FORMAT = format(config.getString("counter.action-bar.format"));
                 COUNTER_WAITING_FORMAT = format(config.getString("counter.action-bar.waiting"));
                 ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("counter.action-bar.enable-waiting-message");
+                FILTER_SYMBOL_ON = format(config.getString("counter.action-bar.filter-enabled-symbol"));
+                FILTER_SYMBOL_OFF = format(config.getString("counter.action-bar.filter-disabled-symbol"));
 
                 // disconnect messages
                 DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect")));
