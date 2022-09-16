@@ -31,9 +31,13 @@ import java.util.stream.Collectors;
 public final class ActionBar {
     public ActionBar(final SonarBungee sonar) {
         new Thread(() -> {
+            int index = 0;
+
             while (SonarBungee.INSTANCE.running) {
                 try {
                     try {
+                        if (index > 8) index = 0;
+
                         // caching all values as local variables to save some performance
                         final long cps = Counter.CONNECTIONS_PER_SECOND.get(),
                                 pps = Counter.PINGS_PER_SECOND.get(),
@@ -66,6 +70,7 @@ public final class ActionBar {
                                 .replaceAll("%blocked%", sonar.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS))
                                 .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + sonar.FORMAT.format(ips))
                                 .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
+                                .replaceAll("%arrow%", getSpinningSymbol(index++))
                                 .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
                                 .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
                                 .replaceAll("%joins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
@@ -85,6 +90,29 @@ public final class ActionBar {
                 }
             }
         }, "sonar#counter").start();
+    }
+
+    // ↺ ↻
+    private String getSpinningSymbol(final int index) {
+        switch (index) {
+            default:
+            case 1:
+                return "←";
+            case 2:
+                return "↖";
+            case 3:
+                return "↑";
+            case 4:
+                return "↗";
+            case 5:
+                return "→";
+            case 6:
+                return "↘";
+            case 7:
+                return "↓";
+            case 8:
+                return "↙";
+        }
     }
 
     private String repeat(final String string, final int count) {
