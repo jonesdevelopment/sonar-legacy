@@ -77,7 +77,8 @@ public class Messages {
                 DISCONNECT_FIRST_JOIN, DISCONNECT_INVALID_NAME, NO_PERMISSION,
                 ONLY_PLAYERS, FOOTER_BAR, HEADER_BAR, HELP_COMMAND_LAYOUT,
                 NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND, RELOADING,
-                RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF;
+                RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF,
+                DISCONNECT_UNSUPPORTED_VERSION, DISCONNECT_ALREADY_CONNECTED;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -117,6 +118,8 @@ public class Messages {
                 DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect")));
                 DISCONNECT_FIRST_JOIN = format(fromList(config.getStringList("disconnect.reconnect-check.first-join")));
                 DISCONNECT_INVALID_NAME = format(fromList(config.getStringList("disconnect.invalid-name")));
+                DISCONNECT_UNSUPPORTED_VERSION = format(fromList(config.getStringList("disconnect.unsupported-version")));
+                DISCONNECT_ALREADY_CONNECTED = format(fromList(config.getStringList("disconnect.already-connected")));
                 return true;
             } catch (final Exception exception) {
                 return false;

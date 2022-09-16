@@ -33,14 +33,30 @@ public final class ActionBar {
             while (SonarBungee.INSTANCE.running) {
                 try {
                     try {
-                        final long cps = Math.max(Counter.CONNECTIONS_PER_SECOND.get(), 0),
-                                pps = Math.max(Counter.PINGS_PER_SECOND.get(), 0),
-                                eps = Math.max(Counter.ENCRYPTIONS_PER_SECOND.get(), 0),
-                                ips = Math.max(Counter.IPS_PER_SECOND.get(), 0),
-                                jps = Math.max(Counter.JOINS_PER_SECOND.get(), 0);
+                        // caching all values as local variables to save some performance
+                        final long cps = Counter.CONNECTIONS_PER_SECOND.get(),
+                                pps = Counter.PINGS_PER_SECOND.get(),
+                                eps = Counter.ENCRYPTIONS_PER_SECOND.get(),
+                                ips = Counter.IPS_PER_SECOND.get(),
+                                jps = Counter.JOINS_PER_SECOND.get();
 
-                        final TextComponent counter = new TextComponent((!Sensibility.isUnderAttack() && Messages.Values.ENABLE_COUNTER_WAITING_FORMAT ? Messages.Values.COUNTER_WAITING_FORMAT
-                                : "  §r   §r   §r   §r   §r  " + Messages.Values.COUNTER_FORMAT) // this is needed to make the action bar align in the middle
+                        // this is needed to make the action bar align in the middle
+                        String GENERAL_FORMAT = (!Sensibility.isUnderAttack() && Messages.Values.ENABLE_COUNTER_WAITING_FORMAT
+                                ? Messages.Values.COUNTER_WAITING_FORMAT
+                                : Messages.Values.COUNTER_FORMAT);
+
+                        int colorCodeCount = 0;
+
+                        // counting every color code within the message
+                        for (final char c : GENERAL_FORMAT.toCharArray()) {
+                            if (c == '§') colorCodeCount++;
+                        }
+
+                        // adding empty lines in front of the message to align the message in
+                        // the center of the players' screen
+                        GENERAL_FORMAT = repeat(" ", Math.min(colorCodeCount, 16)) + GENERAL_FORMAT;
+
+                        final TextComponent counter = new TextComponent(GENERAL_FORMAT
                                 .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
                                 .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + sonar.FORMAT.format(pps))
                                 .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.DATA.values().stream()
@@ -68,5 +84,15 @@ public final class ActionBar {
                 }
             }
         }, "sonar#counter").start();
+    }
+
+    private String repeat(final String string, final int count) {
+        final StringBuilder buffer = new StringBuilder();
+
+        for(int i = 0; i < count; ++i) {
+            buffer.append(string);
+        }
+
+        return buffer.toString();
     }
 }

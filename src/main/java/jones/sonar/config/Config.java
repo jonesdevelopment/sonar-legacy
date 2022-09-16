@@ -20,6 +20,7 @@ import jones.sonar.config.options.CustomRegexOptions;
 import jones.sonar.config.yaml.Configuration;
 import jones.sonar.config.yaml.ConfigurationProvider;
 import jones.sonar.config.yaml.YamlConfiguration;
+import jones.sonar.util.ColorUtil;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -61,12 +62,12 @@ public class Config {
                 REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
-                ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN;
+                ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
 
-        public String NAME_VALIDATION_REGEX = "^[a-zA-Z0-9_.]*$";
+        public String NAME_VALIDATION_REGEX, SERVER_BRAND;
 
         public List<String> CUSTOM_REGEXES = new ArrayList<>();
 
@@ -82,6 +83,8 @@ public class Config {
                 MAX_PACKET_BYTES = config.getInt("general.max-packet-bytes", 2048);
                 MAX_PACKET_CAPACITY = config.getInt("general.max-packet-capacity", 4096);
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
+                SERVER_BRAND = ColorUtil.format(config.getString("general.fake-server-brand", "Protected"));
+                CACHE_MOTDS = config.getBoolean("general.cache-incoming-motd-requests", true);
 
                 // checks
                 ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);

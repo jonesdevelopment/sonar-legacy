@@ -26,14 +26,14 @@ counter:
     #   %total% - Number of total connections this session (formatted)
     #   %filter-symbol% - Symbol of the current filter status
     # The correct color is automatically applied to each variable
-    format: '%prefix%&7CPS: &f%cps% &a▪ &7IPs: &f%ips% &a▪ &7Joins: &f%joins% &a▪ &7Pings: &f%pings% &a▪ &7Verification: &f%verify% &a▪ &7Blocked: &f%blocked% &a▪ &7Total: &f%total% &a▪ &7(&f%filter-symbol%&7)'
-    waiting: '&7» &7CPS: &f%cps% &a▪ &7IPs: &f%ips% &a▪ &fWaiting for new attacks to &narrive&r&7... &7«'
+    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Joins: &f%joins% &3▪ &7Pings: &f%pings% &3▪ &7Verification: &f%verify% &3▪ &7Blocked: &f%blocked% &3▪ &7Total: &f%total%'
+    waiting: '%prefix%&7Joins: &f%joins% &3▪ &7Verification: &f%verify% &3▪ &7Waiting for new attacks to arrive...'
 
     filter-enabled-symbol: '&a✔'
     filter-disabled-symbol: '&c✘'
 
     # Set this to false if you always want to see the full counter
-    enable-waiting-message: false
+    enable-waiting-message: true
 
 disconnect:
   reconnect-check:
@@ -55,6 +55,19 @@ disconnect:
   invalid-name:
     - ' '
     - '&cYour username contains illegal characters or blocked words.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
+  already-connected:
+    - ' '
+    - '&cSorry! &7Seem like you are already connected to the server.'
+    - '&cIf this error keeps occurring, please contact an administrator!'
+    - ' '
+
+  unsupported-version:
+    - ' '
+    - '&cYour Minecraft version is not supported!'
+    - '&7Please use a version that is being supported by the server.'
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 

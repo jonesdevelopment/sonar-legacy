@@ -16,6 +16,7 @@
 
 package jones.sonar.network.bungee.handler;
 
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
 import jones.sonar.config.Config;
@@ -30,11 +31,11 @@ import jones.sonar.detection.bungee.LoginHandler;
 import jones.sonar.network.bungee.handler.state.ConnectionState;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ListenerInfo;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.protocol.PacketWrapper;
-import net.md_5.bungee.protocol.packet.Handshake;
-import net.md_5.bungee.protocol.packet.LoginRequest;
-import net.md_5.bungee.protocol.packet.PingPacket;
+import net.md_5.bungee.protocol.ProtocolConstants;
+import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 
@@ -70,6 +71,16 @@ public final class PlayerHandler extends InitialHandler {
     }
 
     @Override
+    public void handle(final EncryptionRequest encryptionRequest) throws Exception {
+        Counter.ENCRYPTIONS_PER_SECOND.increment();
+
+        System.out.println(encryptionRequest.getPublicKey().length);
+        System.out.println(encryptionRequest.getVerifyToken().length);
+        System.out.println(encryptionRequest.getServerId());
+        super.handle(encryptionRequest);
+    }
+
+    @Override
     public void handle(final Handshake handshake) throws Exception {
         if (currentState != ConnectionState.HANDSHAKE) {
             throw sonar.EXCEPTION;
@@ -98,6 +109,11 @@ public final class PlayerHandler extends InitialHandler {
                 Counter.JOINS_PER_SECOND.increment();
 
                 currentState = ConnectionState.JOINING;
+
+                if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
+                    close(new Kick(ComponentSerializer.toString(Messages.Values.DISCONNECT_UNSUPPORTED_VERSION)));
+                    return;
+                }
                 break;
             }
 
@@ -113,6 +129,14 @@ public final class PlayerHandler extends InitialHandler {
         }
 
         super.handle(handshake);
+    }
+
+    public void close(final Object packet) {
+        if (ctx.channel().isActive()) {
+            ctx.writeAndFlush(packet).addListeners(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, ChannelFutureListener.CLOSE);
+        } else {
+            ctx.close();
+        }
     }
 
     @Override
@@ -165,6 +189,11 @@ public final class PlayerHandler extends InitialHandler {
                     throw sonar.EXCEPTION;
                 }
             }
+        }
+
+        if (sonar.proxy.getPlayer(data.username) != null) {
+            disconnect(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
+            return;
         }
 
         super.handle(loginRequest);

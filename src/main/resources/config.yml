@@ -20,6 +20,13 @@ general:
   # You can change this number depending on your Minecraft servers' popularity
   minimum-joins-per-second: 6
 
+  # Disable this if you don't want Sonar to cache all server list pings
+  # This is really powerful against motd/ping spamming attacks
+  cache-incoming-motd-requests: true
+
+  # Brand that is going to be displayed in the server list
+  fake-server-brand: 'BungeeCord'
+
 checks:
   reconnect-check:
     enabled: true
