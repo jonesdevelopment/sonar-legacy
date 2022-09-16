@@ -69,7 +69,10 @@ public enum SonarBungee {
 
         Logger.INFO.log(LINE);
         Logger.INFO.log(" ");
-        Logger.INFO.log(" §7Starting §eSonar §7version §f" + plugin.getDescription().getVersion() + "§7...");
+
+        VERSION = plugin.getDescription().getVersion();
+
+        Logger.INFO.log(" §7Starting §eSonar §7version §f" + VERSION + "§7...");
 
         /*
          * Load all configurations
@@ -93,8 +96,6 @@ public enum SonarBungee {
 
         Logger.INFO.log(" §7Getting everything ready...");
         Logger.INFO.log(" ");
-
-        VERSION = plugin.getDescription().getVersion();
 
         proxy.getPluginManager().registerCommand(plugin, new SonarCommand());
 
