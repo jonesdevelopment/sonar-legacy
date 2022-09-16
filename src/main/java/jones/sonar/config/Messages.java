@@ -73,7 +73,9 @@ public class Messages {
     public class Values {
         public String PREFIX, COUNTER_FORMAT, COUNTER_WAITING_FORMAT,
                 COUNTER_ENABLED, COUNTER_DISABLED, DISCONNECT_TOO_FAST_RECONNECT,
-                DISCONNECT_FIRST_JOIN, DISCONNECT_INVALID_NAME;
+                DISCONNECT_FIRST_JOIN, DISCONNECT_INVALID_NAME, NO_PERMISSION,
+                ONLY_PLAYERS, FOOTER_BAR, HEADER_BAR, HELP_COMMAND_LAYOUT,
+                NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -81,6 +83,15 @@ public class Messages {
             try {
                 // general
                 PREFIX = ColorUtil.format(config.getString("prefix", "&e&lSonar &7» &f"));
+                NO_PERMISSION = format(config.getString("no-permission", "&cNo permission!"));
+                NO_PERMISSION_SUB_COMMAND = format(config.getString("no-permission-sub", "&cNo permission!"));
+                UNKNOWN_SUB_COMMAND = format(config.getString("unknown-sub-command", "&cUnknown sub-command."));
+                ONLY_PLAYERS = format(config.getString("only-players", "&cOnly players!"));
+                FOOTER_BAR = format(config.getString("footer-bar", "&7---&r"));
+                HEADER_BAR = format(config.getString("header-bar", "&7---&r"));
+
+                // commands
+                HELP_COMMAND_LAYOUT = ColorUtil.format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
 
                 // counter
                 COUNTER_ENABLED = format(config.getString("counter.action-bar.enabled"));

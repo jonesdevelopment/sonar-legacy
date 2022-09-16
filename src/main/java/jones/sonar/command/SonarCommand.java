@@ -16,8 +16,8 @@
 
 package jones.sonar.command;
 
+import jones.sonar.SonarBungee;
 import jones.sonar.command.manager.CommandManager;
-import jones.sonar.config.Config;
 import jones.sonar.config.Messages;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -31,67 +31,51 @@ public final class SonarCommand extends Command {
 
     @Override
     public void execute(final CommandSender sender, final String[] args) {
-        if (sender instanceof ProxiedPlayer && Config.Values.ENABLE_MAIN_PERMISSION) {
-            if (!sender.hasPermission(Config.Values.MAIN_PERMISSION)) {
-                sender.sendMessage(Messages.Values.PERMISSION_MESSAGE);
-                return;
-            }
+        if (!sender.hasPermission("sonar.use")) {
+            sender.sendMessage(Messages.Values.NO_PERMISSION);
+            return;
         }
 
         if (args.length == 0) {
-            printHelp(sender);
+            sender.sendMessage(Messages.Values.HEADER_BAR);
+
+            CommandManager.SUB_COMMANDS.stream()
+                    .filter(command -> command.name.equals("notify") || sender instanceof ProxiedPlayer)
+                    .forEach(command ->
+                            sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
+                                    .replaceAll("%command%", command.name)
+                                    .replaceAll("%description%", command.description)));
+
+            sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + SonarBungee.INSTANCE.getPlugin().getDescription().getVersion() + " §f§oby §f§ojonesdev.xyz§r");
+            sender.sendMessage(Messages.Values.FOOTER_BAR);
             return;
         }
 
         for (final SubCommand command : CommandManager.SUB_COMMANDS) {
-            if (!command.isEnablePermission()
-                    || sender.hasPermission(command.getPermission())) {
-                if (args[0].equalsIgnoreCase(command.getName())) {
-                    command.execute(new CommandExecution(sender, args, command));
+            if (sender.hasPermission(command.permission)) {
+                final CommandExecution possibleExecution = new CommandExecution(sender, args, command);
+
+                if (args[0].equalsIgnoreCase(command.name)) {
+                    command.execute(possibleExecution);
                     return;
                 }
 
-                if (command.getAliases().length > 0) {
-                    for (final String alias : command.getAliases()) {
+                if (command.aliases.length > 0) {
+                    for (final String alias : command.aliases) {
                         if (args[0].equalsIgnoreCase(alias)) {
-                            command.execute(new CommandExecution(sender, args, command));
+                            command.execute(possibleExecution);
                             return;
                         }
                     }
                 }
             }
 
-            else if (args[0].equalsIgnoreCase(command.getName())) {
-                sender.sendMessage(Messages.Values.PERMISSION_MESSAGE);
+            else if (args[0].equalsIgnoreCase(command.name)) {
+                sender.sendMessage(Messages.Values.NO_PERMISSION_SUB_COMMAND.replaceAll("%permission%", command.permission));
                 return;
             }
         }
 
-        printHelp(sender);
-    }
-
-    private void printHelp(final CommandSender sender) {
-        if (sender instanceof ProxiedPlayer) {
-            sender.sendMessage(Messages.Values.HELP_COMMAND_BAR);
-
-            CommandManager.getCommands().forEach(command -> {
-                if (!command.isEnablePermission()
-                        || sender.hasPermission(command.getPermission())) {
-                    sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
-                            .replaceAll("%command%", command.getName())
-                            .replaceAll("%description%", command.getDescription()));
-                }
-            });
-        } else {
-            sender.sendMessage(Messages.Values.HELP_COMMAND_BAR);
-
-            CommandManager.getCommands().stream().filter(command -> !command.getName().contains("notify")).forEach(command ->
-                    sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
-                            .replaceAll("%command%", command.getName())
-                            .replaceAll("%description%", command.getDescription())));
-        }
-
-        sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + Sonar.INSTANCE.getVersion() + " §f§oby §f§ojonesdev.xyz§r");
-        sender.sendMessage(Messages.Values.HELP_COMMAND_BAR);
+        sender.sendMessage(Messages.Values.UNKNOWN_SUB_COMMAND);
     }
 }

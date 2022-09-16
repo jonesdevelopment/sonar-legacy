@@ -14,17 +14,27 @@
  *  limitations under the License.
  */
 
-package jones.sonar.command.impl;
+package jones.sonar.util;
 
-import jones.sonar.command.CommandExecution;
-import jones.sonar.command.SubCommand;
+import lombok.experimental.UtilityClass;
 
-public final class InfoSubCommand extends SubCommand {
-    public InfoSubCommand() {
-        super("info", "Show server information", "sonar.info");
-    }
+@UtilityClass
+public class OperatingSystem {
+    public final String OS = System.getProperty("os.name");
 
-    @Override
-    public void execute(final CommandExecution execution) {
+    public String getOSName() {
+        if (OS.toLowerCase().contains("unix")) {
+            return "Unix / Linux";
+        }
+        if (OS.toLowerCase().contains("os")) {
+            return "macOS";
+        }
+        if (OS.toLowerCase().contains("wind")) {
+            return "Windows";
+        }
+        if (OS.toLowerCase().contains("linu")) {
+            return "Linux";
+        }
+        return "unknown";
     }
 }

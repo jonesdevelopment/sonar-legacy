@@ -1,7 +1,12 @@
 prefix: '&e&lSonar &7» &f'
 
-permission: '%prefix%&cYou do not have the permission to execute this command.'
-only_players: '%prefix%&cYou can only execute this command as a player!'
+no-permission: '%prefix%&cYou do not have the permission to execute this command.'
+no-permission-sub: '%prefix%&cYou do not have the permission to execute this sub-command. &7(%permission%)'
+unknown-sub-command: '%prefix%&cUnknown sub-command. Try &7/sonar &cfor help.'
+only-players: '%prefix%&cYou can only execute this command as a player!'
+
+header-bar: '&7&m                                                              &r'
+footer-bar: '&7&m                                                              &r'
 
 counter:
   action-bar:
@@ -51,3 +56,34 @@ disconnect:
     - '&cYour username contains illegal characters or blocked words.'
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
+
+commands:
+  help:
+    layout: '&7» &f/ab &f%command% &a∙ &f%description%'
+
+  blacklist:
+    empty: '%prefix%&cThe blacklist is currently empty!'
+    invalid: '%prefix%&cPlease enter a valid ip address or username.'
+    not: '%prefix%&cThat ip address is not blacklisted!'
+    already: '%prefix%&cThat ip address is already blacklisted!'
+    remove: '%prefix%%ip% &7is &cno longer &7blacklisted.'
+    add_player: '%prefix%%player% &7(%ip%) is &anow &7blacklisted.'
+    add_ip: '%prefix%%ip% &7is &anow &7blacklisted.'
+
+  whitelist:
+    empty: '%prefix%&cThe whitelist is currently empty!'
+    invalid: '%prefix%&cPlease enter a valid ip address or username.'
+    not: '%prefix%&cThat ip address is not whitelisted!'
+    already: '%prefix%&cThat ip address is already whitelisted!'
+    add_player: '%prefix%&f%player% &7(%ip%) is &anow &7whitelisted.'
+    add_ip: '%prefix%&f%ip% &7is &anow &7whitelisted.'
+    remove: '%prefix%&f%ip% &7is &cno longer &7whitelisted.'
+
+  reload:
+    reloading: '%prefix%&7Reloading &fSonar&7...'
+    reloaded: '%prefix%&7Reloaded &fSonar &7in &f%time% &7ms.'
+
+  ping:
+    specify: '%prefix%&cYou need to specify a player when executing this command through console.'
+    you: '%prefix%&7You currently have a ping of &f%ping% ms&7.'
+    other: '%prefix%&f%player% &7currently has a ping of &f%ping% ms&7.'

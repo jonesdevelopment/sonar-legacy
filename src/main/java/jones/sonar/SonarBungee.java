@@ -15,6 +15,7 @@
  */
 package jones.sonar;
 
+import jones.sonar.command.SonarCommand;
 import jones.sonar.command.manager.CommandManager;
 import jones.sonar.config.Config;
 import jones.sonar.config.Messages;
@@ -95,6 +96,8 @@ public enum SonarBungee {
 
         Logger.INFO.log(" §7Getting everything ready...");
         Logger.INFO.log(" ");
+
+        proxy.getPluginManager().registerCommand(plugin, new SonarCommand());
 
         CommandManager.initialize();
 
