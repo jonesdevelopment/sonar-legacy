@@ -22,7 +22,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.network.bungee.handler.BungeeHandler;
-import jones.sonar.util.logging.Logger;
+import jones.sonar.util.FastException;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ListenerInfo;
@@ -35,6 +35,8 @@ import net.md_5.bungee.protocol.*;
 public final class BungeeInterceptor extends ChannelInitializer<Channel> implements SonarPipeline {
 
     private final KickStringWriter legacyKicker = new KickStringWriter();
+
+    private final FastException EXCEPTION = new FastException();
 
     private final int protocol;
 
@@ -56,7 +58,6 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
-        Logger.INFO.log("Exception " + ctx.channel().remoteAddress() + " -> " + cause.getLocalizedMessage());
     }
 
     @Override

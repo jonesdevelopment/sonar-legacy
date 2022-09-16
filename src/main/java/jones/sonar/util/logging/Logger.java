@@ -15,7 +15,7 @@
  */
 package jones.sonar.util.logging;
 
-import jones.sonar.Sonar;
+import jones.sonar.SonarBungee;
 import lombok.RequiredArgsConstructor;
 
 import java.util.logging.Level;
@@ -31,16 +31,16 @@ public enum Logger implements ILogger {
 
     @Override
     public void log(final String data) {
-        Sonar.INSTANCE.proxy.getLogger().log(logLevel, "[Sonar] " + data);
+        SonarBungee.INSTANCE.proxy.getLogger().log(logLevel, "[Sonar] " + data);
     }
 
     @Override
     public void log(final String data, final String prefix) {
-        Sonar.INSTANCE.proxy.getLogger().log(logLevel, prefix + " " + data);
+        SonarBungee.INSTANCE.proxy.getLogger().log(logLevel, prefix + " " + data);
     }
 
     @Override
     public void logNoPrefix(final String data) {
-        Sonar.INSTANCE.proxy.getLogger().log(logLevel, data);
+        SonarBungee.INSTANCE.proxy.getLogger().log(logLevel, data);
     }
 }

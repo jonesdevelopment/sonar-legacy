@@ -13,11 +13,24 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package jones.sonar;
 
-package jones.sonar.util;
+import net.md_5.bungee.api.plugin.Plugin;
 
-public final class FastException extends RuntimeException {
-    public FastException() {
-        super();
+public final class SonarBungeePlugin extends Plugin {
+
+    @Override
+    public void onLoad() {
+        SonarBungee.INSTANCE.onLoad(this);
+    }
+
+    @Override
+    public void onEnable() {
+        SonarBungee.INSTANCE.onEnable(this);
+    }
+
+    @Override
+    public void onDisable() {
+        SonarBungee.INSTANCE.onDisable(this);
     }
 }

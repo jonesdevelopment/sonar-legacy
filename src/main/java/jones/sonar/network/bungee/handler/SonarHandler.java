@@ -19,13 +19,10 @@ package jones.sonar.network.bungee.handler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import jones.sonar.util.FastException;
+import jones.sonar.SonarBungee;
 
 public interface SonarHandler {
-
-    FastException EXCEPTION = new FastException();
-
-    default void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+    default void intercept(final ChannelHandlerContext ctx, final Object msg) throws Exception {
         if (msg instanceof ByteBuf) {
             final ByteBuf byteBuf = (ByteBuf) msg;
 
@@ -37,7 +34,8 @@ public interface SonarHandler {
             }
 
             if (!byteBuf.isReadable()) {
-                throw EXCEPTION;
+                ctx.close();
+                throw SonarBungee.INSTANCE.EXCEPTION;
             }
 
             byteBuf.markReaderIndex();
@@ -47,14 +45,15 @@ public interface SonarHandler {
                     writerIndex = byteBuf.writerIndex(),
                     readerIndex = byteBuf.readerIndex();
 
-            if (bytes > 2048 || bytes <= 0 || capacity > 4096 || writerIndex > 2048 || readerIndex > 2048) {
+            if (bytes > 2048 || bytes <= 0 || capacity > 4096 || writerIndex > 1024 || readerIndex > 2048) {
                 byteBuf.clear();
-                throw EXCEPTION;
+                ctx.close();
+                throw SonarBungee.INSTANCE.EXCEPTION;
             }
 
             byteBuf.resetReaderIndex();
-        }
 
-        ctx.fireChannelRead(msg);
+            ctx.fireChannelRead(msg);
+        }
     }
 }

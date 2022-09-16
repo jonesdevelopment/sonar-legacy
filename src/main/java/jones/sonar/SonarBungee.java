@@ -15,22 +15,77 @@
  */
 package jones.sonar;
 
-import net.md_5.bungee.api.plugin.Plugin;
+import jones.sonar.network.bungee.BungeeInterceptor;
+import jones.sonar.util.FastException;
+import jones.sonar.util.Reflection;
+import jones.sonar.util.logging.Logger;
+import lombok.Getter;
+import net.md_5.bungee.api.ProxyServer;
 
-public final class SonarBungee extends Plugin {
+public enum SonarBungee {
 
-    @Override
-    public void onLoad() {
-        Sonar.INSTANCE.onLoad(this);
+    INSTANCE;
+
+    @Getter
+    private SonarBungeePlugin plugin;
+
+    public final ProxyServer proxy = ProxyServer.getInstance();
+
+    public final FastException EXCEPTION = new FastException();
+
+    public int JAVA_VERSION = 0;
+
+    public void onLoad(final SonarBungeePlugin plugin) {
+        assert plugin != null : "Error loading Sonar!";
+
+        this.plugin = plugin;
     }
 
-    @Override
-    public void onEnable() {
-        Sonar.INSTANCE.onEnable(this);
+    public void onEnable(final SonarBungeePlugin plugin) {
+        assert plugin != null : "Error starting Sonar!";
+
+        /*
+         * Start-up message
+         */
+
+        final String LINE = "§7§m«-----------------------------------------»§r";
+
+        Logger.INFO.log(LINE);
+        Logger.INFO.log(" ");
+        Logger.INFO.log(" §7Starting §eSonar §7version §f" + plugin.getDescription().getVersion() + "§7...");
+
+        /*
+         * Load all configurations
+         */
+
+        Logger.INFO.log(" §7Getting everything ready...");
+        Logger.INFO.log(" ");
+
+        /*
+         * Inject in the netty to intercept packets
+         * and use Waterfall functions
+         */
+
+        JAVA_VERSION = Reflection.getVersion();
+
+        if (!Reflection.inject(new BungeeInterceptor(proxy.getProtocolVersion()), JAVA_VERSION)) {
+            Logger.INFO.log(" §cError injecting into the proxy!");
+            Logger.INFO.log(" §cMake sure you are using the correct version of the proxy and Java.");
+            Logger.INFO.log(" ");
+            Logger.INFO.log(LINE);
+            return;
+        }
+
+        /*
+         * Process finished
+         */
+
+        Logger.INFO.log(" §aSuccessfully started Sonar!");
+        Logger.INFO.log(" ");
+        Logger.INFO.log(LINE);
     }
 
-    @Override
-    public void onDisable() {
-        Sonar.INSTANCE.onDisable(this);
+    public void onDisable(final SonarBungeePlugin plugin) {
+        assert plugin != null : "Error stopping Sonar!";
     }
 }

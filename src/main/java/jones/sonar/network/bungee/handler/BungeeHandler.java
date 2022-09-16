@@ -16,7 +16,20 @@
 
 package jones.sonar.network.bungee.handler;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import jones.sonar.util.logging.Logger;
 
 public final class BungeeHandler extends ChannelInboundHandlerAdapter implements SonarHandler {
+
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+        ctx.close();
+        Logger.INFO.log("§eSonar §7» §7Closed connection §7-> §f" + ctx.channel().remoteAddress());
+    }
+
+    @Override
+    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+        intercept(ctx, msg);
+    }
 }
