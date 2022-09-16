@@ -37,8 +37,6 @@ public class Config {
 
     public void initialize() {
         try {
-            SonarBungee.INSTANCE.getPlugin().getDataFolder().createNewFile();
-
             final File file = new File(SonarBungee.INSTANCE.getPlugin().getDataFolder().getPath(), fileName);
 
             if (!file.exists()) {
