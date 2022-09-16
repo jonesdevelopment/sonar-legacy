@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
+import jones.sonar.caching.ServerDataProvider;
 import jones.sonar.caching.ServerPingCache;
 import jones.sonar.config.Config;
 import jones.sonar.config.Messages;
@@ -38,7 +39,6 @@ import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
@@ -162,7 +162,7 @@ public final class PlayerHandler extends InitialHandler {
         final Handshake handshake = getHandshake();
         final ListenerInfo listener = getListener();
 
-        final ServerInfo forced = getForcedHost(listener, this);
+        final ServerInfo forced = ServerDataProvider.getForcedHost(listener, getVirtualHost());
 
         final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion()))
                 ? handshake.getProtocolVersion() : sonar.proxy.getProtocolVersion();
@@ -198,16 +198,6 @@ public final class PlayerHandler extends InitialHandler {
         }
 
         currentState = ConnectionState.PINGING;
-    }
-
-    private ServerInfo getForcedHost(final ListenerInfo listener, final PendingConnection connection) {
-        String forced = (connection.getVirtualHost() == null) ? null : listener.getForcedHosts().get(connection.getVirtualHost().getHostString());
-
-        if (forced == null && listener.isForceDefault()) {
-            forced = listener.getDefaultServer();
-        }
-
-        return (forced == null) ? null : sonar.proxy.getServerInfo(forced);
     }
 
     @Override
