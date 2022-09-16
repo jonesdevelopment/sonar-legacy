@@ -14,11 +14,11 @@
  *  limitations under the License.
  */
 
-package jones.sonar.data.verification;
+package jones.sonar.config.options;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
-public class DataManager {
-    public long TOTAL_CONNECTIONS = 0L, BLOCKED_CONNECTIONS = 0L;
+public enum CustomRegexOptions {
+    ALWAYS,
+    NEVER,
+    DURING_ATTACK,
+    UNKNOWN
 }

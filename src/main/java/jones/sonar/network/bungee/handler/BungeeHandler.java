@@ -19,7 +19,7 @@ package jones.sonar.network.bungee.handler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import jones.sonar.blacklist.Blacklist;
-import jones.sonar.data.verification.DataManager;
+import jones.sonar.data.ServerStatistics;
 
 import java.net.InetSocketAddress;
 
@@ -28,7 +28,7 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter implements
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
-        DataManager.BLOCKED_CONNECTIONS++;
+        ServerStatistics.BLOCKED_CONNECTIONS++;
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
     }
 

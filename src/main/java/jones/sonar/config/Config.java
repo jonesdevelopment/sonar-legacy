@@ -16,6 +16,7 @@
 package jones.sonar.config;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.config.options.CustomRegexOptions;
 import jones.sonar.config.yaml.Configuration;
 import jones.sonar.config.yaml.ConfigurationProvider;
 import jones.sonar.config.yaml.YamlConfiguration;
@@ -57,10 +58,13 @@ public class Config {
     @UtilityClass
     public class Values {
         public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY,
-                REJOIN_DELAY, MAX_REJOINS_PER_SECOND;
+                REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN;
+
+        public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
+                REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
 
         public String NAME_VALIDATION_REGEX = "^[a-zA-Z0-9_.]*$";
 
@@ -77,6 +81,7 @@ public class Config {
                 MAX_PACKET_INDEX = config.getInt("general.max-packet-index", 1024);
                 MAX_PACKET_BYTES = config.getInt("general.max-packet-bytes", 2048);
                 MAX_PACKET_CAPACITY = config.getInt("general.max-packet-capacity", 4096);
+                MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
 
                 // checks
                 ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);
@@ -86,6 +91,51 @@ public class Config {
 
                 ENABLE_INVALID_NAME_CHECK = config.getBoolean("checks.invalid-name.enabled", true);
                 NAME_VALIDATION_REGEX = config.getString("checks.invalid-name.regex", "^[a-zA-Z0-9_.]*$");
+
+                switch (config.getString("checks.invalid-name.blacklist-custom-regexes", "during_attack").toLowerCase()) {
+                    case "during_attack": {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.DURING_ATTACK;
+                        break;
+                    }
+
+                    case "always": {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.ALWAYS;
+                        break;
+                    }
+
+                    case "never": {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.NEVER;
+                        break;
+                    }
+
+                    default: {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN;
+                        break;
+                    }
+                }
+
+                switch (config.getString("checks.invalid-name.check-custom-regexes", "during_attack").toLowerCase()) {
+                    case "during_attack": {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.DURING_ATTACK;
+                        break;
+                    }
+
+                    case "always": {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.ALWAYS;
+                        break;
+                    }
+
+                    case "never": {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.NEVER;
+                        break;
+                    }
+
+                    default: {
+                        REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN;
+                        break;
+                    }
+                }
+
                 CUSTOM_REGEXES.addAll(config.getStringList("checks.invalid-name.custom-regexes"));
                 return true;
             } catch (final Exception exception) {

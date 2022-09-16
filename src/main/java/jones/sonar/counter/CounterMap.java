@@ -16,46 +16,42 @@
 
 package jones.sonar.counter;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashSet;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public final class CounterMap {
 
     public final long decay;
 
-    private long decayInNanos = 1000000000L;
-
-    private HashSet<Long> map = null;
+    private Cache<Long, Byte> cache = null;
 
     public CounterMap build() {
-        map = new HashSet<>();
-        decayInNanos = decay * 1000000L;
+        cache = CacheBuilder.newBuilder()
+                .concurrencyLevel(2)
+                .expireAfterWrite(decay, TimeUnit.MILLISECONDS)
+                .build();
         return this;
     }
 
     public CounterMap build(final int maxSize) {
-        map = new HashSet<>(maxSize);
-        decayInNanos = decay * 1000000L;
+        cache = CacheBuilder.newBuilder()
+                .concurrencyLevel(2)
+                .maximumSize(maxSize)
+                .expireAfterWrite(decay, TimeUnit.MILLISECONDS)
+                .build();
         return this;
     }
 
     public long get() {
-        cleanUp();
-        return map.size();
+        cache.cleanUp();
+        return cache.size();
     }
 
     public void increment() {
-        map.add(System.nanoTime());
-    }
-
-    private void cleanUp() {
-        final long timeStamp = System.nanoTime();
-
-        map = map.stream()
-                .filter(time -> (timeStamp - time) < decayInNanos)
-                .collect(Collectors.toCollection(HashSet::new));
+        cache.put(System.nanoTime(), (byte) 0);
     }
 }

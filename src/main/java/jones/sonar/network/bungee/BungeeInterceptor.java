@@ -25,7 +25,7 @@ import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.SonarBungee;
 import jones.sonar.blacklist.Blacklist;
 import jones.sonar.counter.Counter;
-import jones.sonar.data.verification.DataManager;
+import jones.sonar.data.ServerStatistics;
 import jones.sonar.network.bungee.decoder.SonarPacketDecoder;
 import jones.sonar.network.bungee.handler.BungeeHandler;
 import jones.sonar.network.bungee.handler.MainHandler;
@@ -39,8 +39,11 @@ import net.md_5.bungee.api.event.ClientConnectEvent;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 @RequiredArgsConstructor
 public final class BungeeInterceptor extends ChannelInitializer<Channel> implements SonarPipeline {
@@ -48,6 +51,8 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
     private final ConnectionThrottle throttler = BungeeCord.getInstance().getConnectionThrottle();
 
     private final KickStringWriter legacyKicker = new KickStringWriter();
+
+    private final Map<InetAddress, Long> perIpCount = new ConcurrentHashMap<>();
 
     private final int protocol;
 
@@ -69,7 +74,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
-        DataManager.BLOCKED_CONNECTIONS++;
+        ServerStatistics.BLOCKED_CONNECTIONS++;
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
     }
 
@@ -78,13 +83,34 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
         try {
             Counter.CONNECTIONS_PER_SECOND.increment();
 
-            DataManager.TOTAL_CONNECTIONS++;
+            ServerStatistics.TOTAL_CONNECTIONS++;
 
             final SocketAddress remoteAddress = ctx.channel().remoteAddress();
 
-            if (remoteAddress == null || Blacklist.isBlacklisted(((InetSocketAddress) remoteAddress).getAddress())) {
+            if (remoteAddress == null) {
                 ctx.close();
-                DataManager.BLOCKED_CONNECTIONS++;
+                return;
+            }
+
+            final InetAddress inetAddress = ((InetSocketAddress) remoteAddress).getAddress();
+
+            final long timeStamp = System.currentTimeMillis();
+
+            if (!perIpCount.containsKey(inetAddress)) {
+                perIpCount.put(inetAddress, timeStamp);
+
+                Counter.IPS_PER_SECOND.increment();
+            } else {
+                if (timeStamp - perIpCount.get(inetAddress) > 1000L) {
+                    perIpCount.replace(inetAddress, timeStamp);
+
+                    Counter.IPS_PER_SECOND.increment();
+                }
+            }
+
+            if (Blacklist.isBlacklisted(inetAddress)) {
+                ctx.close();
+                ServerStatistics.BLOCKED_CONNECTIONS++;
                 return;
             }
 
@@ -113,7 +139,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             if (BungeeCord.getInstance().getPluginManager().callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
                 ctx.close();
-                DataManager.BLOCKED_CONNECTIONS++;
+                ServerStatistics.BLOCKED_CONNECTIONS++;
             }
         } finally {
             if (!ctx.isRemoved()) {

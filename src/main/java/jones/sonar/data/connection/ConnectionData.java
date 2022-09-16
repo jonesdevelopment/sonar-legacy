@@ -31,9 +31,9 @@ public final class ConnectionData {
 
     public String username = "", verifiedName = "";
 
-    public long lastJoin = 0L;
+    public long lastJoin = 0L, sinceLoggedIn = 0L;
 
-    public int checked = 0;
+    public int checked = 0, clientSettingsPackets = 0, customPayloadPackets = 0;
 
     public ProxiedPlayer tryToGetPlayer() {
         return SonarBungee.INSTANCE.proxy.getPlayer(username);

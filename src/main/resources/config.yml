@@ -16,6 +16,10 @@ general:
   # This could be used by some plugins, so please enable it if it causes issues
   use-client-connect-event: false
 
+  # Minimum number of joins per second before toggling anti bot mode
+  # You can change this number depending on your Minecraft servers' popularity
+  minimum-joins-per-second: 6
+
 checks:
   reconnect-check:
     enabled: true
@@ -26,7 +30,7 @@ checks:
 
     # Delay in milliseconds a player need to wait before being able to successfully
     # rejoin the server (Recommended values: 500 - 5000)
-    rejoin-delay: 1000
+    rejoin-delay: 2000
 
     # Maximum amount of rejoins per second before being blacklisted
     max-rejoins-per-second: 8
@@ -38,6 +42,14 @@ checks:
     # Names with special characters are automatically detected by this regex
     # If you want to add more, custom regexes, you can do that below this option
     regex: '^[a-zA-Z0-9_.]*$'
+
+    # Blacklist mode for custom regexes
+    # Options: ALWAYS, NEVER, DURING_ATTACK
+    blacklist-custom-regexes: 'DURING_ATTACK'
+
+    # Check mode for custom regexes
+    # Options: ALWAYS, NEVER, DURING_ATTACK
+    check-custom-regexes: 'DURING_ATTACK'
 
     # You can provide your custom regex here.
     # Only edit this if you know what you're doing.

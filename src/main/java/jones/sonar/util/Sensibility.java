@@ -14,21 +14,15 @@
  *  limitations under the License.
  */
 
-package jones.sonar.network.bungee.handler;
+package jones.sonar.util;
 
-import io.netty.channel.ChannelHandlerContext;
-import jones.sonar.blacklist.Blacklist;
-import jones.sonar.data.ServerStatistics;
-import net.md_5.bungee.netty.HandlerBoss;
+import jones.sonar.config.Config;
+import jones.sonar.counter.Counter;
+import lombok.experimental.UtilityClass;
 
-import java.net.InetSocketAddress;
-
-public final class MainHandler extends HandlerBoss {
-
-    @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-        ctx.close();
-        ServerStatistics.BLOCKED_CONNECTIONS++;
-        Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+@UtilityClass
+public class Sensibility {
+    public boolean isUnderAttack() {
+        return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND;
     }
 }

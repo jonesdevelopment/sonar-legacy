@@ -21,9 +21,9 @@ import jones.sonar.SonarBungee;
 import jones.sonar.config.Config;
 import jones.sonar.config.Messages;
 import jones.sonar.counter.Counter;
+import jones.sonar.data.ServerStatistics;
 import jones.sonar.data.connection.ConnectionData;
 import jones.sonar.data.connection.manager.ConnectionDataManager;
-import jones.sonar.data.verification.DataManager;
 import jones.sonar.detection.Detection;
 import jones.sonar.detection.DetectionResult;
 import jones.sonar.detection.bungee.LoginHandler;
@@ -140,7 +140,7 @@ public final class PlayerHandler extends InitialHandler {
 
         data.username = loginRequest.getData();
 
-        final Detection detection = LoginHandler.check(loginRequest, data);
+        final Detection detection = LoginHandler.check(data);
 
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.disconnectMessageKey) {
@@ -150,13 +150,13 @@ public final class PlayerHandler extends InitialHandler {
                 }
 
                 case "2": {
-                    DataManager.BLOCKED_CONNECTIONS++;
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_INVALID_NAME);
                     return;
                 }
 
                 case "3": {
-                    DataManager.BLOCKED_CONNECTIONS++;
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
                     return;
                 }

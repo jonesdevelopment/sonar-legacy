@@ -18,8 +18,8 @@ package jones.sonar.counter;
 
 import jones.sonar.SonarBungee;
 import jones.sonar.config.Messages;
+import jones.sonar.data.ServerStatistics;
 import jones.sonar.data.connection.manager.ConnectionDataManager;
-import jones.sonar.data.verification.DataManager;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
@@ -32,20 +32,23 @@ public final class ActionBar {
                 try {
                     try {
                         final TextComponent counter = new TextComponent(Messages.Values.COUNTER_FORMAT
-                                .replaceAll("%cps%", sonar.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()))
-                                .replaceAll("%pings%", sonar.FORMAT.format(Counter.PINGS_PER_SECOND.get()))
-                                .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.DATA.values().stream().filter(connectionData -> connectionData.checked <= 1).count()))
-                                .replaceAll("%blocked%", sonar.FORMAT.format(DataManager.BLOCKED_CONNECTIONS))
-                                .replaceAll("%ips%", sonar.FORMAT.format(Counter.IPS_PER_SECOND.get()))
-                                .replaceAll("%total%", sonar.FORMAT.format(DataManager.TOTAL_CONNECTIONS))
-                                .replaceAll("%encryptions%", sonar.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get()))
-                                .replaceAll("%joins%", sonar.FORMAT.format(Counter.JOINS_PER_SECOND.get())));
+                                .replaceAll("%cps%", sonar.FORMAT.format(Math.max(Counter.CONNECTIONS_PER_SECOND.get(), 0)))
+                                .replaceAll("%pings%", sonar.FORMAT.format(Math.max(Counter.PINGS_PER_SECOND.get(), 0)))
+                                .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.DATA.values().stream()
+                                        .filter(connectionData -> connectionData.checked <= 1)
+                                        .count()))
+                                .replaceAll("%blocked%", sonar.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS))
+                                .replaceAll("%ips%", sonar.FORMAT.format(Math.max(Counter.IPS_PER_SECOND.get(), 0)))
+                                .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
+                                .replaceAll("%encryptions%", sonar.FORMAT.format(Math.max(Counter.ENCRYPTIONS_PER_SECOND.get(), 0)))
+                                .replaceAll("%joins%", sonar.FORMAT.format(Math.max(Counter.JOINS_PER_SECOND.get(), 0))));
 
                         sonar.proxy.getPlayers().stream()
                                 .filter(player -> player.hasPermission("sonar.verbose"))
                                 .collect(Collectors.toSet())
                                 .forEach(player -> player.sendMessage(ChatMessageType.ACTION_BAR, counter));
                     } catch (Exception exception) {
+                        exception.printStackTrace();
                         // don't throw any exceptions
                     }
 

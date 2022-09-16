@@ -17,18 +17,19 @@
 package jones.sonar.detection.bungee;
 
 import jones.sonar.config.Config;
+import jones.sonar.config.options.CustomRegexOptions;
+import jones.sonar.counter.Counter;
 import jones.sonar.data.connection.ConnectionData;
 import jones.sonar.data.connection.manager.ConnectionDataManager;
 import jones.sonar.detection.Detection;
 import jones.sonar.detection.Detections;
 import lombok.experimental.UtilityClass;
-import net.md_5.bungee.protocol.packet.LoginRequest;
 
 import java.util.Objects;
 
 @UtilityClass
 public final class LoginHandler {
-    public Detection check(final LoginRequest loginRequest, final ConnectionData connectionData) {
+    public Detection check(final ConnectionData connectionData) {
         connectionData.CONNECTIONS_PER_SECOND.increment();
 
         if (connectionData.CONNECTIONS_PER_SECOND.get() > Config.Values.MAX_REJOINS_PER_SECOND) {
@@ -59,10 +60,25 @@ public final class LoginHandler {
         final long timeStamp = System.currentTimeMillis();
 
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
+            connectionData.lastJoin = timeStamp;
             return Detections.TOO_FAST_RECONNECT;
         }
 
         connectionData.lastJoin = timeStamp;
+
+        final boolean duringAttack = Counter.JOINS_PER_SECOND.get() > 5;
+
+        if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && duringAttack)
+                || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
+            if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
+                if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && duringAttack)
+                        || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
+                    return Detections.BLACKLIST;
+                }
+
+                return Detections.INVALID_NAME;
+            }
+        }
 
         return Detections.ALLOW;
     }
