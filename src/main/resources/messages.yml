@@ -23,7 +23,25 @@ counter:
     # Set this to false if you always want to see the full counter
     enable-waiting-message: true
 
-  boss-bar:
-    format: '&7CPU &8[%cpu%&8] &a∙ &7MEMORY &8[%memory%&8]'
-
 disconnect:
+  reconnect-check:
+
+    # You can use the following variables:
+    #   %milliseconds% - Time the player needs to wait before reconnecting (in milliseconds)
+    #   %seconds% - Time the player needs to wait before reconnecting (in seconds)
+    too-fast-reconnect:
+      - ' '
+      - '&cPlease wait %seconds% seconds before reconnecting!'
+      - ' '
+
+    first-join:
+      - ' '
+      - '&7Your account has been successfully &aregistered&7.'
+      - '&7Please &nre-connect&r &7to verify yourself.'
+      - ' '
+
+  invalid-name:
+    - ' '
+    - '&cYour username contains illegal characters or blocked words.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '

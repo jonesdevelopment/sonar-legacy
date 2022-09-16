@@ -25,33 +25,41 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @UtilityClass
 public class ConnectionDataManager {
-    public final Map<String, ConnectionData> DATA = new ConcurrentHashMap<>();
+    public final Map<InetAddress, ConnectionData> DATA = new ConcurrentHashMap<>();
 
-    public ConnectionData get(final String playerName) {
-        return DATA.get(playerName);
+    public ConnectionData get(final InetAddress inetAddress) {
+        return DATA.get(inetAddress);
     }
 
-    public boolean contains(final String playerName) {
-        return DATA.containsKey(playerName);
+    public boolean contains(final InetAddress inetAddress) {
+        return DATA.containsKey(inetAddress);
     }
 
-    public boolean contains(final ConnectionData data) {
-        return DATA.containsValue(data);
+    public boolean remove(final ConnectionData connectionData) {
+        return remove(connectionData.inetAddress);
     }
 
-    public ConnectionData createAndReturn(final InetAddress inetAddress, final String playerName) {
-        if (contains(playerName)) {
-            return get(playerName);
+    public boolean remove(final InetAddress inetAddress) {
+        if (contains(inetAddress)) {
+            DATA.remove(inetAddress);
+            return true;
+        }
+        return false;
+    }
+
+    public ConnectionData createOrReturn(final InetAddress inetAddress) {
+        if (contains(inetAddress)) {
+            return get(inetAddress);
         }
 
-        DATA.put(playerName, new ConnectionData(inetAddress, playerName));
+        DATA.put(inetAddress, new ConnectionData(inetAddress));
 
-        return DATA.get(playerName);
+        return DATA.get(inetAddress);
     }
 
-    public void create(final InetAddress inetAddress, final String playerName) {
-        if (contains(playerName)) return;
+    public void create(final InetAddress inetAddress) {
+        if (contains(inetAddress)) return;
 
-        DATA.put(playerName, new ConnectionData(inetAddress, playerName));
+        DATA.put(inetAddress, new ConnectionData(inetAddress));
     }
 }

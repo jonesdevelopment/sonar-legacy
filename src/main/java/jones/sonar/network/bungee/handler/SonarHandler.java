@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
+import jones.sonar.config.Config;
 
 public interface SonarHandler {
     default void intercept(final ChannelHandlerContext ctx, final Object msg) throws Exception {
@@ -45,7 +46,11 @@ public interface SonarHandler {
                     writerIndex = byteBuf.writerIndex(),
                     readerIndex = byteBuf.readerIndex();
 
-            if (bytes > 2048 || bytes <= 0 || capacity > 4096 || writerIndex > 1024 || readerIndex > 2048) {
+            if (bytes > Config.Values.MAX_PACKET_BYTES
+                    || capacity > Config.Values.MAX_PACKET_CAPACITY
+                    || writerIndex > Config.Values.MAX_PACKET_INDEX
+                    || readerIndex > Config.Values.MAX_PACKET_BYTES
+                    || bytes <= 0) {
                 byteBuf.clear();
                 ctx.close();
                 throw SonarBungee.INSTANCE.EXCEPTION;

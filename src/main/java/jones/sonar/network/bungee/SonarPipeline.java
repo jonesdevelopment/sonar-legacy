@@ -16,8 +16,20 @@
 
 package jones.sonar.network.bungee;
 
+import io.netty.channel.WriteBufferWaterMark;
+import net.md_5.bungee.protocol.Varint21LengthFieldPrepender;
+
 public interface SonarPipeline {
-    String HANDLER = "sonar-handler";
-    String ENCODER = "sonar-encoder";
-    String DECODER = "sonar-decoder";
+
+    String HANDLER = "sonar-handler",
+            ENCODER = "sonar-encoder",
+            DECODER = "sonar-decoder";
+
+    Varint21LengthFieldPrepender FRAME_PREPENDER = new Varint21LengthFieldPrepender();
+
+    int LOW_MARK = Integer.getInteger("net.md_5.bungee.low_mark", 2 << 18); // 0.5 mb
+    int HIGH_MARK = Integer.getInteger("net.md_5.bungee.high_mark", 2 << 20); // 2 mb
+
+    WriteBufferWaterMark MARK = new WriteBufferWaterMark(LOW_MARK, HIGH_MARK);
+
 }

@@ -18,10 +18,16 @@ package jones.sonar.detection;
 
 public interface Detections {
     Detection FIRST_JOIN_KICK    = new Detection(DetectionResult.DENIED,
-            "disconnect.first-join");
+            "1");
 
     Detection INVALID_NAME       = new Detection(DetectionResult.DENIED,
-            "disconnect.invalid-name");
+            "2");
+
+    Detection TOO_FAST_RECONNECT = new Detection(DetectionResult.DENIED,
+            "3");
+
+    Detection BLACKLIST          = new Detection(DetectionResult.DENIED,
+            "");
 
     Detection ALLOW              = new Detection(DetectionResult.ALLOWED,
             "");

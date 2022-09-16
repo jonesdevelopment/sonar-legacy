@@ -17,15 +17,19 @@ general:
   use-client-connect-event: false
 
 checks:
-
-  # The re-connect check is really powerful and probably defeats most bot attacks
-  # If you don't like this, you can disable it, but it's not recommended to do that
   reconnect-check:
     enabled: true
+
+    # The first-join check is really powerful and probably defeats most bot attacks
+    # If you don't like it you can disable it, but it's not recommended to do that
+    first-join: true
 
     # Delay in milliseconds a player need to wait before being able to successfully
     # rejoin the server (Recommended values: 500 - 5000)
     rejoin-delay: 1000
+
+    # Maximum amount of rejoins per second before being blacklisted
+    max-rejoins-per-second: 8
 
   invalid-name:
     enabled: true

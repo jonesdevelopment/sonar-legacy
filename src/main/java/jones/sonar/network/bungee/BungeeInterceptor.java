@@ -16,24 +16,30 @@
 
 package jones.sonar.network.bungee;
 
+import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
+import jones.sonar.SonarBungee;
+import jones.sonar.blacklist.Blacklist;
 import jones.sonar.counter.Counter;
+import jones.sonar.data.verification.DataManager;
+import jones.sonar.network.bungee.decoder.SonarPacketDecoder;
 import jones.sonar.network.bungee.handler.BungeeHandler;
+import jones.sonar.network.bungee.handler.MainHandler;
 import jones.sonar.network.bungee.handler.PlayerHandler;
-import jones.sonar.util.logging.Logger;
+import jones.sonar.network.bungee.handler.TimeoutHandler;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.event.ClientConnectEvent;
-import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 @RequiredArgsConstructor
@@ -63,7 +69,8 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
-        Logger.INFO.log("§eSonar §7» §7Closed connection §f(I) §7-> §f" + ctx.channel().remoteAddress());
+        DataManager.BLOCKED_CONNECTIONS++;
+        Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
     }
 
     @Override
@@ -71,16 +78,17 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
         try {
             Counter.CONNECTIONS_PER_SECOND.increment();
 
+            DataManager.TOTAL_CONNECTIONS++;
+
             final SocketAddress remoteAddress = ctx.channel().remoteAddress();
 
-            if (remoteAddress == null) {
+            if (remoteAddress == null || Blacklist.isBlacklisted(((InetSocketAddress) remoteAddress).getAddress())) {
                 ctx.close();
+                DataManager.BLOCKED_CONNECTIONS++;
                 return;
             }
 
             ctx.pipeline().addFirst(HANDLER, new BungeeHandler());
-
-            ctx.channel().config().setOption(ChannelOption.TCP_FASTOPEN, 3);
 
             if (throttler != null
                     && throttler.throttle(ctx.channel().remoteAddress())) {
@@ -90,14 +98,14 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             final ListenerInfo listener = ctx.channel().attr(PipelineUtils.LISTENER).get();
 
-            PipelineUtils.BASE.initChannel(ctx.channel());
+            initBaseChannel(ctx.channel());
 
             ctx.pipeline().addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
-            ctx.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, true, protocol));
+            ctx.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new SonarPacketDecoder(Protocol.HANDSHAKE, true, protocol));
             ctx.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, true, protocol));
             ctx.pipeline().addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.LEGACY_KICKER, legacyKicker);
 
-            ctx.pipeline().get(HandlerBoss.class).setHandler(new PlayerHandler(ctx, listener));
+            ctx.pipeline().get(MainHandler.class).setHandler(new PlayerHandler(ctx, listener));
 
             if (listener.isProxyProtocol()) {
                 ctx.pipeline().addFirst(new HAProxyMessageDecoder());
@@ -105,11 +113,26 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             if (BungeeCord.getInstance().getPluginManager().callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
                 ctx.close();
+                DataManager.BLOCKED_CONNECTIONS++;
             }
         } finally {
             if (!ctx.isRemoved()) {
                 ctx.pipeline().remove(this);
             }
         }
+    }
+
+    private void initBaseChannel(final Channel channel) throws Exception {
+        channel.config().setOption(ChannelOption.IP_TOS, 24);
+        channel.config().setOption(ChannelOption.TCP_NODELAY, true);
+        channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
+
+        channel.config().setAllocator(PooledByteBufAllocator.DEFAULT);
+        channel.config().setWriteBufferWaterMark(MARK);
+
+        channel.pipeline().addLast("frame-decoder", new Varint21FrameDecoder());
+        channel.pipeline().addLast("timeout", new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
+        channel.pipeline().addLast("frame-prepender", FRAME_PREPENDER);
+        channel.pipeline().addLast("inbound-boss", new MainHandler());
     }
 }

@@ -54,9 +54,8 @@ public final class CounterMap {
     private void cleanUp() {
         final long timeStamp = System.nanoTime();
 
-        map.stream()
-                .filter(time -> (timeStamp - time) >= decayInNanos)
-                .collect(Collectors.toSet())
-                .forEach(time -> map.remove(time));
+        map = map.stream()
+                .filter(time -> (timeStamp - time) < decayInNanos)
+                .collect(Collectors.toCollection(HashSet::new));
     }
 }

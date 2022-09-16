@@ -17,6 +17,7 @@
 package jones.sonar.data.connection;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.counter.CounterMap;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -25,11 +26,16 @@ import java.net.InetAddress;
 @RequiredArgsConstructor
 public final class ConnectionData {
     public final InetAddress inetAddress;
-    public final String name;
 
-    public boolean proxy = false, checked = false;
+    public final CounterMap CONNECTIONS_PER_SECOND = new CounterMap(1000).build();
+
+    public String username = "", verifiedName = "";
+
+    public long lastJoin = 0L;
+
+    public int checked = 0;
 
     public ProxiedPlayer tryToGetPlayer() {
-        return SonarBungee.INSTANCE.proxy.getPlayer(name);
+        return SonarBungee.INSTANCE.proxy.getPlayer(username);
     }
 }

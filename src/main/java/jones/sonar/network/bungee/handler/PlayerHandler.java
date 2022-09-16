@@ -18,14 +18,25 @@ package jones.sonar.network.bungee.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
+import jones.sonar.config.Config;
+import jones.sonar.config.Messages;
 import jones.sonar.counter.Counter;
+import jones.sonar.data.connection.ConnectionData;
+import jones.sonar.data.connection.manager.ConnectionDataManager;
+import jones.sonar.data.verification.DataManager;
+import jones.sonar.detection.Detection;
+import jones.sonar.detection.DetectionResult;
+import jones.sonar.detection.bungee.LoginHandler;
 import jones.sonar.network.bungee.handler.state.ConnectionState;
-import jones.sonar.util.logging.Logger;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.Handshake;
+import net.md_5.bungee.protocol.packet.LoginRequest;
+import net.md_5.bungee.protocol.packet.PingPacket;
+
+import java.net.InetAddress;
 
 public final class PlayerHandler extends InitialHandler {
 
@@ -39,9 +50,12 @@ public final class PlayerHandler extends InitialHandler {
 
     private final SonarBungee sonar = SonarBungee.INSTANCE;
 
-    private final BungeeCord proxy = BungeeCord.getInstance();
-
     private final ChannelHandlerContext ctx;
+
+    @Override
+    public void exception(final Throwable cause) throws Exception {
+        ctx.close();
+    }
 
     @Override
     public void handle(final PacketWrapper packet) throws Exception {
@@ -49,12 +63,13 @@ public final class PlayerHandler extends InitialHandler {
             throw sonar.EXCEPTION;
         }
 
-        if (packet.buf.readableBytes() > 1024) {
+        if (packet.buf.readableBytes() > Config.Values.MAX_PACKET_BYTES) {
             packet.buf.clear();
             throw sonar.EXCEPTION;
         }
     }
 
+    @Override
     public void handle(final Handshake handshake) throws Exception {
         if (currentState != ConnectionState.HANDSHAKE) {
             throw sonar.EXCEPTION;
@@ -71,10 +86,7 @@ public final class PlayerHandler extends InitialHandler {
             case 1: {
                 Counter.PINGS_PER_SECOND.increment();
 
-                if (proxy.config.isLogPings()) {
-                    Logger.INFO.logNoPrefix(this + " has pinged");
-                }
-
+                currentState = ConnectionState.PINGING;
                 break;
             }
 
@@ -84,7 +96,8 @@ public final class PlayerHandler extends InitialHandler {
 
             case 2: {
                 Counter.JOINS_PER_SECOND.increment();
-                Logger.INFO.logNoPrefix(this + " has connected");
+
+                currentState = ConnectionState.JOINING;
                 break;
             }
 
@@ -100,5 +113,64 @@ public final class PlayerHandler extends InitialHandler {
         }
 
         super.handle(handshake);
+    }
+
+    @Override
+    public void handle(final PingPacket ping) throws Exception {
+        if (currentState != ConnectionState.PINGING) {
+            throw sonar.EXCEPTION;
+        }
+
+        currentState = ConnectionState.PROCESSING;
+
+        unsafe().sendPacket(ping);
+
+        ctx.close();
+    }
+
+    @Override
+    public void handle(final LoginRequest loginRequest) throws Exception {
+        if (currentState != ConnectionState.JOINING) {
+            throw sonar.EXCEPTION;
+        }
+
+        currentState = ConnectionState.PROCESSING;
+
+        final ConnectionData data = ConnectionDataManager.createOrReturn(inetAddress());
+
+        data.username = loginRequest.getData();
+
+        final Detection detection = LoginHandler.check(loginRequest, data);
+
+        if (detection.result == DetectionResult.DENIED) {
+            switch (detection.disconnectMessageKey) {
+                case "1": {
+                    disconnect(Messages.Values.DISCONNECT_FIRST_JOIN);
+                    return;
+                }
+
+                case "2": {
+                    DataManager.BLOCKED_CONNECTIONS++;
+                    disconnect(Messages.Values.DISCONNECT_INVALID_NAME);
+                    return;
+                }
+
+                case "3": {
+                    DataManager.BLOCKED_CONNECTIONS++;
+                    disconnect(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                    return;
+                }
+
+                default: {
+                    throw sonar.EXCEPTION;
+                }
+            }
+        }
+
+        super.handle(loginRequest);
+    }
+
+    private InetAddress inetAddress() {
+        return getAddress().getAddress();
     }
 }

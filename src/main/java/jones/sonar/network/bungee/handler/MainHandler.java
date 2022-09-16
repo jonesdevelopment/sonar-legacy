@@ -14,11 +14,21 @@
  *  limitations under the License.
  */
 
-package jones.sonar.network.bungee.handler.state;
+package jones.sonar.network.bungee.handler;
 
-public enum ConnectionState {
-    HANDSHAKE,
-    PINGING,
-    JOINING,
-    PROCESSING
+import io.netty.channel.ChannelHandlerContext;
+import jones.sonar.blacklist.Blacklist;
+import jones.sonar.data.verification.DataManager;
+import net.md_5.bungee.netty.HandlerBoss;
+
+import java.net.InetSocketAddress;
+
+public final class MainHandler extends HandlerBoss {
+
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+        ctx.close();
+        DataManager.BLOCKED_CONNECTIONS++;
+        Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+    }
 }

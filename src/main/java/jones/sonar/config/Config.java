@@ -56,10 +56,11 @@ public class Config {
 
     @UtilityClass
     public class Values {
-        public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY;
+        public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY,
+                REJOIN_DELAY, MAX_REJOINS_PER_SECOND;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
-                ENABLE_INVALID_NAME_CHECK;
+                ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN;
 
         public String NAME_VALIDATION_REGEX = "^[a-zA-Z0-9_.]*$";
 
@@ -78,6 +79,10 @@ public class Config {
                 MAX_PACKET_CAPACITY = config.getInt("general.max-packet-capacity", 4096);
 
                 // checks
+                ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);
+                ENABLE_FIRST_JOIN = config.getBoolean("checks.reconnect-check.first-join", true);
+                REJOIN_DELAY = config.getInt("checks.reconnect-check.rejoin-delay", 1000);
+                MAX_REJOINS_PER_SECOND = config.getInt("checks.reconnect-check.max-rejoins-per-second", 8);
 
                 ENABLE_INVALID_NAME_CHECK = config.getBoolean("checks.invalid-name.enabled", true);
                 NAME_VALIDATION_REGEX = config.getString("checks.invalid-name.regex", "^[a-zA-Z0-9_.]*$");

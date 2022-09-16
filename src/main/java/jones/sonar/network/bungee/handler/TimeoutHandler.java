@@ -17,23 +17,32 @@
 package jones.sonar.network.bungee.handler;
 
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
-import jones.sonar.blacklist.Blacklist;
-import jones.sonar.data.verification.DataManager;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 
-import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
-public final class BungeeHandler extends ChannelInboundHandlerAdapter implements SonarHandler {
+public final class TimeoutHandler extends IdleStateHandler {
 
-    @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-        ctx.close();
-        DataManager.BLOCKED_CONNECTIONS++;
-        Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+    private boolean closed;
+
+    public TimeoutHandler(final long timeout) {
+        super(timeout, 0L, 0L, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        intercept(ctx, msg);
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        //
+    }
+
+    protected void channelIdle(final ChannelHandlerContext ctx, final IdleStateEvent evt) throws Exception {
+        assert evt.state() == IdleState.READER_IDLE;
+
+        if (!closed) {
+            ctx.close();
+
+            closed = true;
+        }
     }
 }
