@@ -13,25 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.whitelist;
 
-import lombok.experimental.UtilityClass;
+package jones.sonar.network.bungee.handler.state;
 
-import java.net.InetAddress;
-import java.util.HashSet;
-import java.util.Set;
-
-@UtilityClass
-public class Whitelist {
-    public final Set<InetAddress> WHITELISTED = new HashSet<>();
-
-    public void addToWhitelist(final InetAddress inetAddress) {
-        if (isWhitelisted(inetAddress)) return;
-
-        WHITELISTED.add(inetAddress);
-    }
-
-    public boolean isWhitelisted(final InetAddress inetAddress) {
-        return WHITELISTED.contains(inetAddress);
-    }
+public enum ConnectionState {
+    HANDSHAKE,
+    PROCESSING,
+    PROCESSING_CAN_SEND_NAME
 }

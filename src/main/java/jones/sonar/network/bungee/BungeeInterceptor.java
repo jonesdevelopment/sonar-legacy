@@ -23,18 +23,17 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.counter.Counter;
 import jones.sonar.network.bungee.handler.BungeeHandler;
+import jones.sonar.network.bungee.handler.PlayerHandler;
+import jones.sonar.util.logging.Logger;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.event.ClientConnectEvent;
-import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 
 @RequiredArgsConstructor
@@ -64,21 +63,20 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
+        Logger.INFO.log("§eSonar §7» §7Closed connection §f(I) §7-> §f" + ctx.channel().remoteAddress());
     }
 
     @Override
     public void handlerAdded(final ChannelHandlerContext ctx) throws Exception {
         try {
+            Counter.CONNECTIONS_PER_SECOND.increment();
+
             final SocketAddress remoteAddress = ctx.channel().remoteAddress();
 
             if (remoteAddress == null) {
                 ctx.close();
                 return;
             }
-
-            Counter.CONNECTIONS_PER_SECOND.increment();
-
-            final InetAddress inetAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress();
 
             ctx.pipeline().addFirst(HANDLER, new BungeeHandler());
 
@@ -99,7 +97,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             ctx.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, true, protocol));
             ctx.pipeline().addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.LEGACY_KICKER, legacyKicker);
 
-            ctx.pipeline().get(HandlerBoss.class).setHandler(new InitialHandler(BungeeCord.getInstance(), listener));
+            ctx.pipeline().get(HandlerBoss.class).setHandler(new PlayerHandler(ctx, listener));
 
             if (listener.isProxyProtocol()) {
                 ctx.pipeline().addFirst(new HAProxyMessageDecoder());

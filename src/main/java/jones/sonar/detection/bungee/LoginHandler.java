@@ -22,7 +22,7 @@ import jones.sonar.detection.Detections;
 
 public final class LoginHandler {
     public Detection check(final ConnectionData connectionData) {
-        if (!connectionData.player.getName().matches("")) {
+        if (!connectionData.name.matches("")) {
             return Detections.INVALID_NAME;
         }
 

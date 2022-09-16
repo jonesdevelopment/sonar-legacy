@@ -16,6 +16,7 @@
 
 package jones.sonar.data.connection;
 
+import jones.sonar.SonarBungee;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -24,6 +25,11 @@ import java.net.InetAddress;
 @RequiredArgsConstructor
 public final class ConnectionData {
     public final InetAddress inetAddress;
-    public final ProxiedPlayer player;
+    public final String name;
+
     public boolean proxy = false, checked = false;
+
+    public ProxiedPlayer tryToGetPlayer() {
+        return SonarBungee.INSTANCE.proxy.getPlayer(name);
+    }
 }

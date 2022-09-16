@@ -1,0 +1,23 @@
+general:
+
+  # Maximum packet index in bytes
+  # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
+  max-packet-index: 1024
+
+  # Maximum packet size in bytes
+  # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
+  max-packet-bytes: 2048
+
+  # Maximum packet capacity in bytes
+  # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
+  max-packet-capacity: 4096
+
+  # The ClientConnectEvent is thrown whenever someone connects to your server
+  # This could be used by some plugins, so please enable it if it causes issues
+  use-client-connect-event: false
+
+checks:
+
+  # The re-connect check is really powerful and probably defeats most bot attacks
+  # If you don't like this, you can disable it, but it's not recommended to do that
+  enable-reconnect-check: true
