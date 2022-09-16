@@ -17,6 +17,7 @@
 package jones.sonar.counter;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.config.Config;
 import jones.sonar.config.Messages;
 import jones.sonar.data.ServerStatistics;
 import jones.sonar.data.connection.manager.ConnectionDataManager;
@@ -78,7 +79,7 @@ public final class ActionBar {
                         // don't throw any exceptions
                     }
 
-                    Thread.sleep(80);
+                    Thread.sleep(Config.Values.ACTION_BAR_COUNTER_DELAY);
                 } catch (InterruptedException exception) {
                     exception.printStackTrace();
                 }

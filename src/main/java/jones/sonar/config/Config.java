@@ -59,7 +59,8 @@ public class Config {
     @UtilityClass
     public class Values {
         public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY,
-                REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND;
+                REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND,
+                ACTION_BAR_COUNTER_DELAY;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS;
@@ -85,6 +86,7 @@ public class Config {
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
                 SERVER_BRAND = ColorUtil.format(config.getString("general.fake-server-brand", "Protected"));
                 CACHE_MOTDS = config.getBoolean("general.cache-incoming-motd-requests", true);
+                ACTION_BAR_COUNTER_DELAY = Math.max(Math.min(config.getInt("general.action-bar-counter-delay", 80), 1000), 10);
 
                 // checks
                 ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);

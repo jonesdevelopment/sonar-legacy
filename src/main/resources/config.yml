@@ -20,6 +20,9 @@ general:
   # You can change this number depending on your Minecraft servers' popularity
   minimum-joins-per-second: 6
 
+  # Refresh delay of the action bar counter (in milliseconds)
+  action-bar-counter-delay: 80
+
   # Disable this if you don't want Sonar to cache all server list pings
   # This is really powerful against motd/ping spamming attacks
   cache-incoming-motd-requests: true
@@ -58,11 +61,12 @@ checks:
     # Options: ALWAYS, NEVER, DURING_ATTACK
     check-custom-regexes: 'DURING_ATTACK'
 
-    # You can provide your custom regex here.
-    # Only edit this if you know what you're doing.
+    # You can provide your custom name regex here
+    # Only edit this if you know what you're doing
     custom-regexes:
       - 'MCSTORM_IO_+.{1,7}'           # This blocks all McStorm names
       - '.{1,5}StormStresser.{1,5}'    # This blocks all Storm stresser names
       - 'SNBKBOOT_+.{1,7}'             # This blocks all SNBKBoot names
       - 'XDDD_OK_+.{1,8}'              # This blocks some other weird names
+      - '^[0-9]*$'                     # This blocks all names which are only numbers (only use this during attacks!)
       # Feel free to add more regexes or submit one as a GitHub feature request

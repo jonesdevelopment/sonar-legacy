@@ -71,13 +71,14 @@ public final class PlayerHandler extends InitialHandler {
     }
 
     @Override
-    public void handle(final EncryptionRequest encryptionRequest) throws Exception {
+    public void handle(final EncryptionResponse encryptionResponse) throws Exception {
         Counter.ENCRYPTIONS_PER_SECOND.increment();
 
-        System.out.println(encryptionRequest.getPublicKey().length);
-        System.out.println(encryptionRequest.getVerifyToken().length);
-        System.out.println(encryptionRequest.getServerId());
-        super.handle(encryptionRequest);
+        if (currentState != ConnectionState.JOINING) {
+            throw sonar.EXCEPTION;
+        }
+
+        super.handle(encryptionResponse);
     }
 
     @Override
@@ -108,12 +109,12 @@ public final class PlayerHandler extends InitialHandler {
             case 2: {
                 Counter.JOINS_PER_SECOND.increment();
 
-                currentState = ConnectionState.JOINING;
-
                 if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
                     close(new Kick(ComponentSerializer.toString(Messages.Values.DISCONNECT_UNSUPPORTED_VERSION)));
                     return;
                 }
+
+                currentState = ConnectionState.JOINING;
                 break;
             }
 
@@ -195,6 +196,8 @@ public final class PlayerHandler extends InitialHandler {
             disconnect(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
             return;
         }
+
+        currentState = ConnectionState.JOINING;
 
         super.handle(loginRequest);
     }
