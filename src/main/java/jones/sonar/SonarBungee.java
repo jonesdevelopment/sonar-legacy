@@ -15,15 +15,16 @@
  */
 package jones.sonar;
 
-import jones.sonar.command.SonarCommand;
-import jones.sonar.command.manager.CommandManager;
-import jones.sonar.config.Config;
-import jones.sonar.config.Messages;
-import jones.sonar.counter.ActionBar;
-import jones.sonar.network.bungee.BungeeInterceptor;
-import jones.sonar.util.FastException;
-import jones.sonar.util.Reflection;
-import jones.sonar.util.logging.Logger;
+import jones.sonar.bungee.SonarBungeePlugin;
+import jones.sonar.bungee.command.SonarCommand;
+import jones.sonar.bungee.command.manager.CommandManager;
+import jones.sonar.bungee.config.Config;
+import jones.sonar.bungee.config.Messages;
+import jones.sonar.bungee.counter.ActionBar;
+import jones.sonar.bungee.network.BungeeInterceptor;
+import jones.sonar.bungee.util.FastException;
+import jones.sonar.bungee.util.Reflection;
+import jones.sonar.bungee.util.logging.Logger;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 
