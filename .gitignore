@@ -1,0 +1,11 @@
+.idea/
+out/
+target/
+.gradle/
+gradle/
+build/
+gradlew.bat
+gradlew
+META-INF
+*.class
+*.iml

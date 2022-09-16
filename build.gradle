@@ -1,0 +1,63 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.guardsquare:proguard-gradle:7.2.2'
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.1.0'
+    id 'java'
+}
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+repositories {
+    mavenCentral() // Lombok
+    maven {
+        name = 'papermc-waterfall'
+        url = 'https://papermc.io/repo/repository/maven-public/'
+    } // Waterfall
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.24'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    compileOnly 'io.github.waterfallmc:waterfall-api:1.18-R0.1-SNAPSHOT'
+}
+
+def outputJar = "${buildDir}/libs/${rootProject.name}.jar"
+
+task myProguardTask(type: proguard.gradle.ProGuardTask) {
+
+    println("Performing obfuscation...")
+
+    // run proguard
+    configuration 'proguard.conf'
+
+    injars "${outputJar}"
+    outjars "${buildDir}/libs/${rootProject.name}_proguard.jar"
+
+    libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    libraryjars "~/IdeaProjects/waterfall-1.19-504.jar"
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8
+
+shadowJar() {
+   // minimize()
+    archiveFileName = "${project.name}.jar"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}

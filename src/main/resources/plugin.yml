@@ -1,0 +1,5 @@
+name: Sonar
+main: jones.sonar.SonarBungee
+version: '2.0'
+author: 'jonesdev.xyz'
+description: 'Anti bot plugin for BungeeCord with 1.7-1.19 support'
