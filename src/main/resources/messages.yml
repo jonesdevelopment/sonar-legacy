@@ -1,9 +1,15 @@
 prefix: '&e&lSonar &7» &f'
 
+permission: '%prefix%&cYou do not have the permission to execute this command.'
+only_players: '%prefix%&cYou can only execute this command as a player!'
+
 counter:
   action-bar:
     enabled: '%prefix%&7You are &anow &7viewing the counter.'
     disabled: '%prefix%&7You are &cno longer &7viewing the counter.'
+
+    enabled_other: '%prefix%&f%player% &7is &anow &7viewing the counter.'
+    disabled_other: '%prefix%&f%player% &7is &cno longer &7viewing the counter.'
 
     # You can use the following variables:
     #   %ips% - Current ips per second count (formatted)

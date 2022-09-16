@@ -15,6 +15,7 @@
  */
 package jones.sonar;
 
+import jones.sonar.command.manager.CommandManager;
 import jones.sonar.config.Config;
 import jones.sonar.config.Messages;
 import jones.sonar.counter.ActionBar;
@@ -55,6 +56,8 @@ public enum SonarBungee {
     public void onEnable(final SonarBungeePlugin plugin) {
         assert plugin != null : "Error starting Sonar!";
 
+        final long start = System.currentTimeMillis();
+
         /*
          * Start-up message
          */
@@ -93,6 +96,8 @@ public enum SonarBungee {
         Logger.INFO.log(" §7Getting everything ready...");
         Logger.INFO.log(" ");
 
+        CommandManager.initialize();
+
         /*
          * Inject in the netty to intercept packets
          * and use Waterfall functions
@@ -114,7 +119,7 @@ public enum SonarBungee {
 
         new ActionBar(this);
 
-        Logger.INFO.log(" §aSuccessfully started Sonar!");
+        Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");
         Logger.INFO.log(LINE);
     }
