@@ -18,10 +18,10 @@ package jones.sonar.bungee.detection.bungee;
 
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.options.CustomRegexOptions;
-import jones.sonar.bungee.data.connection.ConnectionData;
-import jones.sonar.bungee.data.connection.manager.ConnectionDataManager;
 import jones.sonar.bungee.detection.Detection;
 import jones.sonar.bungee.detection.Detections;
+import jones.sonar.universal.data.connection.ConnectionData;
+import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.util.Sensibility;
 import lombok.experimental.UtilityClass;
 

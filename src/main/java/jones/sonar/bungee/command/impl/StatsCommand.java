@@ -20,10 +20,10 @@ import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
-import jones.sonar.bungee.counter.Counter;
-import jones.sonar.bungee.data.ServerStatistics;
-import jones.sonar.bungee.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.blacklist.Blacklist;
+import jones.sonar.universal.counter.Counter;
+import jones.sonar.universal.data.ServerStatistics;
+import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.whitelist.Whitelist;
 
 public final class StatsCommand extends SubCommand {

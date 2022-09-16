@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.data.connection;
+package jones.sonar.universal.data.connection;
 
 import jones.sonar.SonarBungee;
-import jones.sonar.bungee.counter.CounterMap;
+import jones.sonar.universal.counter.CounterMap;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

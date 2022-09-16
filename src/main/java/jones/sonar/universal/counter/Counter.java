@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.counter;
+package jones.sonar.universal.counter;
 
 public interface Counter {
     CounterMap CONNECTIONS_PER_SECOND       = new CounterMap(1000).build();

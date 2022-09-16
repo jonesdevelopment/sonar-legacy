@@ -18,8 +18,8 @@ package jones.sonar.bungee.network.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import jones.sonar.bungee.data.ServerStatistics;
 import jones.sonar.universal.blacklist.Blacklist;
+import jones.sonar.universal.data.ServerStatistics;
 
 import java.net.InetSocketAddress;
 

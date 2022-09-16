@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.data.connection.manager;
+package jones.sonar.universal.data.connection.manager;
 
-import jones.sonar.bungee.data.connection.ConnectionData;
+import jones.sonar.universal.data.connection.ConnectionData;
 import lombok.experimental.UtilityClass;
 
 import java.net.InetAddress;

@@ -17,7 +17,7 @@
 package jones.sonar.universal.util;
 
 import jones.sonar.bungee.config.Config;
-import jones.sonar.bungee.counter.Counter;
+import jones.sonar.universal.counter.Counter;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

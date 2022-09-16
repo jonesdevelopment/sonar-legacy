@@ -14,11 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.data;
+package jones.sonar.velocity;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
-public class ServerStatistics {
-    public long TOTAL_CONNECTIONS = 0L, BLOCKED_CONNECTIONS = 0L;
+public final class SonarVelocityPlugin {
 }
