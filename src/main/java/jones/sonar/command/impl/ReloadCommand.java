@@ -16,6 +16,7 @@
 
 package jones.sonar.command.impl;
 
+import jones.sonar.SonarBungee;
 import jones.sonar.command.CommandExecution;
 import jones.sonar.command.SubCommand;
 import jones.sonar.config.Config;
@@ -41,6 +42,8 @@ public final class ReloadCommand extends SubCommand {
         lastReload = timeStamp;
 
         execution.sender.sendMessage(Messages.Values.RELOADING);
+
+        SonarBungee.INSTANCE.createDataFolder();
 
         Config.initialize();
         Config.Values.load();

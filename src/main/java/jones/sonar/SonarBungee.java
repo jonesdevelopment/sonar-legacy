@@ -73,12 +73,7 @@ public enum SonarBungee {
          * Load all configurations
          */
 
-        if (!plugin.getDataFolder().exists()) {
-            if (!plugin.getDataFolder().mkdir()) {
-                Logger.INFO.log(" §cCould not create data folder §7(No permission?)");
-                Logger.INFO.log(" ");
-            }
-        }
+        createDataFolder();
 
         Config.initialize();
 
@@ -133,5 +128,14 @@ public enum SonarBungee {
         running = false;
 
         proxy.getScheduler().cancel(plugin);
+    }
+
+    public void createDataFolder() {
+        if (!plugin.getDataFolder().exists()) {
+            if (!plugin.getDataFolder().mkdir()) {
+                Logger.INFO.log(" §cCould not create data folder §7(No permission?)");
+                Logger.INFO.log(" ");
+            }
+        }
     }
 }
