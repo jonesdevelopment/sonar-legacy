@@ -14,27 +14,16 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.util;
+package jones.sonar.universal.util;
 
+import jones.sonar.bungee.config.Config;
+import jones.sonar.bungee.counter.Counter;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
-public class OperatingSystem {
-    public final String OS = System.getProperty("os.name");
-
-    public String getOSName() {
-        if (OS.toLowerCase().contains("unix")) {
-            return "Unix / Linux";
-        }
-        if (OS.toLowerCase().contains("os")) {
-            return "macOS";
-        }
-        if (OS.toLowerCase().contains("wind")) {
-            return "Windows";
-        }
-        if (OS.toLowerCase().contains("linu")) {
-            return "Linux";
-        }
-        return "unknown";
+public class Sensibility {
+    public boolean isUnderAttack() {
+        return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND
+                || Counter.CONNECTIONS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND * 3L;
     }
 }

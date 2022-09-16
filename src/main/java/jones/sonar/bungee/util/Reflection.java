@@ -18,7 +18,7 @@ package jones.sonar.bungee.util;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.universal.util.logging.Logger;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.netty.PipelineUtils;
 import sun.misc.Unsafe;

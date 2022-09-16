@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.util;
+package jones.sonar.universal.util;
 
 public final class FastException extends RuntimeException {
     public FastException() {

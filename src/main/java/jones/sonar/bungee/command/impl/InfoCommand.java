@@ -20,9 +20,9 @@ import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
-import jones.sonar.bungee.util.OperatingSystem;
-import jones.sonar.bungee.util.PerformanceMonitor;
-import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.util.OperatingSystem;
+import jones.sonar.universal.util.PerformanceMonitor;
+import jones.sonar.universal.util.Sensibility;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.lang.management.ManagementFactory;

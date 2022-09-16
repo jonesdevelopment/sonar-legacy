@@ -22,7 +22,7 @@ import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.data.ServerStatistics;
 import jones.sonar.bungee.data.connection.manager.ConnectionDataManager;
 import jones.sonar.bungee.util.ColorUtil;
-import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.util.Sensibility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 

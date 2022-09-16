@@ -13,12 +13,28 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee.util.logging;
 
-public interface ILogger {
-    void log(final String data);
+package jones.sonar.universal.util;
 
-    void logNoPrefix(final String data);
+import lombok.experimental.UtilityClass;
 
-    void log(final String data, final String prefix);
+@UtilityClass
+public class OperatingSystem {
+    public final String OS = System.getProperty("os.name");
+
+    public String getOSName() {
+        if (OS.toLowerCase().contains("unix")) {
+            return "Unix / Linux";
+        }
+        if (OS.toLowerCase().contains("os")) {
+            return "macOS";
+        }
+        if (OS.toLowerCase().contains("wind")) {
+            return "Windows";
+        }
+        if (OS.toLowerCase().contains("linu")) {
+            return "Linux";
+        }
+        return "unknown";
+    }
 }

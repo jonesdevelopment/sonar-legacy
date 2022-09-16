@@ -13,17 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+package jones.sonar.universal.util.logging;
 
-package jones.sonar.bungee.util;
+public interface ILogger {
+    void log(final String data);
 
-import jones.sonar.bungee.config.Config;
-import jones.sonar.bungee.counter.Counter;
-import lombok.experimental.UtilityClass;
+    void logNoPrefix(final String data);
 
-@UtilityClass
-public class Sensibility {
-    public boolean isUnderAttack() {
-        return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND
-                || Counter.CONNECTIONS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND * 3L;
-    }
+    void log(final String data, final String prefix);
 }
