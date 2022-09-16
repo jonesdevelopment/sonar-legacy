@@ -56,6 +56,8 @@ public interface SonarHandler {
                 throw SonarBungee.INSTANCE.EXCEPTION;
             }
 
+            System.out.println("[h] b=" + bytes + "    c=" + capacity + "    wI=" + writerIndex + "    rI=" + readerIndex);
+
             byteBuf.resetReaderIndex();
 
             ctx.fireChannelRead(msg);

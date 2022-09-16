@@ -43,6 +43,7 @@ public final class SonarPacketDecoder extends MinecraftDecoder {
             in.clear();
             throw SonarBungee.INSTANCE.EXCEPTION;
         }
+        System.out.println("[d] wI=" + in.writerIndex() + "     rI=" + in.readerIndex() + "    b=" + in.readableBytes());
 
         super.decode(ctx, in, out);
     }

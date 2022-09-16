@@ -18,11 +18,11 @@ package jones.sonar.detection.bungee;
 
 import jones.sonar.config.Config;
 import jones.sonar.config.options.CustomRegexOptions;
-import jones.sonar.counter.Counter;
 import jones.sonar.data.connection.ConnectionData;
 import jones.sonar.data.connection.manager.ConnectionDataManager;
 import jones.sonar.detection.Detection;
 import jones.sonar.detection.Detections;
+import jones.sonar.util.Sensibility;
 import lombok.experimental.UtilityClass;
 
 import java.util.Objects;
@@ -47,6 +47,21 @@ public final class LoginHandler {
             return Detections.FIRST_JOIN_KICK;
         }
 
+        if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && Sensibility.isUnderAttack())
+                || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
+            if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
+                connectionData.checked = 0;
+
+                if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && Sensibility.isUnderAttack())
+                        || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
+                    ConnectionDataManager.remove(connectionData);
+                    return Detections.BLACKLIST;
+                }
+
+                return Detections.INVALID_NAME;
+            }
+        }
+
         if (connectionData.checked == 1) {
             connectionData.checked = 2;
 
@@ -65,20 +80,6 @@ public final class LoginHandler {
         }
 
         connectionData.lastJoin = timeStamp;
-
-        final boolean duringAttack = Counter.JOINS_PER_SECOND.get() > 5;
-
-        if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && duringAttack)
-                || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
-            if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
-                if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && duringAttack)
-                        || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
-                    return Detections.BLACKLIST;
-                }
-
-                return Detections.INVALID_NAME;
-            }
-        }
 
         return Detections.ALLOW;
     }

@@ -14,25 +14,19 @@
  *  limitations under the License.
  */
 
-package jones.sonar.command.manager;
+package jones.sonar.command.impl;
 
+import jones.sonar.command.CommandExecution;
 import jones.sonar.command.SubCommand;
-import jones.sonar.command.impl.*;
-import lombok.experimental.UtilityClass;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+public final class WhitelistCommand extends SubCommand {
 
-@UtilityClass
-public class CommandManager {
-    public final List<SubCommand> SUB_COMMANDS = new ArrayList<>();
-
-    public void initialize() {
-        addCommands(new InfoCommand(), new StatsCommand(), new ReloadCommand(), new BlacklistCommand(), new WhitelistCommand());
+    public WhitelistCommand() {
+        super("whitelist", "Whitelist management", "sonar.whitelist");
     }
 
-    private void addCommands(final SubCommand... command) {
-        SUB_COMMANDS.addAll(Arrays.asList(command));
+    @Override
+    public void execute(final CommandExecution execution) {
+
     }
 }

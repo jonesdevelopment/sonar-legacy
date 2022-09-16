@@ -27,7 +27,7 @@ counter:
     #   %filter-symbol% - Symbol of the current filter status
     #   %arrow% - A arrow symbol which means that the server is working
     # The correct color is automatically applied to each variable
-    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Joins: &f%joins% &3▪ &7Pings: &f%pings% &3▪ &7Verification: &f%verify% &3▪ &7Blocked: &f%blocked% &3▪ &7Total: &f%total% &f%arrow%'
+    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Joins: &f%joins% &3▪ &7Pings: &f%pings% &3▪ &7Verification: &f%verify% &3▪ &7Blocked: &f%blocked% &3▪ &7Total: &f%total%'
     waiting: '%prefix%&7Joins: &f%joins% &3▪ &7Verification: &f%verify% &3▪ &7Waiting for new attacks to arrive...'
 
     filter-enabled-symbol: '&a✔'
