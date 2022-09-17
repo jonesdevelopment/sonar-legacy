@@ -126,7 +126,7 @@ public class Messages {
                 WHITELIST_ADD_IP = format(config.getString("commands.whitelist.add-ip"));
                 WHITELIST_REMOVE = format(config.getString("commands.whitelist.remove"));
 
-                BLACKLIST_CLEAR = format(config.getString("commands.whitelist.clear"));
+                BLACKLIST_CLEAR = format(config.getString("commands.blacklist.clear"));
                 BLACKLIST_CLEAR_ATTACK = format(config.getString("commands.blacklist.attack-clear"));
                 BLACKLIST_SIZE = format(config.getString("commands.blacklist.size"));
                 BLACKLIST_EMPTY = format(config.getString("commands.blacklist.empty"));
