@@ -127,8 +127,11 @@ public enum SonarBungee {
         }
 
         /*
-         * Process finished
+         * Starting threads
          */
+
+        Logger.INFO.log(" §7Starting worker threads... (4)");
+        Logger.INFO.log(" ");
 
         new QueueThread().start();
 
@@ -137,6 +140,10 @@ public enum SonarBungee {
         new CacheThread().start();
 
         new PeakThread().start();
+
+        /*
+         * Process finished
+         */
 
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");
