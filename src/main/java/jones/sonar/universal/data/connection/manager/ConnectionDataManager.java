@@ -30,7 +30,11 @@ public class ConnectionDataManager {
     public final Map<InetAddress, ConnectionData> DATA = new ConcurrentHashMap<>(100000);
 
     public ConnectionData get(final InetAddress inetAddress) {
-        return DATA.get(inetAddress);
+        if (contains(inetAddress)) {
+            return DATA.get(inetAddress);
+        }
+
+        return null;
     }
 
     public boolean contains(final InetAddress inetAddress) {
