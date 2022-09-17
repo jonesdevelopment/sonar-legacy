@@ -58,16 +58,22 @@ public final class BlacklistCommand extends SubCommand {
 
                     final long blacklisted = Blacklist.size();
 
-                    // clear all blacklisted ip addresses
-                    Blacklist.BLACKLISTED.clear();
+                    if (blacklisted > 0) {
 
-                    // reset checked stage to 2 to prevent exploits
-                    ConnectionDataManager.DATA.values()
-                            .forEach(data -> data.checked = 2);
+                        // clear all blacklisted ip addresses
+                        Blacklist.BLACKLISTED.clear();
 
-                    execution.send(Messages.Values.BLACKLIST_CLEAR
-                            .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted))
-                            .replaceAll("%es%", blacklisted == 1 ? "" : "es"));
+                        // reset checked stage to 2 to prevent exploits
+                        ConnectionDataManager.DATA.values().stream()
+                                .limit(15000)
+                                .forEach(data -> data.checked = 2);
+
+                        execution.send(Messages.Values.BLACKLIST_CLEAR
+                                .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted))
+                                .replaceAll("%es%", blacklisted == 1 ? "" : "es"));
+                    } else {
+                        execution.send(Messages.Values.BLACKLIST_EMPTY);
+                    }
                     return;
                 }
             }
