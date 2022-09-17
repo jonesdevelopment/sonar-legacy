@@ -21,6 +21,7 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBarManager;
 import jones.sonar.bungee.util.ColorUtil;
+import jones.sonar.bungee.util.Sensibility;
 
 public final class PeakThread extends Thread implements Runnable {
 
@@ -30,22 +31,33 @@ public final class PeakThread extends Thread implements Runnable {
 
     private final SonarBungee sonar = SonarBungee.INSTANCE;
 
+    private long lastPeakChange = 0L;
+
     @Override
     public void run() {
         while (sonar.running) {
             try {
                 try {
+                    final long timeStamp = System.currentTimeMillis();
+
+                    if (!Sensibility.isUnderAttack()) {
+                        if (timeStamp - lastPeakChange > 8000L) {
+                            sonar.ipSecPeakCalculator.newPeak = 0L;
+                            sonar.ipSecPeakCalculator.lastPeak = 0L;
+                            sonar.ipSecPeakCalculator.realLastPeak = 0L;
+                        }
+                    }
 
                     // if the peak is greater than the last peak
                     if (sonar.ipSecPeakCalculator.newPeak > sonar.ipSecPeakCalculator.lastPeak
 
                             // we don't want to send messages twice
-                            && !sonar.ipSecPeakCalculator.broadcasted
+                            && !sonar.ipSecPeakCalculator.didBroadcast
 
                             // we want the peak to only show when there's an actual attack
                             && sonar.ipSecPeakCalculator.newPeak > Config.Values.MINIMUM_JOINS_PER_SECOND) {
 
-                        sonar.ipSecPeakCalculator.broadcasted = true;
+                        sonar.ipSecPeakCalculator.didBroadcast = true;
 
                         // generate and format the message that needs to be sent to all players
                         final String ipsPeakMessage = Messages.Values.PEAK_FORMAT_IPS
@@ -56,6 +68,8 @@ public final class PeakThread extends Thread implements Runnable {
 
                         sonar.ipSecPeakCalculator.realLastPeak = sonar.ipSecPeakCalculator.newPeak;
 
+                        lastPeakChange = timeStamp;
+
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(ipsPeakMessage));
                     }
@@ -64,12 +78,12 @@ public final class PeakThread extends Thread implements Runnable {
                     if (sonar.cpsPeakCalculator.newPeak > sonar.cpsPeakCalculator.lastPeak
 
                             // we don't want to send messages twice
-                            && !sonar.cpsPeakCalculator.broadcasted
+                            && !sonar.cpsPeakCalculator.didBroadcast
 
                             // we want the peak to only show when there's an actual attack
                             && sonar.cpsPeakCalculator.newPeak > (Config.Values.MINIMUM_JOINS_PER_SECOND * 2L)) {
 
-                        sonar.cpsPeakCalculator.broadcasted = true;
+                        sonar.cpsPeakCalculator.didBroadcast = true;
 
                         // generate and format the message that needs to be sent to all players
                         final String cpsPeakMessage = Messages.Values.PEAK_FORMAT_CPS
@@ -79,6 +93,8 @@ public final class PeakThread extends Thread implements Runnable {
                                         + sonar.FORMAT.format(sonar.cpsPeakCalculator.newPeak));
 
                         sonar.cpsPeakCalculator.realLastPeak = sonar.cpsPeakCalculator.newPeak;
+
+                        lastPeakChange = timeStamp;
 
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(cpsPeakMessage));
