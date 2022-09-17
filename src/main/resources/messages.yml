@@ -133,6 +133,7 @@ commands:
     remove: '%prefix%%ip% &7is &cno longer &7whitelisted.'
 
   reload:
+    wait: '%prefix%&cPlease wait a bit before reloading Sonar again.'
     reloading: '%prefix%&7Reloading &fSonar&7...'
     reloaded: '%prefix%&aSuccessfully reloaded Sonar. &7(%seconds% s)'
 

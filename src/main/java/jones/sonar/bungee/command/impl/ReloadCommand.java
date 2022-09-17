@@ -19,7 +19,6 @@ package jones.sonar.bungee.command.impl;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
-import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 
 public final class ReloadCommand extends SubCommand {
@@ -35,7 +34,7 @@ public final class ReloadCommand extends SubCommand {
         final long timeStamp = System.currentTimeMillis();
 
         if (timeStamp - lastReload < 1500L) {
-            execution.send(Messages.Values.PREFIX + "§cPlease wait a bit before reloading Sonar again.");
+            execution.send(Messages.Values.RELOAD_WAIT);
             return;
         }
 
@@ -43,15 +42,9 @@ public final class ReloadCommand extends SubCommand {
 
         execution.send(Messages.Values.RELOADING);
 
-        SonarBungee.INSTANCE.createDataFolder();
-
-        Config.initialize();
-        Config.Values.load();
-
-        Messages.initialize();
-        Messages.Values.load();
+        final long timeTaken = SonarBungee.INSTANCE.reload();
 
         execution.send(Messages.Values.RELOADED
-                .replaceAll("%seconds%", String.format("%.2f", (System.currentTimeMillis() - timeStamp) / 1000D)));
+                .replaceAll("%seconds%", String.format("%.3f", timeTaken / 1000D)));
     }
 }

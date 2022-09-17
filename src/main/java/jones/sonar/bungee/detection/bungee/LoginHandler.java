@@ -43,9 +43,13 @@ public final class LoginHandler implements Detections {
             return BLACKLIST;
         }
 
+        final long timeStamp = System.currentTimeMillis();
+
         if (connectionData.checked == 0) {
             connectionData.checked = 1;
             connectionData.verifiedName = connectionData.username;
+
+            connectionData.lastJoin = timeStamp;
             return FIRST_JOIN_KICK;
         }
 
@@ -74,8 +78,6 @@ public final class LoginHandler implements Detections {
                 return BLACKLIST;
             }
         }
-
-        final long timeStamp = System.currentTimeMillis();
 
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
             connectionData.checked = 2;

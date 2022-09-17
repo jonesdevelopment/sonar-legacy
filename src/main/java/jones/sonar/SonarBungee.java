@@ -15,6 +15,7 @@
  */
 package jones.sonar;
 
+import jones.sonar.api.event.SonarReloadEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
 import jones.sonar.bungee.command.SonarCommand;
 import jones.sonar.bungee.command.manager.CommandManager;
@@ -137,7 +138,32 @@ public enum SonarBungee {
 
         running = false;
 
+        // cancel all tasks to prevent any issues
         proxy.getScheduler().cancel(plugin);
+    }
+
+    public long reload() {
+        final long startTimeStamp = System.currentTimeMillis();
+
+        // re-create the data folder if it got deleted somehow
+        SonarBungee.INSTANCE.createDataFolder();
+
+        // initialize and load all config values
+        Config.initialize();
+        Config.Values.load();
+
+        // initialize and load all messages
+        Messages.initialize();
+        Messages.Values.load();
+
+        // call the SonarReloadEvent (API)
+        final long endTimeStamp = System.currentTimeMillis();
+
+        final long timeTaken = endTimeStamp - startTimeStamp;
+
+        callEvent(new SonarReloadEvent(startTimeStamp, endTimeStamp, timeTaken));
+
+        return timeTaken;
     }
 
     public void createDataFolder() {

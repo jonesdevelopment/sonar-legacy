@@ -85,7 +85,7 @@ public class Messages {
                 BLACKLIST_REMOVE, WHITELIST_EMPTY, WHITELIST_INVALID_IP, WHITELIST_ALREADY,
                 WHITELIST_NOT, WHITELIST_ADD_PLAYER, WHITELIST_ADD_IP, WHITELIST_REMOVE,
                 BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
-                WHITELIST_CLEAR, BLACKLIST_CLEAR;
+                WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -108,6 +108,7 @@ public class Messages {
                 HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
                 COMMAND_USAGE = format(config.getString("commands.help.usage", "Usage: %command%"));
 
+                RELOAD_WAIT = format(config.getString("commands.reload.wait", "Wait a bit, please."));
                 RELOADING = format(config.getString("commands.reload.reloading", "Reloading..."));
                 RELOADED = format(config.getString("commands.reload.reloaded", "Reloaded in %time% ms"));
 
