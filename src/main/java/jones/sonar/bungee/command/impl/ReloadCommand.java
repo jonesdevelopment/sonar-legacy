@@ -26,7 +26,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public final class ReloadCommand extends SubCommand {
 
     public ReloadCommand() {
-        super("reload", "Reload all configurations", "sonar.reload");
+        super("reload", "Reload all configurations", "sonar.reload", null);
     }
 
     private long lastReload = 0L;

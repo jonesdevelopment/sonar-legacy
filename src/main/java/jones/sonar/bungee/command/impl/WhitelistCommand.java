@@ -27,11 +27,15 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 
 public final class WhitelistCommand extends SubCommand {
 
     public WhitelistCommand() {
-        super("whitelist", "Whitelist management", "sonar.whitelist");
+        super("whitelist",
+                "Blacklist management",
+                "sonar.whitelist",
+                Arrays.asList("size", "clear", "reset", "forceclear", "forcereset", "add", "remove"));
     }
 
     @Override

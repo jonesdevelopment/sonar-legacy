@@ -31,7 +31,10 @@ import java.lang.management.OperatingSystemMXBean;
 public final class InfoCommand extends SubCommand {
 
     public InfoCommand() {
-        super("info", "Show server information", "sonar.info");
+        super("info",
+                "Show server information",
+                "sonar.info",
+                null);
     }
 
     @Override

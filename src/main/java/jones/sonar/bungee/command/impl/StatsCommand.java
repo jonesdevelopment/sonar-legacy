@@ -29,7 +29,10 @@ import jones.sonar.universal.whitelist.Whitelist;
 public final class StatsCommand extends SubCommand {
 
     public StatsCommand() {
-        super("stats", "Show server statistics", "sonar.stats");
+        super("stats",
+                "Show server statistics",
+                "sonar.stats",
+                null);
     }
 
     @Override

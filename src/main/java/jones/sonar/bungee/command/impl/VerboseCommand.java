@@ -28,7 +28,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public final class VerboseCommand extends SubCommand {
 
     public VerboseCommand() {
-        super("verbose", "Toggle action-bar verbose", "sonar.verbose");
+        super("verbose",
+                "Toggle action-bar verbose",
+                "sonar.verbose",
+                null);
     }
 
     @Override

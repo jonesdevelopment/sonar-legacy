@@ -28,11 +28,15 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 
 public final class BlacklistCommand extends SubCommand {
 
     public BlacklistCommand() {
-        super("blacklist", "Blacklist management", "sonar.blacklist");
+        super("blacklist",
+                "Blacklist management",
+                "sonar.blacklist",
+                Arrays.asList("size", "clear", "reset", "forceclear", "forcereset", "add", "remove"));
     }
 
     @Override

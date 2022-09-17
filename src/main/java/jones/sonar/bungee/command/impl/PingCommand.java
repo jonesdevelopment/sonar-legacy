@@ -25,7 +25,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public final class PingCommand extends SubCommand {
 
     public PingCommand() {
-        super("ping", "Show a players latency", "sonar.use");
+        super("ping", "Show a players latency", "sonar.use", null);
     }
 
     @Override

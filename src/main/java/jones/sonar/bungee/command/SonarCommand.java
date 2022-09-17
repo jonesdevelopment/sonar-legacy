@@ -20,13 +20,22 @@ import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Messages;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.TabExecutor;
 
-public final class SonarCommand extends Command {
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public final class SonarCommand extends Command implements TabExecutor {
 
     public SonarCommand() {
         super("sonar", null, "antibot", "ab", "anti-bot");
     }
+
+    private final Set<String> EMPTY_LIST = new HashSet<>();
 
     @Override
     public void execute(final CommandSender sender, final String[] args) {
@@ -73,5 +82,36 @@ public final class SonarCommand extends Command {
         }
 
         sender.sendMessage(Messages.Values.UNKNOWN_SUB_COMMAND);
+    }
+
+    @Override
+    public Iterable<String> onTabComplete(final CommandSender sender, final String[] args) {
+        if (!sender.hasPermission("sonar.use") || args.length > 5) {
+            return EMPTY_LIST;
+        }
+
+        if (args.length < 2) {
+            return CommandManager.SUB_COMMANDS.stream()
+                    .filter(subCommand -> sender.hasPermission(subCommand.permission))
+                    .map(subCommand -> subCommand.name)
+                    .collect(Collectors.toSet());
+        }
+
+        final Set<String> strings = new HashSet<>();
+
+        CommandManager.SUB_COMMANDS.stream()
+                .filter(subCommand -> args[0].equalsIgnoreCase(subCommand.name))
+                .map(subCommand -> subCommand.commands)
+                .filter(Objects::nonNull)
+                .forEach(strings::addAll);
+
+        if (strings.isEmpty() && sender instanceof ProxiedPlayer) {
+            strings.addAll(((ProxiedPlayer) sender).getServer().getInfo().getPlayers().stream()
+                    .limit(60)
+                    .map(ProxiedPlayer::getName)
+                    .collect(Collectors.toList()));
+        }
+
+        return strings;
     }
 }

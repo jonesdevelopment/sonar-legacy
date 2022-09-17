@@ -26,7 +26,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 public final class NotifyCommand extends SubCommand {
 
     public NotifyCommand() {
-        super("notify", "Toggle chat notifications", "sonar.notify");
+        super("notify",
+                "Toggle chat notifications",
+                "sonar.notify",
+                null);
     }
 
     @Override
