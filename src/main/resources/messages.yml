@@ -72,9 +72,21 @@ disconnect:
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
+  # You can use the following variables:
+  #   %max% - Number of maximum accounts online per ip address
   too-many-accounts-per-ip:
     - ' '
     - '&cYou can only have &7%max% players &cwith your ip address online.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
+  # You can use the following variables:
+  #   %position% - The position in the queue of the player
+  #   %size% - The size of the entire queue
+  currently-in-queue:
+    - ' '
+    - '&7Your are position &f#%position% &7out of &f#%size% &7in the queue.'
+    - '&7Please allow up to a few minutes in order for the server to process your data.'
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 

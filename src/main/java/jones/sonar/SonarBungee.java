@@ -24,6 +24,7 @@ import jones.sonar.bungee.counter.ActionBar;
 import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.universal.queue.QueueThread;
 import jones.sonar.universal.util.FastException;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
@@ -122,6 +123,8 @@ public enum SonarBungee {
          */
 
         new ActionBar(this);
+
+        new QueueThread().start();
 
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");

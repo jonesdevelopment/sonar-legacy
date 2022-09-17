@@ -79,7 +79,7 @@ public class Messages {
                 NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND, RELOADING,
                 RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF,
                 DISCONNECT_UNSUPPORTED_VERSION, DISCONNECT_ALREADY_CONNECTED,
-                DISCONNECT_TOO_MANY_ONLINE;
+                DISCONNECT_TOO_MANY_ONLINE, DISCONNECT_QUEUED;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -123,6 +123,7 @@ public class Messages {
                 DISCONNECT_ALREADY_CONNECTED = format(fromList(config.getStringList("disconnect.already-connected")));
                 DISCONNECT_TOO_MANY_ONLINE = format(fromList(config.getStringList("disconnect.too-many-accounts-per-ip"))
                         .replaceAll("%max%", "" + Config.Values.MAXIMUM_ONLINE_PER_IP));
+                DISCONNECT_QUEUED = format(fromList(config.getStringList("disconnect.currently-in-queue")));
                 return true;
             } catch (final Exception exception) {
                 return false;

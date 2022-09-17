@@ -22,29 +22,30 @@ import jones.sonar.bungee.detection.Detections;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.util.Sensibility;
 import lombok.experimental.UtilityClass;
 
 import java.util.Objects;
 
 @UtilityClass
-public final class LoginHandler {
+public final class LoginHandler implements Detections {
     public Detection check(final ConnectionData connectionData) {
         connectionData.CONNECTIONS_PER_SECOND.increment();
 
         if (connectionData.CONNECTIONS_PER_SECOND.get() > Config.Values.MAX_REJOINS_PER_SECOND) {
             ConnectionDataManager.remove(connectionData);
-            return Detections.BLACKLIST;
+            return BLACKLIST;
         }
 
         if (!connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
-            return Detections.INVALID_NAME;
+            return INVALID_NAME;
         }
 
         if (connectionData.checked == 0) {
             connectionData.checked = 1;
             connectionData.verifiedName = connectionData.username;
-            return Detections.FIRST_JOIN_KICK;
+            return FIRST_JOIN_KICK;
         }
 
         if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && Sensibility.isUnderAttack())
@@ -55,10 +56,10 @@ public final class LoginHandler {
                 if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && Sensibility.isUnderAttack())
                         || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
                     ConnectionDataManager.remove(connectionData);
-                    return Detections.BLACKLIST;
+                    return BLACKLIST;
                 }
 
-                return Detections.INVALID_NAME;
+                return INVALID_NAME;
             }
         }
 
@@ -68,31 +69,37 @@ public final class LoginHandler {
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)) {
                 connectionData.checked = 0;
                 ConnectionDataManager.remove(connectionData);
-                return Detections.BLACKLIST;
+                return BLACKLIST;
             }
         }
 
         final long timeStamp = System.currentTimeMillis();
 
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
-            return Detections.TOO_FAST_RECONNECT;
+            return TOO_FAST_RECONNECT;
         }
 
         connectionData.lastJoin = timeStamp;
 
-        // TODO: Queue
+        if (Sensibility.isUnderAttack()) {
+            PlayerQueue.addToQueue(connectionData.username);
+
+            if (PlayerQueue.getPosition(connectionData.username) > 1) {
+                return PLAYER_IN_QUEUE;
+            }
+        }
 
         final long online = connectionData.getAccountsOnlineWithSameIP();
 
         if (online > Config.Values.MAXIMUM_ONLINE_PER_IP) {
             if (online > Config.Values.MAXIMUM_ONLINE_PER_IP_BLACKLIST) {
                 ConnectionDataManager.remove(connectionData);
-                return Detections.BLACKLIST;
+                return BLACKLIST;
             }
 
-            return Detections.TOO_MANY_ONLINE;
+            return TOO_MANY_ONLINE;
         }
 
-        return Detections.ALLOW;
+        return ALLOW;
     }
 }

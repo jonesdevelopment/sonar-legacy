@@ -29,6 +29,9 @@ public interface Detections {
     Detection TOO_MANY_ONLINE    = new Detection(DetectionResult.DENIED,
             "4");
 
+    Detection PLAYER_IN_QUEUE    = new Detection(DetectionResult.DENIED,
+            "5");
+
     Detection BLACKLIST          = new Detection(DetectionResult.DENIED,
             "");
 

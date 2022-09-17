@@ -33,6 +33,7 @@ import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.queue.PlayerQueue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.api.Callback;
@@ -253,6 +254,13 @@ public final class PlayerHandler extends InitialHandler {
                 case "4": {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
+                    return;
+                }
+
+                case "5": {
+                    disconnect(Messages.Values.DISCONNECT_QUEUED
+                            .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
+                            .replaceAll("%size%", sonar.FORMAT.format(PlayerQueue.QUEUE.size())));
                     return;
                 }
             }
