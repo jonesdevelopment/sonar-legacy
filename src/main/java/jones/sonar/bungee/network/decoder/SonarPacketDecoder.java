@@ -18,7 +18,7 @@ package jones.sonar.bungee.network.decoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import jones.sonar.SonarBungee;
+import jones.sonar.bungee.SonarBungee;
 import net.md_5.bungee.protocol.MinecraftDecoder;
 import net.md_5.bungee.protocol.Protocol;
 

@@ -13,10 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar;
+package jones.sonar.bungee;
 
 import jones.sonar.api.event.SonarReloadEvent;
-import jones.sonar.bungee.SonarBungeePlugin;
 import jones.sonar.bungee.caching.CachePool;
 import jones.sonar.bungee.command.SonarCommand;
 import jones.sonar.bungee.command.manager.CommandManager;

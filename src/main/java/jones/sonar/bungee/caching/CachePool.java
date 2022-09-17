@@ -16,7 +16,7 @@
 
 package jones.sonar.bungee.caching;
 
-import jones.sonar.SonarBungee;
+import jones.sonar.bungee.SonarBungee;
 import jones.sonar.bungee.caching.notifications.NotificationManager;
 
 public final class CachePool extends Thread implements Runnable {

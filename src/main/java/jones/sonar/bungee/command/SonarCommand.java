@@ -16,7 +16,7 @@
 
 package jones.sonar.bungee.command;
 
-import jones.sonar.SonarBungee;
+import jones.sonar.bungee.SonarBungee;
 import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Messages;
 import net.md_5.bungee.api.CommandSender;

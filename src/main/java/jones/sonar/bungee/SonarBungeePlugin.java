@@ -15,7 +15,6 @@
  */
 package jones.sonar.bungee;
 
-import jones.sonar.SonarBungee;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public final class SonarBungeePlugin extends Plugin {

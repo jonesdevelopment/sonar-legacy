@@ -15,7 +15,7 @@
  */
 package jones.sonar.bungee.util.logging;
 
-import jones.sonar.SonarBungee;
+import jones.sonar.bungee.SonarBungee;
 import lombok.RequiredArgsConstructor;
 
 import java.util.logging.Level;

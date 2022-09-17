@@ -14,10 +14,9 @@
  *  limitations under the License.
  */
 
-package jones.sonar;
+package jones.sonar.velocity;
 
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import jones.sonar.velocity.SonarVelocityPlugin;
 
 public enum SonarVelocity {
 

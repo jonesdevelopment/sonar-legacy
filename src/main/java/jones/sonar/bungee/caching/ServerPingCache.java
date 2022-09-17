@@ -16,7 +16,7 @@
 
 package jones.sonar.bungee.caching;
 
-import jones.sonar.SonarBungee;
+import jones.sonar.bungee.SonarBungee;
 import jones.sonar.bungee.config.Config;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ServerPing;

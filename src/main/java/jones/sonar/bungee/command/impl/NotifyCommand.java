@@ -16,7 +16,7 @@
 
 package jones.sonar.bungee.command.impl;
 
-import jones.sonar.SonarBungee;
+import jones.sonar.bungee.SonarBungee;
 import jones.sonar.bungee.caching.notifications.NotificationManager;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
