@@ -21,10 +21,12 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.queue.PlayerQueue;
+import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -79,6 +81,8 @@ public final class ActionBar extends Thread implements Runnable {
                                     .filter(connectionData -> connectionData.checked <= 1)
                                     .count()))
                             .replaceAll("%blocked%", sonar.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS))
+                            .replaceAll("%whitelisted%", sonar.FORMAT.format(Whitelist.size()))
+                            .replaceAll("%blacklisted%", sonar.FORMAT.format(Blacklist.size()))
                             .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + sonar.FORMAT.format(ips))
                             .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
                             .replaceAll("%arrow%", getSpinningSymbol(index++))

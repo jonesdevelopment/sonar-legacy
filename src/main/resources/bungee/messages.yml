@@ -25,6 +25,8 @@ notifications:
     #   %verify% - Number of verifying players (formatted)
     #   %queue% - Number of players in queue during attack (formatted)
     #   %blocked% - Number of blocked connections (formatted)
+    #   %blacklisted% - Number of blacklisted ip addresses (formatted)
+    #   %whitelisted% - Number of whitelisted ip addresses (formatted)
     #   %total% - Number of total connections this session (formatted)
     #   %filter-symbol% - Symbol of the current filter status
     #   %arrow% - A arrow symbol which means that the server is working
