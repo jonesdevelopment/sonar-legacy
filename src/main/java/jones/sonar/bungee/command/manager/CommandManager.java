@@ -34,7 +34,8 @@ public class CommandManager {
                 new ReloadCommand(),
                 new BlacklistCommand(),
                 new WhitelistCommand(),
-                new PingCommand());
+                new PingCommand(),
+                new VerboseCommand());
     }
 
     private void addCommands(final SubCommand... command) {

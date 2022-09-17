@@ -85,7 +85,8 @@ public class Messages {
                 BLACKLIST_REMOVE, WHITELIST_EMPTY, WHITELIST_INVALID_IP, WHITELIST_ALREADY,
                 WHITELIST_NOT, WHITELIST_ADD_PLAYER, WHITELIST_ADD_IP, WHITELIST_REMOVE,
                 BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
-                WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT;
+                WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
+                COUNTER_DISABLED_OTHER;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -143,6 +144,8 @@ public class Messages {
                 // counter
                 COUNTER_ENABLED = format(config.getString("counter.action-bar.enabled"));
                 COUNTER_DISABLED = format(config.getString("counter.action-bar.disabled"));
+                COUNTER_ENABLED_OTHER = format(config.getString("counter.action-bar.enabled-other"));
+                COUNTER_DISABLED_OTHER = format(config.getString("counter.action-bar.disabled-other"));
                 COUNTER_FORMAT = format(config.getString("counter.action-bar.format"));
                 COUNTER_WAITING_FORMAT = format(config.getString("counter.action-bar.waiting"));
                 ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("counter.action-bar.enable-waiting-message");
