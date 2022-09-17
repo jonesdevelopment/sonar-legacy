@@ -31,15 +31,16 @@ import java.util.Objects;
 @UtilityClass
 public final class LoginHandler implements Detections {
     public Detection check(final ConnectionData connectionData) {
+        if (!connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
+            connectionData.checked = 0;
+            return INVALID_NAME;
+        }
+
         connectionData.CONNECTIONS_PER_SECOND.increment();
 
         if (connectionData.CONNECTIONS_PER_SECOND.get() > Config.Values.MAX_REJOINS_PER_SECOND) {
             ConnectionDataManager.remove(connectionData);
             return BLACKLIST;
-        }
-
-        if (!connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
-            return INVALID_NAME;
         }
 
         if (connectionData.checked == 0) {
@@ -102,6 +103,7 @@ public final class LoginHandler implements Detections {
                 return BLACKLIST;
             }
 
+            connectionData.checked = 2;
             return TOO_MANY_ONLINE;
         }
 
