@@ -229,6 +229,10 @@ public final class PlayerHandler extends InitialHandler {
 
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.disconnectMessageKey) {
+                default: {
+                    throw sonar.EXCEPTION;
+                }
+
                 case "1": {
                     disconnect(Messages.Values.DISCONNECT_FIRST_JOIN);
                     return;
@@ -246,8 +250,10 @@ public final class PlayerHandler extends InitialHandler {
                     return;
                 }
 
-                default: {
-                    throw sonar.EXCEPTION;
+                case "4": {
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
+                    disconnect(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
+                    return;
                 }
             }
         }

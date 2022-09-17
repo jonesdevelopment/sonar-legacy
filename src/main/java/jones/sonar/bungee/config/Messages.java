@@ -16,10 +16,10 @@
 package jones.sonar.bungee.config;
 
 import jones.sonar.SonarBungee;
-import jones.sonar.bungee.config.yaml.Configuration;
-import jones.sonar.bungee.config.yaml.ConfigurationProvider;
-import jones.sonar.bungee.config.yaml.YamlConfiguration;
 import jones.sonar.bungee.util.ColorUtil;
+import jones.sonar.universal.config.yaml.Configuration;
+import jones.sonar.universal.config.yaml.ConfigurationProvider;
+import jones.sonar.universal.config.yaml.YamlConfiguration;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -78,7 +78,8 @@ public class Messages {
                 ONLY_PLAYERS, FOOTER_BAR, HEADER_BAR, HELP_COMMAND_LAYOUT,
                 NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND, RELOADING,
                 RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF,
-                DISCONNECT_UNSUPPORTED_VERSION, DISCONNECT_ALREADY_CONNECTED;
+                DISCONNECT_UNSUPPORTED_VERSION, DISCONNECT_ALREADY_CONNECTED,
+                DISCONNECT_TOO_MANY_ONLINE;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -120,6 +121,8 @@ public class Messages {
                 DISCONNECT_INVALID_NAME = format(fromList(config.getStringList("disconnect.invalid-name")));
                 DISCONNECT_UNSUPPORTED_VERSION = format(fromList(config.getStringList("disconnect.unsupported-version")));
                 DISCONNECT_ALREADY_CONNECTED = format(fromList(config.getStringList("disconnect.already-connected")));
+                DISCONNECT_TOO_MANY_ONLINE = format(fromList(config.getStringList("disconnect.too-many-accounts-per-ip"))
+                        .replaceAll("%max%", "" + Config.Values.MAXIMUM_ONLINE_PER_IP));
                 return true;
             } catch (final Exception exception) {
                 return false;

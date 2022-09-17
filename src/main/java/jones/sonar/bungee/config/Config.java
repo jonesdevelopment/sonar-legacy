@@ -16,11 +16,11 @@
 package jones.sonar.bungee.config;
 
 import jones.sonar.SonarBungee;
-import jones.sonar.bungee.config.options.CustomRegexOptions;
-import jones.sonar.bungee.config.yaml.Configuration;
-import jones.sonar.bungee.config.yaml.ConfigurationProvider;
-import jones.sonar.bungee.config.yaml.YamlConfiguration;
 import jones.sonar.bungee.util.ColorUtil;
+import jones.sonar.universal.config.options.CustomRegexOptions;
+import jones.sonar.universal.config.yaml.Configuration;
+import jones.sonar.universal.config.yaml.ConfigurationProvider;
+import jones.sonar.universal.config.yaml.YamlConfiguration;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -60,7 +60,8 @@ public class Config {
     public class Values {
         public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY,
                 REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND,
-                ACTION_BAR_COUNTER_DELAY;
+                ACTION_BAR_COUNTER_DELAY, MAXIMUM_ONLINE_PER_IP,
+                MAXIMUM_ONLINE_PER_IP_BLACKLIST;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS;
@@ -80,19 +81,21 @@ public class Config {
                 // general
 
                 CLIENT_CONNECT_EVENT = config.getBoolean("general.use-client-connect-event", false);
-                MAX_PACKET_INDEX = config.getInt("general.max-packet-index", 1024);
-                MAX_PACKET_BYTES = config.getInt("general.max-packet-bytes", 2048);
-                MAX_PACKET_CAPACITY = config.getInt("general.max-packet-capacity", 4096);
+                MAX_PACKET_INDEX = config.getInt("general.maximum-packet-index", 1024);
+                MAX_PACKET_BYTES = config.getInt("general.maximum-packet-bytes", 2048);
+                MAX_PACKET_CAPACITY = config.getInt("general.maximum-packet-capacity", 4096);
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
                 SERVER_BRAND = ColorUtil.format(config.getString("general.fake-server-brand", "Protected"));
                 CACHE_MOTDS = config.getBoolean("general.cache-incoming-motd-requests", true);
                 ACTION_BAR_COUNTER_DELAY = Math.max(Math.min(config.getInt("general.action-bar-counter-delay", 80), 1000), 10);
+                MAXIMUM_ONLINE_PER_IP = Math.max(config.getInt("general.maximum-online-per-ip", 2), 1);
+                MAXIMUM_ONLINE_PER_IP_BLACKLIST = Math.max(config.getInt("general.maximum-online-per-ip-to-blacklist", 6), MAXIMUM_ONLINE_PER_IP);
 
                 // checks
                 ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);
                 ENABLE_FIRST_JOIN = config.getBoolean("checks.reconnect-check.first-join", true);
                 REJOIN_DELAY = config.getInt("checks.reconnect-check.rejoin-delay", 1000);
-                MAX_REJOINS_PER_SECOND = config.getInt("checks.reconnect-check.max-rejoins-per-second", 8);
+                MAX_REJOINS_PER_SECOND = config.getInt("checks.reconnect-check.maximum-rejoins-per-second", 8);
 
                 ENABLE_INVALID_NAME_CHECK = config.getBoolean("checks.invalid-name.enabled", true);
                 NAME_VALIDATION_REGEX = config.getString("checks.invalid-name.regex", "^[a-zA-Z0-9_.]*$");

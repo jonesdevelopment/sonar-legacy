@@ -26,6 +26,9 @@ public interface Detections {
     Detection TOO_FAST_RECONNECT = new Detection(DetectionResult.DENIED,
             "3");
 
+    Detection TOO_MANY_ONLINE    = new Detection(DetectionResult.DENIED,
+            "4");
+
     Detection BLACKLIST          = new Detection(DetectionResult.DENIED,
             "");
 

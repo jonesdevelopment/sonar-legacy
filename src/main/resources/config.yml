@@ -2,23 +2,30 @@ general:
 
   # Maximum packet index in bytes
   # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
-  max-packet-index: 1024
+  maximum-packet-index: 1024
 
   # Maximum packet size in bytes
   # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
-  max-packet-bytes: 2048
+  maximum-packet-bytes: 2048
 
   # Maximum packet capacity in bytes
   # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
-  max-packet-capacity: 4096
+  maximum-packet-capacity: 4096
 
   # The ClientConnectEvent is thrown whenever someone connects to your server
   # This could be used by some plugins, so please enable it if it causes issues
   use-client-connect-event: false
 
-  # Minimum number of joins per second before toggling anti bot mode
+  # Number of minimum joins per second before toggling anti bot mode
   # You can change this number depending on your Minecraft servers' popularity
   minimum-joins-per-second: 6
+
+  # Number of maximum online accounts per ip address
+  maximum-online-per-ip: 2
+
+  # If this number of accounts is online accounts per ip address,
+  # the ip address will be blacklisted
+  maximum-online-per-ip-to-blacklist: 6
 
   # Refresh delay of the action bar counter (in milliseconds)
   action-bar-counter-delay: 80
@@ -43,7 +50,7 @@ checks:
     rejoin-delay: 2000
 
     # Maximum amount of rejoins per second before being blacklisted
-    max-rejoins-per-second: 8
+    maximum-rejoins-per-second: 8
 
   invalid-name:
     enabled: true

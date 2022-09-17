@@ -72,6 +72,12 @@ disconnect:
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
+  too-many-accounts-per-ip:
+    - ' '
+    - '&cYou can only have &7%max% players &cwith your ip address online.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
 commands:
 
   # This is always the symbol that is used when listing stuff

@@ -17,9 +17,9 @@
 package jones.sonar.bungee.detection.bungee;
 
 import jones.sonar.bungee.config.Config;
-import jones.sonar.bungee.config.options.CustomRegexOptions;
 import jones.sonar.bungee.detection.Detection;
 import jones.sonar.bungee.detection.Detections;
+import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.util.Sensibility;
@@ -75,11 +75,23 @@ public final class LoginHandler {
         final long timeStamp = System.currentTimeMillis();
 
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
-            connectionData.lastJoin = timeStamp;
             return Detections.TOO_FAST_RECONNECT;
         }
 
         connectionData.lastJoin = timeStamp;
+
+        // TODO: Queue
+
+        final long online = connectionData.getAccountsOnlineWithSameIP();
+
+        if (online > Config.Values.MAXIMUM_ONLINE_PER_IP) {
+            if (online > Config.Values.MAXIMUM_ONLINE_PER_IP_BLACKLIST) {
+                ConnectionDataManager.remove(connectionData);
+                return Detections.BLACKLIST;
+            }
+
+            return Detections.TOO_MANY_ONLINE;
+        }
 
         return Detections.ALLOW;
     }

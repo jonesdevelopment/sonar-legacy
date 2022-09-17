@@ -1,4 +1,4 @@
-package jones.sonar.bungee.config.yaml;
+package jones.sonar.universal.config.yaml;
 
 import java.util.*;
 

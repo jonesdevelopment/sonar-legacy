@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.config.options;
+package jones.sonar.universal.config.options;
 
 public enum CustomRegexOptions {
     ALWAYS,

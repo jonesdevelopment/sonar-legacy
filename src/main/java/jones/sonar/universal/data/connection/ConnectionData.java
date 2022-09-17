@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 @RequiredArgsConstructor
 public final class ConnectionData {
@@ -37,5 +38,11 @@ public final class ConnectionData {
 
     public ProxiedPlayer tryToGetPlayer() {
         return SonarBungee.INSTANCE.proxy.getPlayer(username);
+    }
+
+    public long getAccountsOnlineWithSameIP() {
+        return SonarBungee.INSTANCE.proxy.getPlayers().stream()
+                .filter(player -> inetAddress == ((InetSocketAddress) player.getSocketAddress()).getAddress())
+                .count();
     }
 }
