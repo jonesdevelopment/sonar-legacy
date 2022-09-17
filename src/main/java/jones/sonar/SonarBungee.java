@@ -160,8 +160,7 @@ public enum SonarBungee {
             Logger.INFO.log(" ");
         }
 
-        Logger.INFO.log(" §7Getting everything ready...");
-        Logger.INFO.log(" ");
+        Logger.INFO.log(" §7Setting up commands and features...");
 
         proxy.getPluginManager().registerCommand(plugin, new SonarCommand());
 
@@ -175,7 +174,8 @@ public enum SonarBungee {
         JAVA_VERSION = Reflection.getVersion();
 
         if (!Reflection.inject(new BungeeInterceptor(proxy.getProtocolVersion()), JAVA_VERSION)) {
-            Logger.INFO.log(" §cError setting up the connection interceptor! [JVM " + JAVA_VERSION + "]");
+            Logger.INFO.log(" ");
+            Logger.INFO.log(" §cError setting up the connection interceptor! [v " + JAVA_VERSION + "]");
             Logger.INFO.log(" §cMake sure you are using the correct version of the proxy and Java.");
             Logger.INFO.log(" ");
             Logger.INFO.log(LINE);
@@ -209,6 +209,9 @@ public enum SonarBungee {
     public void onDisable(final SonarBungeePlugin plugin) {
         assert plugin != null : "Error stopping Sonar!";
 
+        // we need to set this to false in order for all threads
+        // to stop correctly since we're doing while(running) and
+        // not just while(true)
         running = false;
 
         // cancel all tasks to prevent any issues
