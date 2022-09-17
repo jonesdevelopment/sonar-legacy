@@ -55,10 +55,14 @@ public class Messages {
     }
 
     private String fromList(final List<String> list) {
+        return fromList(list, "\n");
+    }
+
+    private String fromList(final List<String> list, final String lineSeparator) {
         final StringBuilder stringBuilder = new StringBuilder();
 
         for (int i = 0; i < list.size(); i++) {
-            stringBuilder.append(list.get(i)).append(i < list.size() - 1 ? "\n" : "");
+            stringBuilder.append(list.get(i)).append(i < list.size() - 1 ? lineSeparator : "");
         }
 
         return stringBuilder.toString();
@@ -89,11 +93,13 @@ public class Messages {
                 BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
-                NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS;
+                NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS,
+                WEBHOOK_URL, WEBHOOK_FORMAT, WEBHOOK_TITLE;
 
-        public int NOTIFY_DELAY, PEAK_DELAY;
+        public int NOTIFY_DELAY, PEAK_DELAY, WEBHOOK_DELAY, WEBHOOK_COLOR_R,
+                WEBHOOK_COLOR_G, WEBHOOK_COLOR_B;
 
-        public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK;
+        public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK, WEBHOOK_ENABLED;
 
         public boolean load() {
             try {
@@ -153,6 +159,16 @@ public class Messages {
                 NOTIFY_DISABLED = format(config.getString("notifications.chat.disabled"));
                 NOTIFY_ENABLED_OTHER = format(config.getString("notifications.chat.enabled-other"));
                 NOTIFY_DISABLED_OTHER = format(config.getString("notifications.chat.disabled-other"));
+
+                // webhook
+                WEBHOOK_ENABLED = config.getBoolean("notifications.webhook.enabled", false);
+                WEBHOOK_DELAY = config.getInt("notifications.webhook.delay", 240000);
+                WEBHOOK_FORMAT = format(fromList(config.getStringList("notifications.webhook.format"), "\\n"));
+                WEBHOOK_TITLE = format(config.getString("notifications.webhook.title"));
+                WEBHOOK_URL = format(config.getString("notifications.webhook.url", ""));
+                WEBHOOK_COLOR_R = Math.min(Math.max(config.getInt("notifications.webhook.color.r", 255), 0), 255);
+                WEBHOOK_COLOR_G = Math.min(Math.max(config.getInt("notifications.webhook.color.g", 50), 0), 255);
+                WEBHOOK_COLOR_B = Math.min(Math.max(config.getInt("notifications.webhook.color.b", 0), 0), 255);
 
                 // counter
                 COUNTER_ENABLED = format(config.getString("notifications.action-bar.enabled"));

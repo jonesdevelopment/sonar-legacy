@@ -47,10 +47,11 @@ notifications:
 
     format:
       - '%header-bar%'
-      - '&eSonar &7has detected an &cincoming attack &7on your server'
+      - '&eSonar &7has detected an &cincoming attack &7to your server'
       - ' '
       - ' &7%list% &fConnections per second: %cps%'
       - ' &7%list% &fIp addresses per second: %ips%'
+      - ' &7%list% &fCurrent cpu load (avg): %cpu-avg%%'
       - '%footer-bar%'
 
     # The delay between each chat notification in milliseconds
@@ -66,6 +67,33 @@ notifications:
 
     format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7-> &f%new%'
     format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7-> &f%new%'
+
+  webhook:
+
+    # Enable this if you want to use Discord webhook notifications
+    enabled: false
+
+    url: ''
+
+    # The delay between each webhook alert in milliseconds
+    delay: 240000
+
+    title: 'Sonar Anti Bot Alert'
+
+    format:
+      - ':warning: **Sonar has detected an incoming attack to your Minecraft server** :warning:'
+      - ' '
+      - 'Connections per second during the attack: **%cps%**'
+      - 'Ip addresses per second during the attack: **%ips%**'
+      - 'Global CPU load (average/total): **%cpu-avg%%** / **%cpu%%**'
+      - 'Online players (right now): **%online%**'
+
+    # Color of the Webhook sidebar (embed object)
+    # You can use https://rgbacolorpicker.com/ for some ideas
+    color:
+      r: 255
+      g: 255
+      b: 255
 
 disconnect:
   reconnect-check:

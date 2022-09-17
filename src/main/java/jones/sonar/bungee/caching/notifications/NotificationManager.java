@@ -19,10 +19,14 @@ package jones.sonar.bungee.caching.notifications;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.counter.Counter;
+import jones.sonar.universal.util.PerformanceMonitor;
+import jones.sonar.universal.webhook.WebhookSender;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -31,7 +35,7 @@ import java.util.Set;
 public class NotificationManager {
     public final Set<String> SUBSCRIBED = new HashSet<>();
 
-    private long lastNotification = 0L;
+    private long lastNotification = 0L, lastWebhook = 0L;
 
     public void checkForAttack() {
         if (Sensibility.isUnderAttack()) {
@@ -52,18 +56,56 @@ public class NotificationManager {
                 // check if the last notification was sent more than 15 seconds ago
                 // to prevent chat spam
                 if (timeStamp - lastNotification > Messages.Values.NOTIFY_DELAY) {
+                    final String cps = SonarBungee.INSTANCE.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()),
+                            ips = SonarBungee.INSTANCE.FORMAT.format(Counter.IPS_PER_SECOND.get()),
+                            joins = SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()),
+                            pings = SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()),
+                            encryptions = SonarBungee.INSTANCE.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get());
+
                     final String alert = Messages.Values.NOTIFY_FORMAT
-                            .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()))
-                            .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(Counter.IPS_PER_SECOND.get()))
-                            .replaceAll("%joins%", SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()))
-                            .replaceAll("%pings%", SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()))
-                            .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get()));
+                            .replaceAll("%cps%", cps)
+                            .replaceAll("%ips%", ips)
+                            .replaceAll("%joins%", joins)
+                            .replaceAll("%pings%", pings)
+                            .replaceAll("%encryptions%", encryptions)
+                            .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
+                            .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad());
 
                     // broadcast the notification to each player who has notifications enabled
                     SUBSCRIBED.stream()
                             .map(SonarBungee.INSTANCE.proxy::getPlayer)
                             .filter(Objects::nonNull)
                             .forEach(player -> player.sendMessage(alert));
+
+                    // check if the discord webhook is enabled
+                    if (Messages.Values.WEBHOOK_ENABLED && timeStamp - lastWebhook >= Messages.Values.WEBHOOK_DELAY) {
+
+                        // check if the webhook url is valid
+                        if (Messages.Values.WEBHOOK_URL.toLowerCase().startsWith("https://discord.com/api/webhooks/")) {
+
+                            // set the webhook url
+                            WebhookSender.URL = Messages.Values.WEBHOOK_URL;
+
+                            // send the webhook
+                            WebhookSender.sendWebhook(Messages.Values.WEBHOOK_FORMAT
+                                            .replaceAll("%cps%", cps)
+                                            .replaceAll("%ips%", ips)
+                                            .replaceAll("%joins%", joins)
+                                            .replaceAll("%pings%", pings)
+                                            .replaceAll("%online%", SonarBungee.INSTANCE.FORMAT.format(SonarBungee.INSTANCE.proxy.getPlayers().size()))
+                                            .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
+                                            .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad())
+                                            .replaceAll("%encryptions%", encryptions),
+                                    Messages.Values.WEBHOOK_TITLE,
+                                    new Color(Messages.Values.WEBHOOK_COLOR_R,
+                                            Messages.Values.WEBHOOK_COLOR_G,
+                                            Messages.Values.WEBHOOK_COLOR_B));
+
+                            lastWebhook = timeStamp;
+                        } else {
+                            Logger.INFO.log("§cYou provided an invalid Webhook URL. §7(messages.yml)");
+                        }
+                    }
 
                     // reset the lastNotification timer
                     lastNotification = timeStamp;
