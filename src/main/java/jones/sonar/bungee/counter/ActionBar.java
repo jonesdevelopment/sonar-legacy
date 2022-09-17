@@ -23,6 +23,7 @@ import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.util.Sensibility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -73,6 +74,7 @@ public final class ActionBar {
                                 .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
                                 .replaceAll("%arrow%", getSpinningSymbol(index++))
                                 .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
+                                .replaceAll("%queue%", sonar.FORMAT.format(PlayerQueue.QUEUE.size()))
                                 .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
                                 .replaceAll("%joins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
 

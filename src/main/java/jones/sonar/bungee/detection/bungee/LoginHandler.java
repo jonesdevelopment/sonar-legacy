@@ -79,6 +79,7 @@ public final class LoginHandler implements Detections {
 
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
             connectionData.checked = 2;
+            connectionData.failedReconnect++;
             return TOO_FAST_RECONNECT;
         }
 
@@ -87,6 +88,11 @@ public final class LoginHandler implements Detections {
         if (underAttack) {
             if (connectionData.checked == 2) {
                 connectionData.checked = 3;
+                connectionData.underAttackChecks++;
+
+                if (connectionData.failedReconnect > 2 && connectionData.underAttackChecks <= 2) {
+                    connectionData.botLevel++;
+                }
                 return DURING_ATTACK;
             }
 
@@ -95,6 +101,9 @@ public final class LoginHandler implements Detections {
             if (PlayerQueue.getPosition(connectionData.username) > 1) {
                 return PLAYER_IN_QUEUE;
             }
+        } else {
+            connectionData.underAttackChecks = 0;
+            connectionData.failedReconnect = 0;
         }
 
         final long online = connectionData.getAccountsOnlineWithSameIP();
@@ -106,6 +115,7 @@ public final class LoginHandler implements Detections {
             }
 
             connectionData.checked = 2;
+            connectionData.botLevel++;
             return TOO_MANY_ONLINE;
         }
 
