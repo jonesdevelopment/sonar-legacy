@@ -16,12 +16,12 @@
 
 package jones.sonar.bungee.caching;
 
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.caching.notifications.NotificationManager;
 
-public final class CachePool extends Thread implements Runnable {
+public final class CacheThread extends Thread implements Runnable {
 
-    public CachePool() {
+    public CacheThread() {
         super("sonar#cache");
     }
 
@@ -30,8 +30,11 @@ public final class CachePool extends Thread implements Runnable {
         while (SonarBungee.INSTANCE.running) {
             try {
                 try {
+
+                    // reset server ping cache
                     ServerPingCache.needsUpdate = true;
 
+                    // check for any attacks
                     NotificationManager.checkForAttack();
                 } catch (Exception exception) {
                     exception.printStackTrace();

@@ -15,7 +15,7 @@
  */
 package jones.sonar.bungee.config;
 
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.config.yaml.Configuration;

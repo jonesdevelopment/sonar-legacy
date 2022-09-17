@@ -14,19 +14,15 @@
  *  limitations under the License.
  */
 
-package jones.sonar.velocity;
+package jones.sonar.universal.peak.result;
 
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import jones.sonar.universal.counter.CounterMap;
+import lombok.RequiredArgsConstructor;
 
-public enum SonarVelocity {
-
-    INSTANCE;
-
-    private SonarVelocityPlugin plugin;
-
-    public void onInitialize(final SonarVelocityPlugin plugin, final ProxyInitializeEvent event) {
-        assert plugin != null : "Error initializing Sonar!";
-
-        this.plugin = plugin;
-    }
+@RequiredArgsConstructor
+public final class PeakCalculation {
+    public final PeakSubmitResult submitResult;
+    public final CounterMap counter;
+    public final long newPeak;
+    public final long lastPeak;
 }

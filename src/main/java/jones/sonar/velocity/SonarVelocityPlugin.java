@@ -22,6 +22,7 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
+import jones.sonar.SonarVelocity;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;

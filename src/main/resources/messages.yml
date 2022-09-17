@@ -54,7 +54,18 @@ notifications:
       - '%footer-bar%'
 
     # The delay between each chat notification in milliseconds
-    delay: 25000
+    delay: 60000
+
+  peak:
+
+    # Disable this if you don't want to receive peak notifications
+    enabled: true
+
+    # The delay between each peak notification in milliseconds
+    delay: 2000
+
+    format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7-> &f%new%'
+    format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7-> &f%new%'
 
 disconnect:
   reconnect-check:

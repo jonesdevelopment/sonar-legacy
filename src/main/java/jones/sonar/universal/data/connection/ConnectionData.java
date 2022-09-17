@@ -16,7 +16,7 @@
 
 package jones.sonar.universal.data.connection;
 
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.universal.counter.CounterMap;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;

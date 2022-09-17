@@ -19,7 +19,7 @@ package jones.sonar.bungee.network.handler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 
 public interface SonarHandler {

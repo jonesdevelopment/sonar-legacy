@@ -15,7 +15,7 @@
  */
 package jones.sonar.bungee.config;
 
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.config.yaml.Configuration;
 import jones.sonar.universal.config.yaml.ConfigurationProvider;
@@ -89,11 +89,11 @@ public class Messages {
                 BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
-                NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT;
+                NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS;
 
-        public int NOTIFY_DELAY;
+        public int NOTIFY_DELAY, PEAK_DELAY;
 
-        public boolean ENABLE_COUNTER_WAITING_FORMAT;
+        public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK;
 
         public boolean load() {
             try {
@@ -164,6 +164,12 @@ public class Messages {
                 ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("notifications.action-bar.enable-waiting-message");
                 FILTER_SYMBOL_ON = format(config.getString("notifications.action-bar.filter-enabled-symbol"));
                 FILTER_SYMBOL_OFF = format(config.getString("notifications.action-bar.filter-disabled-symbol"));
+
+                // peak
+                ENABLE_PEAK = config.getBoolean("notifications.peak.enabled", true);
+                PEAK_DELAY = Math.max(config.getInt("notifications.peak.delay", 1500), 100);
+                PEAK_FORMAT_CPS = format(config.getString("notifications.peak.format-new-cps"));
+                PEAK_FORMAT_IPS = format(config.getString("notifications.peak.format-new-ips"));
 
                 // disconnect messages
                 DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect"))

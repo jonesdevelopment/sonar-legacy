@@ -19,7 +19,7 @@ package jones.sonar.bungee.network.handler;
 import com.google.gson.Gson;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.caching.ServerDataProvider;
 import jones.sonar.bungee.caching.ServerPingCache;
 import jones.sonar.bungee.config.Config;

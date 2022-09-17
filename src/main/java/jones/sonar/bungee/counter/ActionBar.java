@@ -16,7 +16,7 @@
 
 package jones.sonar.bungee.counter;
 
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.ColorUtil;

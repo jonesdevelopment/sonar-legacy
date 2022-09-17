@@ -13,16 +13,18 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee;
+package jones.sonar;
 
 import jones.sonar.api.event.SonarReloadEvent;
-import jones.sonar.bungee.caching.CachePool;
+import jones.sonar.bungee.SonarBungeePlugin;
+import jones.sonar.bungee.caching.CacheThread;
 import jones.sonar.bungee.command.SonarCommand;
 import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBar;
 import jones.sonar.bungee.network.BungeeInterceptor;
+import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.queue.QueueThread;
@@ -128,7 +130,9 @@ public enum SonarBungee {
 
         new ActionBar(this).start();
 
-        new CachePool().start();
+        new CacheThread().start();
+
+        new PeakThread().start();
 
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");

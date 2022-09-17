@@ -13,25 +13,21 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee;
 
-import jones.sonar.SonarBungee;
-import net.md_5.bungee.api.plugin.Plugin;
+package jones.sonar;
 
-public final class SonarBungeePlugin extends Plugin {
+import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import jones.sonar.velocity.SonarVelocityPlugin;
 
-    @Override
-    public void onLoad() {
-        SonarBungee.INSTANCE.onLoad(this);
-    }
+public enum SonarVelocity {
 
-    @Override
-    public void onEnable() {
-        SonarBungee.INSTANCE.onEnable(this);
-    }
+    INSTANCE;
 
-    @Override
-    public void onDisable() {
-        SonarBungee.INSTANCE.onDisable(this);
+    private SonarVelocityPlugin plugin;
+
+    public void onInitialize(final SonarVelocityPlugin plugin, final ProxyInitializeEvent event) {
+        assert plugin != null : "Error initializing Sonar!";
+
+        this.plugin = plugin;
     }
 }

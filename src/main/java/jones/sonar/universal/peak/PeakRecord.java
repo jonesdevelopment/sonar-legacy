@@ -13,25 +13,12 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee;
 
-import jones.sonar.SonarBungee;
-import net.md_5.bungee.api.plugin.Plugin;
+package jones.sonar.universal.peak;
 
-public final class SonarBungeePlugin extends Plugin {
+import lombok.RequiredArgsConstructor;
 
-    @Override
-    public void onLoad() {
-        SonarBungee.INSTANCE.onLoad(this);
-    }
-
-    @Override
-    public void onEnable() {
-        SonarBungee.INSTANCE.onEnable(this);
-    }
-
-    @Override
-    public void onDisable() {
-        SonarBungee.INSTANCE.onDisable(this);
-    }
+@RequiredArgsConstructor
+public final class PeakRecord {
+    public final long value;
 }

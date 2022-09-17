@@ -22,7 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.network.decoder.SonarPacketDecoder;
 import jones.sonar.bungee.network.handler.BungeeHandler;

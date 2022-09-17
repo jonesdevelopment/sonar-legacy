@@ -16,7 +16,7 @@
 
 package jones.sonar.bungee.caching.notifications;
 
-import jones.sonar.bungee.SonarBungee;
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.counter.Counter;
