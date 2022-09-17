@@ -17,6 +17,9 @@
 package jones.sonar.bungee.peak;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.api.enums.PeakType;
+import jones.sonar.api.event.SonarPeakChangedEvent;
+import jones.sonar.api.event.SonarPeakResetEvent;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBarManager;
@@ -45,11 +48,15 @@ public final class PeakThread extends Thread implements Runnable {
                         // reset CPS peak if it didn't change in a few milliseconds
                         if (timeStamp - sonar.cpsPeakCalculator.lastPeakChange > Messages.Values.PEAK_RESET_DELAY) {
                             sonar.cpsPeakCalculator.reset();
+
+                            sonar.callEvent(new SonarPeakResetEvent(PeakType.CONNECTIONS_PER_SECOND));
                         }
 
                         // reset IPS peak if it didn't change in a few milliseconds
                         if (timeStamp - sonar.ipSecPeakCalculator.lastPeakChange > Messages.Values.PEAK_RESET_DELAY) {
                             sonar.ipSecPeakCalculator.reset();
+
+                            sonar.callEvent(new SonarPeakResetEvent(PeakType.IP_ADDRESSES_PER_SECOND));
                         }
                     }
 
@@ -72,6 +79,8 @@ public final class PeakThread extends Thread implements Runnable {
                                         + sonar.FORMAT.format(sonar.ipSecPeakCalculator.newPeak));
 
                         sonar.ipSecPeakCalculator.realLastPeak = sonar.ipSecPeakCalculator.newPeak;
+
+                        sonar.callEvent(new SonarPeakChangedEvent(PeakType.IP_ADDRESSES_PER_SECOND, sonar.ipSecPeakCalculator.newPeak));
 
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(ipsPeakMessage));
@@ -96,6 +105,8 @@ public final class PeakThread extends Thread implements Runnable {
                                         + sonar.FORMAT.format(sonar.cpsPeakCalculator.newPeak));
 
                         sonar.cpsPeakCalculator.realLastPeak = sonar.cpsPeakCalculator.newPeak;
+
+                        sonar.callEvent(new SonarPeakChangedEvent(PeakType.CONNECTIONS_PER_SECOND, sonar.cpsPeakCalculator.newPeak));
 
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(cpsPeakMessage));

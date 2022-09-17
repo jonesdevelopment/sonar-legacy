@@ -15,14 +15,18 @@
  */
 package jones.sonar.api.event;
 
+import jones.sonar.api.enums.PeakType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.plugin.Event;
 
 @RequiredArgsConstructor
-public final class SonarCPSPeakChangedEvent extends Event {
+public final class SonarPeakChangedEvent extends Event {
 
     @Getter
-    private final long connectionsPerSecondPeak;
+    public final PeakType peakType;
+
+    @Getter
+    private final long newPeak;
 
 }

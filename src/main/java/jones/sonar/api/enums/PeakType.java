@@ -13,16 +13,10 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.api.event;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.plugin.Event;
+package jones.sonar.api.enums;
 
-@RequiredArgsConstructor
-public final class SonarIPSPeakChangedEvent extends Event {
-
-    @Getter
-    private final long ipsPerSecondPeak;
-
+public enum PeakType {
+    IP_ADDRESSES_PER_SECOND,
+    CONNECTIONS_PER_SECOND
 }

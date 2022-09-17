@@ -15,8 +15,15 @@
  */
 package jones.sonar.api.event;
 
+import jones.sonar.api.enums.PeakType;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.plugin.Event;
 
+@RequiredArgsConstructor
 public final class SonarPeakResetEvent extends Event {
+
+    @Getter
+    private final PeakType peakType;
 
 }
