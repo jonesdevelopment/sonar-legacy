@@ -49,12 +49,14 @@ public final class LoginHandler implements Detections {
             return FIRST_JOIN_KICK;
         }
 
-        if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && Sensibility.isUnderAttack())
+        final boolean underAttack = Sensibility.isUnderAttack();
+
+        if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                 || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
             if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
                 connectionData.checked = 0;
 
-                if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && Sensibility.isUnderAttack())
+                if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                         || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
                     ConnectionDataManager.remove(connectionData);
                     return BLACKLIST;
@@ -82,7 +84,7 @@ public final class LoginHandler implements Detections {
 
         connectionData.lastJoin = timeStamp;
 
-        if (Sensibility.isUnderAttack()) {
+        if (underAttack) {
             if (connectionData.checked == 2) {
                 connectionData.checked = 3;
                 return DURING_ATTACK;
