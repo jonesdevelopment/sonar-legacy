@@ -62,16 +62,18 @@ public class Config {
                 REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND,
                 ACTION_BAR_COUNTER_DELAY, MAXIMUM_ONLINE_PER_IP,
                 MAXIMUM_ONLINE_PER_IP_BLACKLIST, MAXIMUM_QUEUE_POLL_RATE,
-                MAX_NAME_LENGTH;
+                MAX_NAME_LENGTH, WEBHOOK_DELAY, WEBHOOK_COLOR_R,
+                WEBHOOK_COLOR_G, WEBHOOK_COLOR_B;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
-                ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH;
+                ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
 
-        public String NAME_VALIDATION_REGEX, SERVER_BRAND;
+        public String NAME_VALIDATION_REGEX, SERVER_BRAND, WEBHOOK_URL,
+                WEBHOOK_FORMAT, WEBHOOK_TITLE;
 
         public List<String> CUSTOM_REGEXES = new ArrayList<>();
 
@@ -94,6 +96,16 @@ public class Config {
                 MAXIMUM_ONLINE_PER_IP_BLACKLIST = Math.max(config.getInt("general.maximum-online-per-ip-to-blacklist", 6), MAXIMUM_ONLINE_PER_IP);
                 MAXIMUM_QUEUE_POLL_RATE = Math.max(config.getInt("general.maximum-queue-poll-rate", 2000), 1);
                 ALLOW_PING_PASS_THROUGH = config.getBoolean("general.allow-forced-host-ping", false);
+
+                // webhook
+                WEBHOOK_ENABLED = config.getBoolean("notifications.webhook.enabled", false);
+                WEBHOOK_DELAY = config.getInt("notifications.webhook.delay", 240000);
+                WEBHOOK_FORMAT = Messages.format(Messages.fromList(config.getStringList("notifications.webhook.format"), "\\n"));
+                WEBHOOK_TITLE = Messages.format(config.getString("notifications.webhook.title"));
+                WEBHOOK_URL = Messages.format(config.getString("notifications.webhook.url", ""));
+                WEBHOOK_COLOR_R = Math.min(Math.max(config.getInt("notifications.webhook.color.r", 255), 0), 255);
+                WEBHOOK_COLOR_G = Math.min(Math.max(config.getInt("notifications.webhook.color.g", 50), 0), 255);
+                WEBHOOK_COLOR_B = Math.min(Math.max(config.getInt("notifications.webhook.color.b", 0), 0), 255);
 
                 // checks
                 ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);

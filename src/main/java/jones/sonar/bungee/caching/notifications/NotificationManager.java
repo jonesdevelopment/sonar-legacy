@@ -17,6 +17,7 @@
 package jones.sonar.bungee.caching.notifications;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.bungee.util.logging.Logger;
@@ -78,16 +79,16 @@ public class NotificationManager {
                             .forEach(player -> player.sendMessage(alert));
 
                     // check if the discord webhook is enabled
-                    if (Messages.Values.WEBHOOK_ENABLED && timeStamp - lastWebhook >= Messages.Values.WEBHOOK_DELAY) {
+                    if (Config.Values.WEBHOOK_ENABLED && timeStamp - lastWebhook >= Config.Values.WEBHOOK_DELAY) {
 
                         // check if the webhook url is valid
-                        if (Messages.Values.WEBHOOK_URL.toLowerCase().startsWith("https://discord.com/api/webhooks/")) {
+                        if (Config.Values.WEBHOOK_URL.toLowerCase().startsWith("https://discord.com/api/webhooks/")) {
 
                             // set the webhook url
-                            WebhookSender.URL = Messages.Values.WEBHOOK_URL;
+                            WebhookSender.URL = Config.Values.WEBHOOK_URL;
 
                             // send the webhook
-                            WebhookSender.sendWebhook(Messages.Values.WEBHOOK_FORMAT
+                            WebhookSender.sendWebhook(Config.Values.WEBHOOK_FORMAT
                                             .replaceAll("%cps%", cps)
                                             .replaceAll("%ips%", ips)
                                             .replaceAll("%joins%", joins)
@@ -96,10 +97,10 @@ public class NotificationManager {
                                             .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
                                             .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad())
                                             .replaceAll("%encryptions%", encryptions),
-                                    Messages.Values.WEBHOOK_TITLE,
-                                    new Color(Messages.Values.WEBHOOK_COLOR_R,
-                                            Messages.Values.WEBHOOK_COLOR_G,
-                                            Messages.Values.WEBHOOK_COLOR_B));
+                                    Config.Values.WEBHOOK_TITLE,
+                                    new Color(Config.Values.WEBHOOK_COLOR_R,
+                                            Config.Values.WEBHOOK_COLOR_G,
+                                            Config.Values.WEBHOOK_COLOR_B));
 
                             lastWebhook = timeStamp;
                         } else {
