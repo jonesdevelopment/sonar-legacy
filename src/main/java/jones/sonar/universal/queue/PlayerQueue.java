@@ -16,44 +16,15 @@
 
 package jones.sonar.universal.queue;
 
-import jones.sonar.bungee.config.Config;
 import lombok.experimental.UtilityClass;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @UtilityClass
 public class PlayerQueue {
 
     public final Map<String, Long> QUEUE = new ConcurrentHashMap<>(50000);
-
-    public final ExecutorService SERVICE = Executors.newSingleThreadExecutor();
-
-    public void clear() {
-        if (QUEUE.isEmpty()) return;
-
-        SERVICE.execute(() -> {
-            final Map<String, Long> cleaned = new HashMap<>(QUEUE);
-
-            final AtomicInteger currentIndex = new AtomicInteger(0);
-
-            cleaned.forEach((name, position) -> {
-                if (currentIndex.get() > Config.Values.MAXIMUM_QUEUE_POLL_RATE) return;
-
-                if (position < 200) {
-                    currentIndex.incrementAndGet();
-
-                    remove(name);
-                }
-            });
-
-            QUEUE.forEach((name, position) -> QUEUE.replace(name, position - currentIndex.get()));
-        });
-    }
 
     public void remove(final String playerName) {
         if (contains(playerName)) {

@@ -16,7 +16,12 @@
 
 package jones.sonar.universal.queue;
 
+import jones.sonar.bungee.config.Config;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public final class QueueThread extends Thread implements Runnable {
 
@@ -29,7 +34,24 @@ public final class QueueThread extends Thread implements Runnable {
         while(true) {
             try {
                 try {
-                    PlayerQueue.clear();
+                    if (PlayerQueue.QUEUE.isEmpty()) return;
+
+                    final Map<String, Long> cleaned = new HashMap<>(PlayerQueue.QUEUE);
+
+                    final AtomicInteger currentIndex = new AtomicInteger(0);
+
+                    cleaned.forEach((name, position) -> {
+                        if (currentIndex.get() > Config.Values.MAXIMUM_QUEUE_POLL_RATE) return;
+
+                        if (position < 200) {
+                            currentIndex.incrementAndGet();
+
+                            PlayerQueue.remove(name);
+                        }
+                    });
+
+                    PlayerQueue.QUEUE.forEach((name, position) -> PlayerQueue.QUEUE.replace(name, position - currentIndex.get()));
+
                     ConnectionDataManager.removeAllUnused();
                 } catch (Exception exception) {
                     exception.printStackTrace();
