@@ -17,6 +17,7 @@
 package jones.sonar.bungee.command.impl;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.api.event.SonarWhitelistClearEvent;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
@@ -60,6 +61,8 @@ public final class WhitelistCommand extends SubCommand {
 
                         // clear all whitelisted ip addresses
                         Whitelist.WHITELISTED.clear();
+
+                        SonarBungee.INSTANCE.callEvent(new SonarWhitelistClearEvent(whitelisted));
 
                         // reset checked stage to 2 to prevent exploits
                         ConnectionDataManager.resetCheckStage(2);

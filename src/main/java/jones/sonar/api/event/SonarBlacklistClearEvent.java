@@ -15,8 +15,14 @@
  */
 package jones.sonar.api.event;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.plugin.Event;
 
+@RequiredArgsConstructor
 public final class SonarBlacklistClearEvent extends Event {
+
+    @Getter
+    private final long blacklistSize;
 
 }

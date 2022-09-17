@@ -13,20 +13,26 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.api.event;
 
-import jones.sonar.api.enums.PeakType;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.plugin.Event;
+package jones.sonar.api;
 
-@RequiredArgsConstructor
-public final class SonarPeakChangedEvent extends Event {
+import jones.sonar.universal.blacklist.Blacklist;
+import lombok.experimental.UtilityClass;
 
-    @Getter
-    private final PeakType peakType;
+import java.net.InetAddress;
+import java.util.Collection;
 
-    @Getter
-    private final long newPeak;
+@UtilityClass
+public class SonarBlacklist {
+    public boolean isBlacklisted(final InetAddress inetAddress) {
+        return Blacklist.isBlacklisted(inetAddress);
+    }
 
+    public long getSize() {
+        return Blacklist.size();
+    }
+
+    public Collection<InetAddress> getBlacklist() {
+        return Blacklist.BLACKLISTED;
+    }
 }

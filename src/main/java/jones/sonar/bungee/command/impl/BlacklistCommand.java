@@ -17,6 +17,7 @@
 package jones.sonar.bungee.command.impl;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.api.event.SonarBlacklistClearEvent;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
@@ -66,6 +67,8 @@ public final class BlacklistCommand extends SubCommand {
 
                         // clear all blacklisted ip addresses
                         Blacklist.BLACKLISTED.clear();
+
+                        SonarBungee.INSTANCE.callEvent(new SonarBlacklistClearEvent(blacklisted));
 
                         // reset checked stage to 2 to prevent exploits
                         ConnectionDataManager.resetCheckStage(2);
