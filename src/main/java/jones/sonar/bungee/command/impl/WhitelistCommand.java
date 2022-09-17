@@ -17,7 +17,7 @@
 package jones.sonar.bungee.command.impl;
 
 import jones.sonar.SonarBungee;
-import jones.sonar.api.event.SonarWhitelistClearEvent;
+import jones.sonar.api.event.bungee.SonarWhitelistClearEvent;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;

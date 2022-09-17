@@ -17,6 +17,8 @@
 package jones.sonar.bungee.caching.notifications;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.api.event.bungee.SonarAttackDetectedEvent;
+import jones.sonar.api.event.bungee.SonarWebhookSentEvent;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
@@ -55,29 +57,32 @@ public class NotificationManager {
             else if (timeStamp - Sensibility.sinceLastAttack > 1000L) {
                 Sensibility.currentlyUnderAttack = true;
 
+                final long ips = Counter.IPS_PER_SECOND.get();
+
                 // check if the last notification was sent more than 15 seconds ago
                 // to prevent chat spam
                 if (timeStamp - lastNotification > Messages.Values.NOTIFY_DELAY
 
                         // we want the peak to only show when there's an actual attack
-                        && Counter.IPS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND) {
+                        && ips > Config.Values.MINIMUM_JOINS_PER_SECOND) {
 
                     // cache all variables
-                    final String cps = SonarBungee.INSTANCE.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()),
-                            ips = SonarBungee.INSTANCE.FORMAT.format(Counter.IPS_PER_SECOND.get()),
-                            joins = SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()),
-                            pings = SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()),
-                            encryptions = SonarBungee.INSTANCE.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get());
+                    final long cps = Counter.IPS_PER_SECOND.get(),
+                            joins = Counter.JOINS_PER_SECOND.get(),
+                            pings = Counter.PINGS_PER_SECOND.get(),
+                            encryptions = Counter.ENCRYPTIONS_PER_SECOND.get();
 
                     // save the alert message dynamically to save performance
                     final String alert = Messages.Values.NOTIFY_FORMAT
-                            .replaceAll("%cps%", cps)
-                            .replaceAll("%ips%", ips)
-                            .replaceAll("%joins%", joins)
-                            .replaceAll("%pings%", pings)
-                            .replaceAll("%encryptions%", encryptions)
+                            .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(cps))
+                            .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(ips))
+                            .replaceAll("%joins%", SonarBungee.INSTANCE.FORMAT.format(joins))
+                            .replaceAll("%pings%", SonarBungee.INSTANCE.FORMAT.format(pings))
+                            .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(encryptions))
                             .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
                             .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad());
+
+                    SonarBungee.INSTANCE.callEvent(new SonarAttackDetectedEvent(cps, ips, joins, pings, encryptions));
 
                     // broadcast the notification to each player who has notifications enabled
                     SUBSCRIBED.stream()
@@ -96,18 +101,20 @@ public class NotificationManager {
 
                             // send the webhook
                             WebhookSender.sendWebhook(Config.Values.WEBHOOK_FORMAT
-                                            .replaceAll("%cps%", cps)
-                                            .replaceAll("%ips%", ips)
-                                            .replaceAll("%joins%", joins)
-                                            .replaceAll("%pings%", pings)
+                                            .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(cps))
+                                            .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(ips))
+                                            .replaceAll("%joins%", SonarBungee.INSTANCE.FORMAT.format(joins))
+                                            .replaceAll("%pings%", SonarBungee.INSTANCE.FORMAT.format(pings))
+                                            .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get()))
                                             .replaceAll("%online%", SonarBungee.INSTANCE.FORMAT.format(SonarBungee.INSTANCE.proxy.getPlayers().size()))
                                             .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
-                                            .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad())
-                                            .replaceAll("%encryptions%", encryptions),
+                                            .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad()),
                                     Config.Values.WEBHOOK_TITLE,
                                     new Color(Config.Values.WEBHOOK_COLOR_R,
                                             Config.Values.WEBHOOK_COLOR_G,
                                             Config.Values.WEBHOOK_COLOR_B));
+
+                            SonarBungee.INSTANCE.callEvent(new SonarWebhookSentEvent(Config.Values.WEBHOOK_URL));
 
                             lastWebhook = timeStamp;
                         } else {

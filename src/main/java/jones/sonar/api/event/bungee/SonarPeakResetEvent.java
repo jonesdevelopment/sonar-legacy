@@ -13,16 +13,17 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.api.event;
+package jones.sonar.api.event.bungee;
 
+import jones.sonar.api.enums.PeakType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.plugin.Event;
 
 @RequiredArgsConstructor
-public final class SonarReloadEvent extends Event {
+public final class SonarPeakResetEvent extends Event {
 
     @Getter
-    private final long startTimeStamp, endTimeStamp, timeTaken;
+    private final PeakType peakType;
 
 }

@@ -18,8 +18,8 @@ package jones.sonar.bungee.peak;
 
 import jones.sonar.SonarBungee;
 import jones.sonar.api.enums.PeakType;
-import jones.sonar.api.event.SonarPeakChangedEvent;
-import jones.sonar.api.event.SonarPeakResetEvent;
+import jones.sonar.api.event.bungee.SonarPeakChangedEvent;
+import jones.sonar.api.event.bungee.SonarPeakResetEvent;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBarManager;

@@ -15,7 +15,7 @@
  */
 package jones.sonar;
 
-import jones.sonar.api.event.SonarReloadEvent;
+import jones.sonar.api.event.bungee.SonarReloadEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
 import jones.sonar.bungee.caching.CacheThread;
 import jones.sonar.bungee.command.SonarCommand;

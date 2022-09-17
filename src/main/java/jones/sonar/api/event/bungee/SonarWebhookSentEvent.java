@@ -13,20 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.api.event;
+package jones.sonar.api.event.bungee;
 
-import jones.sonar.api.enums.PeakType;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.plugin.Event;
 
 @RequiredArgsConstructor
-public final class SonarPeakChangedEvent extends Event {
+public final class SonarWebhookSentEvent extends Event {
 
     @Getter
-    private final PeakType peakType;
-
-    @Getter
-    private final long newPeak;
+    private final String webhookUrl;
 
 }
