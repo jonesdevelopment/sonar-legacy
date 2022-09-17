@@ -116,6 +116,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             }
 
             ctx.pipeline().addFirst(HANDLER, new BungeeHandler());
+            ctx.pipeline().addLast(DECODER, new SonarPacketDecoder());
 
             if (throttler != null
                     && throttler.throttle(ctx.channel().remoteAddress())) {
@@ -128,7 +129,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             initBaseChannel(ctx.channel());
 
             ctx.pipeline().addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
-            ctx.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new SonarPacketDecoder(Protocol.HANDSHAKE, true, protocol));
+            ctx.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, true, protocol));
             ctx.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, true, protocol));
             ctx.pipeline().addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.LEGACY_KICKER, legacyKicker);
 
@@ -161,9 +162,9 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
         channel.config().setAllocator(PooledByteBufAllocator.DEFAULT);
         channel.config().setWriteBufferWaterMark(MARK);
 
-        channel.pipeline().addLast("frame-decoder", new Varint21FrameDecoder());
-        channel.pipeline().addLast("timeout", new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
-        channel.pipeline().addLast("frame-prepender", FRAME_PREPENDER);
-        channel.pipeline().addLast("inbound-boss", new MainHandler());
+        channel.pipeline().addLast(PipelineUtils.FRAME_DECODER, new Varint21FrameDecoder());
+        channel.pipeline().addLast(PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
+        channel.pipeline().addLast(PipelineUtils.FRAME_PREPENDER, FRAME_PREPENDER);
+        channel.pipeline().addLast(PipelineUtils.BOSS_HANDLER, new MainHandler());
     }
 }

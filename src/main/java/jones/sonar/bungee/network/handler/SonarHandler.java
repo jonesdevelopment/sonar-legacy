@@ -17,50 +17,39 @@
 package jones.sonar.bungee.network.handler;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 
 public interface SonarHandler {
-    default void intercept(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        if (msg instanceof ByteBuf) {
-            final ByteBuf byteBuf = (ByteBuf) msg;
-
-            final Channel channel = ctx.channel();
-
-            if (!channel.isActive() && byteBuf.refCnt() > 0) {
-                byteBuf.release(byteBuf.refCnt());
-                return;
-            }
-
-            if (!byteBuf.isReadable()) {
-                ctx.close();
-                throw SonarBungee.INSTANCE.EXCEPTION;
-            }
-
-            byteBuf.markReaderIndex();
-
-            final int bytes = byteBuf.readableBytes(),
-                    capacity = byteBuf.capacity(),
-                    writerIndex = byteBuf.writerIndex(),
-                    readerIndex = byteBuf.readerIndex();
-
-            if (bytes > Config.Values.MAX_PACKET_BYTES
-                    || capacity > Config.Values.MAX_PACKET_CAPACITY
-                    || writerIndex > Config.Values.MAX_PACKET_INDEX
-                    || readerIndex > Config.Values.MAX_PACKET_BYTES
-                    || bytes <= 0) {
-                byteBuf.clear();
-                ctx.close();
-                throw SonarBungee.INSTANCE.EXCEPTION;
-            }
-
-            //System.out.println("[h] b=" + bytes + "    c=" + capacity + "    wI=" + writerIndex + "    rI=" + readerIndex);
-
-            byteBuf.resetReaderIndex();
-
-            ctx.fireChannelRead(msg);
+    default void intercept(final ChannelHandlerContext ctx, final ByteBuf byteBuf) throws Exception {
+        if (!ctx.channel().isActive() && byteBuf.refCnt() > 0) {
+            byteBuf.release(byteBuf.refCnt());
+            return;
         }
+
+        if (!byteBuf.isReadable()) {
+            ctx.close();
+            return;
+        }
+
+        final int readableBytes = byteBuf.readableBytes();
+
+        byteBuf.markReaderIndex();
+
+        if (readableBytes > Config.Values.MAX_PACKET_BYTES
+                || byteBuf.capacity() > Config.Values.MAX_PACKET_CAPACITY
+                || byteBuf.writableBytes() > Config.Values.MAX_PACKET_CAPACITY
+                || byteBuf.writerIndex() > Config.Values.MAX_PACKET_INDEX
+                || byteBuf.readerIndex() > Config.Values.MAX_PACKET_BYTES
+                || readableBytes <= 0) {
+            byteBuf.clear();
+            ctx.close();
+            throw SonarBungee.INSTANCE.EXCEPTION;
+        }
+
+        byteBuf.resetReaderIndex();
+
+        ctx.fireChannelRead(byteBuf);
     }
 }

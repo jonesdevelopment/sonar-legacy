@@ -16,6 +16,7 @@
 
 package jones.sonar.bungee.network.handler;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import jones.sonar.universal.blacklist.Blacklist;
@@ -34,6 +35,10 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter implements
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        intercept(ctx, msg);
+        if (msg instanceof ByteBuf) {
+            intercept(ctx, (ByteBuf) msg);
+        } else {
+            super.channelRead(ctx, msg);
+        }
     }
 }
