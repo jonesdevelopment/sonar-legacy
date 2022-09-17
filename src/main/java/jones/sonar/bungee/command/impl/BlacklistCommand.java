@@ -16,8 +16,13 @@
 
 package jones.sonar.bungee.command.impl;
 
+import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
+import jones.sonar.bungee.config.Messages;
+import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.blacklist.Blacklist;
+import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 
 public final class BlacklistCommand extends SubCommand {
 
@@ -27,8 +32,55 @@ public final class BlacklistCommand extends SubCommand {
 
     @Override
     public void execute(final CommandExecution execution) {
-        if (execution.arguments.length <= 1) {
-            execution.send("&cUsage: &7/ab blacklist <size|clear|remove|add> [ip|username]");
+        if (execution.arguments.length > 1) {
+            switch (execution.arguments[1].toLowerCase()) {
+                case "size": {
+                    final long blacklisted = Blacklist.size();
+
+                    if (blacklisted > 0) {
+                        execution.send(Messages.Values.BLACKLIST_SIZE
+                                .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted))
+                                .replaceAll("%es%", blacklisted == 1 ? "" : "es"));
+                    } else {
+                        execution.send(Messages.Values.BLACKLIST_EMPTY);
+                    }
+                    return;
+                }
+
+                case "forcereset":
+                case "reset":
+                case "forceclear":
+                case "clear": {
+                    if (Sensibility.isUnderAttack() && !execution.arguments[1].toLowerCase().contains("force")) {
+                        execution.send(Messages.Values.BLACKLIST_CLEAR_ATTACK);
+                        return;
+                    }
+
+                    final long blacklisted = Blacklist.size();
+
+                    // clear all blacklisted ip addresses
+                    Blacklist.BLACKLISTED.clear();
+
+                    // reset checked stage to 2 to prevent exploits
+                    ConnectionDataManager.DATA.values()
+                            .forEach(data -> data.checked = 2);
+
+                    execution.send(Messages.Values.BLACKLIST_CLEAR
+                            .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted))
+                            .replaceAll("%es%", blacklisted == 1 ? "" : "es"));
+                    return;
+                }
+            }
+
+            if (execution.arguments[1].equalsIgnoreCase("add")) {
+
+            }
+
+            if (execution.arguments[1].equalsIgnoreCase("remove")) {
+
+            }
+        } else {
+            execution.sendUsage("/ab blacklist <size|clear|remove|add> [ip|username]");
         }
     }
 }

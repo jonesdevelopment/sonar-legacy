@@ -27,7 +27,15 @@ public final class CommandExecution {
     public final String[] arguments;
     public final SubCommand subCommand;
 
+    public void sendUsage(final String syntax) {
+        commandSender.sendMessage(Messages.Values.COMMAND_USAGE.replaceAll("%command%", syntax));
+    }
+
     public void send(final String message) {
+        commandSender.sendMessage(ColorUtil.format(message));
+    }
+
+    public void sendPrefixed(final String message) {
         commandSender.sendMessage(Messages.Values.PREFIX + ColorUtil.format(message));
     }
 }

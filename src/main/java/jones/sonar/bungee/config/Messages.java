@@ -83,7 +83,9 @@ public class Messages {
                 PING_SPECIFY, PING_OTHER, PING, BLACKLIST_EMPTY, BLACKLIST_INVALID_IP,
                 BLACKLIST_NOT, BLACKLIST_ALREADY, BLACKLIST_ADD_PLAYER, BLACKLIST_ADD_IP,
                 BLACKLIST_REMOVE, WHITELIST_EMPTY, WHITELIST_INVALID_IP, WHITELIST_ALREADY,
-                WHITELIST_NOT, WHITELIST_ADD_PLAYER, WHITELIST_ADD_IP, WHITELIST_REMOVE;
+                WHITELIST_NOT, WHITELIST_ADD_PLAYER, WHITELIST_ADD_IP, WHITELIST_REMOVE,
+                BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
+                WHITELIST_CLEAR, BLACKLIST_CLEAR;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -104,12 +106,17 @@ public class Messages {
 
                 // commands
                 HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
+                COMMAND_USAGE = format(config.getString("commands.help.usage", "Usage: %command%"));
+
                 RELOADING = format(config.getString("commands.reload.reloading", "Reloading..."));
                 RELOADED = format(config.getString("commands.reload.reloaded", "Reloaded in %time% ms"));
+
                 PING = format(config.getString("commands.ping.you"));
                 PING_SPECIFY = format(config.getString("commands.ping.specify"));
                 PING_OTHER = format(config.getString("commands.ping.other"));
 
+                WHITELIST_CLEAR = format(config.getString("commands.whitelist.clear"));
+                WHITELIST_SIZE = format(config.getString("commands.whitelist.size"));
                 WHITELIST_EMPTY = format(config.getString("commands.whitelist.empty"));
                 WHITELIST_INVALID_IP = format(config.getString("commands.whitelist.invalid"));
                 WHITELIST_NOT = format(config.getString("commands.whitelist.not"));
@@ -118,6 +125,9 @@ public class Messages {
                 WHITELIST_ADD_IP = format(config.getString("commands.whitelist.add-ip"));
                 WHITELIST_REMOVE = format(config.getString("commands.whitelist.remove"));
 
+                BLACKLIST_CLEAR = format(config.getString("commands.whitelist.clear"));
+                BLACKLIST_CLEAR_ATTACK = format(config.getString("commands.blacklist.attack-clear"));
+                BLACKLIST_SIZE = format(config.getString("commands.blacklist.size"));
                 BLACKLIST_EMPTY = format(config.getString("commands.blacklist.empty"));
                 BLACKLIST_INVALID_IP = format(config.getString("commands.blacklist.invalid"));
                 BLACKLIST_NOT = format(config.getString("commands.blacklist.not"));
