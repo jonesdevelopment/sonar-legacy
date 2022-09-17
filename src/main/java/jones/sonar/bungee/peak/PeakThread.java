@@ -49,10 +49,12 @@ public final class PeakThread extends Thread implements Runnable {
 
                         // generate and format the message that needs to be sent to all players
                         final String ipsPeakMessage = Messages.Values.PEAK_FORMAT_IPS
-                                .replaceAll("%old%", ColorUtil.getColorForCounter(sonar.ipSecPeakCalculator.lastPeak)
-                                        + sonar.FORMAT.format(sonar.ipSecPeakCalculator.lastPeak))
+                                .replaceAll("%old%", ColorUtil.getColorForCounter(sonar.ipSecPeakCalculator.realLastPeak)
+                                        + sonar.FORMAT.format(sonar.ipSecPeakCalculator.realLastPeak))
                                 .replaceAll("%new%", ColorUtil.getColorForCounter(sonar.ipSecPeakCalculator.newPeak)
                                         + sonar.FORMAT.format(sonar.ipSecPeakCalculator.newPeak));
+
+                        sonar.ipSecPeakCalculator.realLastPeak = sonar.ipSecPeakCalculator.newPeak;
 
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(ipsPeakMessage));
@@ -71,10 +73,12 @@ public final class PeakThread extends Thread implements Runnable {
 
                         // generate and format the message that needs to be sent to all players
                         final String cpsPeakMessage = Messages.Values.PEAK_FORMAT_CPS
-                                .replaceAll("%old%", ColorUtil.getColorForCounter(sonar.cpsPeakCalculator.lastPeak)
-                                        + sonar.FORMAT.format(sonar.cpsPeakCalculator.lastPeak))
+                                .replaceAll("%old%", ColorUtil.getColorForCounter(sonar.cpsPeakCalculator.realLastPeak)
+                                        + sonar.FORMAT.format(sonar.cpsPeakCalculator.realLastPeak))
                                 .replaceAll("%new%", ColorUtil.getColorForCounter(sonar.cpsPeakCalculator.newPeak)
                                         + sonar.FORMAT.format(sonar.cpsPeakCalculator.newPeak));
+
+                        sonar.cpsPeakCalculator.realLastPeak = sonar.cpsPeakCalculator.newPeak;
 
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(cpsPeakMessage));

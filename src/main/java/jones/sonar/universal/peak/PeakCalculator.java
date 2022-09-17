@@ -17,7 +17,7 @@
 package jones.sonar.universal.peak;
 
 public final class PeakCalculator {
-    public long lastPeak, newPeak;
+    public long realLastPeak = 0L, lastPeak, newPeak;
     public boolean broadcasted = false;
 
     public void submit(final long current) {
