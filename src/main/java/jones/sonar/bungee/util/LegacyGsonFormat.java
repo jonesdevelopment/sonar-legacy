@@ -19,7 +19,6 @@ package jones.sonar.bungee.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.experimental.UtilityClass;
-import net.md_5.bungee.PlayerInfoSerializer;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.chat.*;
@@ -34,6 +33,6 @@ public class LegacyGsonFormat {
             .registerTypeAdapter(KeybindComponent.class, new KeybindComponentSerializer())
             .registerTypeAdapter(ScoreComponent.class, new ScoreComponentSerializer())
             .registerTypeAdapter(SelectorComponent.class, new SelectorComponentSerializer())
-            .registerTypeAdapter(ServerPing.PlayerInfo.class, new PlayerInfoSerializer())
+            .registerTypeAdapter(ServerPing.PlayerInfo.class, new PlayerInfoToJson(4))
             .registerTypeAdapter(Favicon.class, Favicon.getFaviconTypeAdapter()).create();
 }
