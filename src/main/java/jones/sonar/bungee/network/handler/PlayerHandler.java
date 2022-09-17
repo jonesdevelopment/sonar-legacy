@@ -187,7 +187,7 @@ public final class PlayerHandler extends InitialHandler {
                 }
             };
 
-            sonar.proxy.getPluginManager().callEvent(new ProxyPingEvent(this, result, callback));
+            sonar.callEvent(new ProxyPingEvent(this, result, callback));
         };
 
         if (forced != null && listener.isPingPassthrough()) {

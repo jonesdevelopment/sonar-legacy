@@ -141,7 +141,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             }
 
             if (Config.Values.CLIENT_CONNECT_EVENT) {
-                if (SonarBungee.INSTANCE.proxy.getPluginManager().callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
+                if (SonarBungee.INSTANCE.callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
                     ctx.close();
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                 }
