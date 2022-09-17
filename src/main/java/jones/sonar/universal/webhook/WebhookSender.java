@@ -16,6 +16,7 @@
 
 package jones.sonar.universal.webhook;
 
+import jones.sonar.universal.webhook.embed.EmbedObject;
 import lombok.experimental.UtilityClass;
 
 import java.awt.*;
@@ -34,7 +35,7 @@ public class WebhookSender {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
         final LocalDateTime localDateTime = LocalDateTime.now();
 
-        webhook.embeds.add(new WebhookIntegration.EmbedObject()
+        webhook.embeds.add(new EmbedObject()
                 .setDescription(content)
                 .setTitle(title)
                 .setColor(color)

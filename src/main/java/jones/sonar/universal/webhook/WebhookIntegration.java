@@ -16,6 +16,9 @@
 
 package jones.sonar.universal.webhook;
 
+import jones.sonar.universal.webhook.embed.EmbedObject;
+import jones.sonar.universal.webhook.embed.object.Image;
+import jones.sonar.universal.webhook.embed.object.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -39,9 +42,7 @@ public final class WebhookIntegration {
     protected String content, username, avatarUrl;
 
     public void execute() throws IOException {
-        if (content == null && embeds.isEmpty()) {
-            return;
-        }
+        if (content == null && embeds.isEmpty()) return;
 
         final JSONObject json = new JSONObject();
 
@@ -69,51 +70,51 @@ public final class WebhookIntegration {
                     jsonEmbed.put("color", rgb);
                 }
 
-                final EmbedObject.Footer footer = embed.getFooter();
-                final EmbedObject.Image image = embed.getImage();
-                final EmbedObject.Thumbnail thumbnail = embed.getThumbnail();
-                final EmbedObject.Author author = embed.getAuthor();
-                final List<EmbedObject.Field> fields = embed.getFields();
+                final Footer footer = embed.getFooter();
+                final Image image = embed.getImage();
+                final Thumbnail thumbnail = embed.getThumbnail();
+                final Author author = embed.getAuthor();
+                final List<Field> fields = embed.getFields();
 
                 if (footer != null) {
                     final JSONObject jsonFooter = new JSONObject();
 
-                    jsonFooter.put("text", footer.getText());
-                    jsonFooter.put("icon_url", footer.getIconUrl());
+                    jsonFooter.put("text", footer.text);
+                    jsonFooter.put("icon_url", footer.iconUrl);
                     jsonEmbed.put("footer", jsonFooter);
                 }
 
                 if (image != null) {
                     final JSONObject jsonImage = new JSONObject();
 
-                    jsonImage.put("url", image.getUrl());
+                    jsonImage.put("url", image.url);
                     jsonEmbed.put("image", jsonImage);
                 }
 
                 if (thumbnail != null) {
                     final JSONObject jsonThumbnail = new JSONObject();
 
-                    jsonThumbnail.put("url", thumbnail.getUrl());
+                    jsonThumbnail.put("url", thumbnail.url);
                     jsonEmbed.put("thumbnail", jsonThumbnail);
                 }
 
                 if (author != null) {
                     final JSONObject jsonAuthor = new JSONObject();
 
-                    jsonAuthor.put("name", author.getName());
-                    jsonAuthor.put("url", author.getUrl());
-                    jsonAuthor.put("icon_url", author.getIconUrl());
+                    jsonAuthor.put("name", author.name);
+                    jsonAuthor.put("url", author.url);
+                    jsonAuthor.put("icon_url", author.iconUrl);
                     jsonEmbed.put("author", jsonAuthor);
                 }
 
                 final List<JSONObject> jsonFields = new ArrayList<>();
 
-                for (final EmbedObject.Field field : fields) {
+                for (final Field field : fields) {
                     final JSONObject jsonField = new JSONObject();
 
-                    jsonField.put("name", field.getName());
-                    jsonField.put("value", field.getValue());
-                    jsonField.put("inline", field.isInline());
+                    jsonField.put("name", field.name);
+                    jsonField.put("value", field.value);
+                    jsonField.put("inline", field.inline);
 
                     jsonFields.add(jsonField);
                 }
@@ -125,14 +126,17 @@ public final class WebhookIntegration {
             json.put("embeds", embedObjects.toArray());
         }
 
-        final URL url = new URL(this.webhookUrl);
-        HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+        final URL url = new URL(webhookUrl);
+
+        final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+
         connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_");
+        connection.addRequestProperty("User-Agent", "Java_Sonar_jonesdev_xyz");
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
 
         final OutputStream stream = connection.getOutputStream();
+
         stream.write(json.toString().getBytes());
         stream.flush();
         stream.close();
@@ -141,115 +145,6 @@ public final class WebhookIntegration {
         connection.disconnect();
     }
 
-    @Getter
-    public static class EmbedObject {
-
-        final List<Field> fields = new ArrayList<>();
-
-        String title, description, url;
-
-        Color color;
-
-        Footer footer;
-
-        Thumbnail thumbnail;
-
-        Image image;
-
-        Author author;
-
-        public EmbedObject setTitle(String title) {
-            this.title = title;
-            return this;
-        }
-
-        public EmbedObject setDescription(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public EmbedObject setUrl(String url) {
-            this.url = url;
-            return this;
-        }
-
-        public EmbedObject setColor(Color color) {
-            this.color = color;
-            return this;
-        }
-
-        public EmbedObject setFooter(String text, String icon) {
-            this.footer = new Footer(text, icon);
-            return this;
-        }
-
-        public EmbedObject setThumbnail(String url) {
-            this.thumbnail = new Thumbnail(url);
-            return this;
-        }
-
-        public EmbedObject setImage(String url) {
-            this.image = new Image(url);
-            return this;
-        }
-
-        public EmbedObject setAuthor(String name, String url, String icon) {
-            this.author = new Author(name, url, icon);
-            return this;
-        }
-
-        @Getter
-        class Footer {
-            String text, iconUrl;
-
-            Footer(String text, String iconUrl) {
-                this.text = text;
-                this.iconUrl = iconUrl;
-            }
-        }
-
-        @Getter
-        class Thumbnail {
-            String url;
-
-            Thumbnail(String url) {
-                this.url = url;
-            }
-        }
-
-        @Getter
-        class Image {
-            String url;
-
-            Image(String url) {
-                this.url = url;
-            }
-        }
-
-        @Getter
-        class Author {
-            String name, url, iconUrl;
-
-            Author(String name, String url, String iconUrl) {
-                this.name = name;
-                this.url = url;
-                this.iconUrl = iconUrl;
-            }
-        }
-
-        @Getter
-        class Field {
-            String name, value;
-
-            boolean inline;
-
-            Field(String name, String value, boolean inline) {
-                this.name = name;
-                this.value = value;
-                this.inline = inline;
-            }
-        }
-    }
 
     class JSONObject {
 
