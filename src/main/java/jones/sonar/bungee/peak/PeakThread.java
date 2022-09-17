@@ -17,6 +17,7 @@
 package jones.sonar.bungee.peak;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBarManager;
 import jones.sonar.bungee.util.ColorUtil;
@@ -39,7 +40,10 @@ public final class PeakThread extends Thread implements Runnable {
                     if (sonar.ipSecPeakCalculator.newPeak > sonar.ipSecPeakCalculator.lastPeak
 
                             // we don't want to send messages twice
-                            && !sonar.ipSecPeakCalculator.broadcasted) {
+                            && !sonar.ipSecPeakCalculator.broadcasted
+
+                            // we want the peak to only show when there's an actual attack
+                            && sonar.ipSecPeakCalculator.newPeak > Config.Values.MINIMUM_JOINS_PER_SECOND) {
 
                         sonar.ipSecPeakCalculator.broadcasted = true;
 
@@ -58,7 +62,10 @@ public final class PeakThread extends Thread implements Runnable {
                     if (sonar.cpsPeakCalculator.newPeak > sonar.cpsPeakCalculator.lastPeak
 
                             // we don't want to send messages twice
-                            && !sonar.cpsPeakCalculator.broadcasted) {
+                            && !sonar.cpsPeakCalculator.broadcasted
+
+                            // we want the peak to only show when there's an actual attack
+                            && sonar.cpsPeakCalculator.newPeak > (Config.Values.MINIMUM_JOINS_PER_SECOND * 2L)) {
 
                         sonar.cpsPeakCalculator.broadcasted = true;
 
