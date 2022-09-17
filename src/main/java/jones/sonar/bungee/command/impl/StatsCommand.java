@@ -34,20 +34,20 @@ public final class StatsCommand extends SubCommand {
 
     @Override
     public void execute(final CommandExecution execution) {
-        execution.sender.sendMessage(Messages.Values.HEADER_BAR);
+        execution.send(Messages.Values.HEADER_BAR);
 
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fConnections per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fIp addresses per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.IPS_PER_SECOND.get()));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fMoTDs/Pings per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fJoins/Logins per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fVerifying players (right now): " + SonarBungee.INSTANCE.FORMAT.format(ConnectionDataManager.DATA.values().stream()
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fConnections per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fIp addresses per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.IPS_PER_SECOND.get()));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fMoTDs/Pings per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fJoins/Logins per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fVerifying players (right now): " + SonarBungee.INSTANCE.FORMAT.format(ConnectionDataManager.DATA.values().stream()
                 .filter(connectionData -> connectionData.checked <= 1)
                 .count()));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fTotal connections (session): " + SonarBungee.INSTANCE.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fTotal aborted connections (session): " + SonarBungee.INSTANCE.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fBlacklisted ip addresses (session): " + SonarBungee.INSTANCE.FORMAT.format(Blacklist.size()));
-        execution.sender.sendMessage("§7 " + Messages.Values.LIST_SYMBOL + " §fWhitelisted ip addresses (session): " + SonarBungee.INSTANCE.FORMAT.format(Whitelist.size()));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fTotal connections (session): " + SonarBungee.INSTANCE.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fTotal aborted connections (session): " + SonarBungee.INSTANCE.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fBlacklisted ip addresses (session): " + SonarBungee.INSTANCE.FORMAT.format(Blacklist.size()));
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fWhitelisted ip addresses (session): " + SonarBungee.INSTANCE.FORMAT.format(Whitelist.size()));
 
-        execution.sender.sendMessage(Messages.Values.FOOTER_BAR);
+        execution.send(Messages.Values.FOOTER_BAR);
     }
 }

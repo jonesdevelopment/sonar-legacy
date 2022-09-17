@@ -18,10 +18,19 @@ package jones.sonar.bungee.command;
 
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
 
 @RequiredArgsConstructor
 public final class CommandExecution {
     public final CommandSender sender;
     public final String[] arguments;
     public final SubCommand subCommand;
+
+    public void send(final String message) {
+        sender.sendMessage(message);
+    }
+
+    public void send(final TextComponent textComponent) {
+        sender.sendMessage(textComponent);
+    }
 }

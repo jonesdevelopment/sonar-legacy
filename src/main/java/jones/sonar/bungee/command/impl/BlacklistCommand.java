@@ -29,7 +29,7 @@ public final class BlacklistCommand extends SubCommand {
 
     @Override
     public void execute(final CommandExecution execution) {
-        execution.sender.sendMessage("§7Blacklist: §f" + Blacklist.size());
-        execution.sender.sendMessage("§7Whitelist: §f" + Whitelist.size());
+        execution.send("§7Blacklist: §f" + Blacklist.size());
+        execution.send("§7Whitelist: §f" + Whitelist.size());
     }
 }
