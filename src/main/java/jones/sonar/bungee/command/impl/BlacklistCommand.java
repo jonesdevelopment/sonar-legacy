@@ -23,6 +23,10 @@ import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 
 public final class BlacklistCommand extends SubCommand {
 
@@ -79,14 +83,78 @@ public final class BlacklistCommand extends SubCommand {
             }
 
             if (execution.arguments[1].equalsIgnoreCase("add")) {
+                try {
+                    if (!execution.arguments[2].matches("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])([.,])){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")) {
+                        try {
+                            final ProxiedPlayer target = SonarBungee.INSTANCE.proxy.getPlayer(execution.arguments[2]);
 
+                            final InetAddress inetAddress = ((InetSocketAddress) target.getSocketAddress()).getAddress();
+
+                            if (Blacklist.isBlacklisted(inetAddress)) {
+                                execution.send(Messages.Values.BLACKLIST_ALREADY);
+                            } else {
+                                Blacklist.addToBlacklist(inetAddress);
+
+                                execution.send(Messages.Values.BLACKLIST_ADD_PLAYER
+                                        .replaceAll("%player%", target.getName())
+                                        .replaceAll("%ip%", inetAddress.toString().replaceAll("/", "")));
+                            }
+                        } catch (Exception exception) {
+                            execution.send(Messages.Values.BLACKLIST_INVALID_IP);
+                        }
+                        return;
+                    }
+
+                    final InetAddress inetAddress = InetAddress.getByName(execution.arguments[2]);
+
+                    if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress()) {
+                        execution.send(Messages.Values.BLACKLIST_INVALID_IP);
+                        return;
+                    }
+
+                    if (Blacklist.isBlacklisted(inetAddress)) {
+                        execution.send(Messages.Values.BLACKLIST_ALREADY);
+                    } else {
+                        Blacklist.addToBlacklist(inetAddress);
+
+                        execution.send(Messages.Values.BLACKLIST_ADD_IP
+                                .replaceAll("%ip%", inetAddress.toString().replaceAll("/", "")));
+                    }
+                } catch (Exception exception) {
+                    execution.sendUsage("/ab blacklist add <ip|username>");
+                }
+                return;
             }
 
-            if (execution.arguments[1].equalsIgnoreCase("remove")) {
+            else if (execution.arguments[1].equalsIgnoreCase("remove")) {
+                try {
+                    if (!execution.arguments[2].matches("^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])([.,])){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")) {
+                        execution.send(Messages.Values.BLACKLIST_INVALID_IP);
+                        return;
+                    }
 
+                    final InetAddress inetAddress = InetAddress.getByName(execution.arguments[2]);
+
+                    if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress()) {
+                        execution.send(Messages.Values.BLACKLIST_INVALID_IP);
+                        return;
+                    }
+
+                    if (Blacklist.isBlacklisted(inetAddress)) {
+                        Blacklist.removeFromBlacklist(inetAddress);
+
+                        execution.send(Messages.Values.BLACKLIST_REMOVE
+                                .replaceAll("%ip%", inetAddress.toString().replaceAll("/", "")));
+                    } else {
+                        execution.send(Messages.Values.BLACKLIST_NOT);
+                    }
+                } catch (Exception exception) {
+                    execution.sendUsage("/ab blacklist remove <ip>");
+                }
+                return;
             }
-        } else {
-            execution.sendUsage("/ab blacklist <size|clear|remove|add> [ip|username]");
         }
+
+        execution.sendUsage("/ab blacklist <size|clear|remove|add> [ip|username]");
     }
 }

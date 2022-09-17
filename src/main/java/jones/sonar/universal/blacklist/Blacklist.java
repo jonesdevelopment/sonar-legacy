@@ -29,6 +29,12 @@ public class Blacklist {
         return BLACKLISTED.size();
     }
 
+    public void removeFromBlacklist(final InetAddress inetAddress) {
+        if (!isBlacklisted(inetAddress)) return;
+
+        BLACKLISTED.remove(inetAddress);
+    }
+
     public void addToBlacklist(final InetAddress inetAddress) {
         if (isBlacklisted(inetAddress)) return;
 
