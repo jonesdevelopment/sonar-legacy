@@ -29,6 +29,12 @@ public class Whitelist {
         return WHITELISTED.size();
     }
 
+    public void removeFromWhitelist(final InetAddress inetAddress) {
+        if (!isWhitelisted(inetAddress)) return;
+
+        WHITELISTED.remove(inetAddress);
+    }
+
     public void addToWhitelist(final InetAddress inetAddress) {
         if (isWhitelisted(inetAddress)) return;
 

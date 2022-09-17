@@ -68,9 +68,7 @@ public final class BlacklistCommand extends SubCommand {
                         Blacklist.BLACKLISTED.clear();
 
                         // reset checked stage to 2 to prevent exploits
-                        ConnectionDataManager.DATA.values().stream()
-                                .limit(15000)
-                                .forEach(data -> data.checked = 2);
+                        ConnectionDataManager.resetCheckStage(2);
 
                         execution.send(Messages.Values.BLACKLIST_CLEAR
                                 .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted))

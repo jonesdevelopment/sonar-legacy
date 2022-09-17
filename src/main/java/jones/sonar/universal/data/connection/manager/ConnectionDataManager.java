@@ -37,6 +37,12 @@ public class ConnectionDataManager {
         return DATA.containsKey(inetAddress);
     }
 
+    public void resetCheckStage(final int newStage) {
+        DATA.values().stream()
+            .limit(15000)
+            .forEach(data -> data.checked = newStage);
+    }
+
     public void removeAllUnused() {
         DATA.keySet().stream()
                 .filter(Blacklist::isBlacklisted)
