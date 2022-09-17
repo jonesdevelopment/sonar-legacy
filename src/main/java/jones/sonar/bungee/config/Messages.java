@@ -94,7 +94,7 @@ public class Messages {
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
                 NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS,
-                RELOAD_CONFIRMATION_ATTACK;
+                RELOAD_CONFIRMATION_ATTACK, DISCONNECT_BOT_BEHAVIOUR;
 
         public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY;
 
@@ -190,6 +190,7 @@ public class Messages {
                         .replaceAll("%max%", "" + Config.Values.MAXIMUM_ONLINE_PER_IP));
                 DISCONNECT_QUEUED = format(fromList(config.getStringList("disconnect.currently-in-queue")));
                 DISCONNECT_ATTACK = format(fromList(config.getStringList("disconnect.verification-during-attack")));
+                DISCONNECT_BOT_BEHAVIOUR = format(fromList(config.getStringList("disconnect.suspicious-behaviour")));
                 return true;
             } catch (final Exception exception) {
                 return false;

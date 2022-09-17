@@ -42,6 +42,7 @@ public final class LoginHandler implements Detections {
             }
 
             connectionData.checked = 0;
+            connectionData.botLevel++;
 
             return INVALID_NAME;
         }
@@ -51,6 +52,10 @@ public final class LoginHandler implements Detections {
         if (connectionData.CONNECTIONS_PER_SECOND.get() > Config.Values.MAX_REJOINS_PER_SECOND) {
             ConnectionDataManager.remove(connectionData);
             return BLACKLIST;
+        }
+
+        else if (connectionData.CONNECTIONS_PER_SECOND.get() > 4) {
+            connectionData.botLevel++;
         }
 
         final long timeStamp = System.currentTimeMillis();
@@ -73,6 +78,7 @@ public final class LoginHandler implements Detections {
                 }
 
                 connectionData.checked = 0;
+                connectionData.botLevel++;
 
                 return INVALID_NAME;
             }
@@ -91,6 +97,8 @@ public final class LoginHandler implements Detections {
             connectionData.checked = 2;
             connectionData.failedReconnect++;
             return TOO_FAST_RECONNECT;
+        } else if (connectionData.botLevel > 0) {
+            connectionData.botLevel--;
         }
 
         connectionData.lastJoin = timeStamp;
@@ -98,6 +106,8 @@ public final class LoginHandler implements Detections {
         if (!connectionData.verifiedNames.contains(connectionData.username)
                 && !Objects.equals(connectionData.verifiedName, connectionData.username)) {
             connectionData.verifiedNames.add(connectionData.username);
+
+            connectionData.botLevel++;
             return FIRST_JOIN_KICK;
         }
 
@@ -126,14 +136,20 @@ public final class LoginHandler implements Detections {
         final long online = connectionData.getAccountsOnlineWithSameIP();
 
         if (online > Config.Values.MAXIMUM_ONLINE_PER_IP) {
-            if (online > Config.Values.MAXIMUM_ONLINE_PER_IP_BLACKLIST) {
-                ConnectionDataManager.remove(connectionData);
-                return BLACKLIST;
+            connectionData.checked = 2;
+            return TOO_MANY_ONLINE;
+        }
+
+        // strong intelligent bot detection
+        if (connectionData.botLevel > 0) {
+            if (connectionData.botLevel > 4) {
+                connectionData.botLevel = 3;
+                return SUSPICIOUS;
             }
 
-            connectionData.checked = 2;
-            connectionData.botLevel++;
-            return TOO_MANY_ONLINE;
+            if (connectionData.CONNECTIONS_PER_SECOND.get() < 2 && connectionData.failedReconnect < 3) {
+                connectionData.botLevel--;
+            }
         }
 
         return ALLOW;

@@ -35,6 +35,9 @@ public interface Detections {
     Detection DURING_ATTACK      = new Detection(DetectionResult.DENIED,
             "6");
 
+    Detection SUSPICIOUS         = new Detection(DetectionResult.DENIED,
+            "7");
+
     Detection BLACKLIST          = new Detection(DetectionResult.DENIED,
             "");
 

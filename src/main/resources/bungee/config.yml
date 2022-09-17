@@ -31,10 +31,6 @@ general:
   # Number of maximum online accounts per ip address
   maximum-online-per-ip: 2
 
-  # If this number of accounts is online accounts per ip address,
-  # the ip address will be blacklisted
-  maximum-online-per-ip-to-blacklist: 6
-
   # Refresh delay of the action bar counter (in milliseconds)
   action-bar-counter-delay: 80
 

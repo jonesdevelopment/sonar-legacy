@@ -272,6 +272,12 @@ public final class PlayerHandler extends InitialHandler {
                     disconnect(Messages.Values.DISCONNECT_ATTACK);
                     return;
                 }
+
+                case "7": {
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
+                    disconnect(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+                    return;
+                }
             }
         }
 

@@ -61,9 +61,8 @@ public class Config {
         public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY,
                 REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND,
                 ACTION_BAR_COUNTER_DELAY, MAXIMUM_ONLINE_PER_IP,
-                MAXIMUM_ONLINE_PER_IP_BLACKLIST, MAXIMUM_QUEUE_POLL_RATE,
-                MAX_NAME_LENGTH, WEBHOOK_DELAY, WEBHOOK_COLOR_R,
-                WEBHOOK_COLOR_G, WEBHOOK_COLOR_B;
+                MAXIMUM_QUEUE_POLL_RATE, MAX_NAME_LENGTH, WEBHOOK_DELAY,
+                WEBHOOK_COLOR_R, WEBHOOK_COLOR_G, WEBHOOK_COLOR_B;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
@@ -93,7 +92,6 @@ public class Config {
                 CACHE_MOTDS = config.getBoolean("general.cache-incoming-motd-requests", true);
                 ACTION_BAR_COUNTER_DELAY = Math.max(Math.min(config.getInt("general.action-bar-counter-delay", 80), 1000), 10);
                 MAXIMUM_ONLINE_PER_IP = Math.max(config.getInt("general.maximum-online-per-ip", 2), 1);
-                MAXIMUM_ONLINE_PER_IP_BLACKLIST = Math.max(config.getInt("general.maximum-online-per-ip-to-blacklist", 6), MAXIMUM_ONLINE_PER_IP);
                 MAXIMUM_QUEUE_POLL_RATE = Math.max(config.getInt("general.maximum-queue-poll-rate", 2000), 1);
                 ALLOW_PING_PASS_THROUGH = config.getBoolean("general.allow-forced-host-ping", false);
 

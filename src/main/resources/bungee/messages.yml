@@ -90,6 +90,14 @@ disconnect:
       - '&7Please &f&nre-connect&r &7to verify yourself.'
       - ' '
 
+  suspicious-behaviour:
+    - ' '
+    - '&cYour connection is currently being analyzed.'
+    - '&7Please &f&nre-connect&r &7in 2 - 5 seconds to verify yourself.'
+    - '&eSpam re-connecting will get you temporarily blocked from the server.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
   invalid-name:
     - ' '
     - '&cYour username contains illegal characters or blocked words.'
