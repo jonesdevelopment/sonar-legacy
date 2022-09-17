@@ -19,13 +19,11 @@ package jones.sonar.universal.license.hwid;
 public final class HardwareID {
     public String encryptedInformation = "unknown";
 
-    public String tryAndGet() {
+    public void tryAndGet() {
         try {
             encryptedInformation = HardwareManagement.get();
         } catch (Exception exception) {
             encryptedInformation = "error; contact support!";
         }
-
-        return encryptedInformation;
     }
 }

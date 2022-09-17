@@ -16,16 +16,77 @@
 
 package jones.sonar.universal.license;
 
+import jones.sonar.SonarBungee;
 import jones.sonar.universal.bridge.SonarBridgeType;
 import jones.sonar.universal.license.hwid.HardwareID;
 import jones.sonar.universal.license.response.LicenseResponse;
 import jones.sonar.universal.license.response.WebResponse;
+import jones.sonar.universal.util.GeneralException;
 import lombok.experimental.UtilityClass;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.util.List;
 
 @UtilityClass
 public class LicenseLoader {
-    public LicenseResponse loadFromFile(final SonarBridgeType type) {
-        final String key = "loadthisfrompropertiesfile";
+    public LicenseResponse loadFromFile(final SonarBridgeType type) throws Exception {
+        String key = "unknown";
+
+        final String fileName = "license.properties";
+
+        final File fileToCopy;
+
+        switch (type) {
+            case BUNGEE: {
+                fileToCopy = new File(SonarBungee.INSTANCE.getPlugin().getDataFolder(), fileName);
+
+                if (!fileToCopy.exists()) {
+                    try (final InputStream in = SonarBungee.INSTANCE.getPlugin().getResourceAsStream(fileName)) {
+                        Files.copy(in, fileToCopy.toPath());
+                    } catch (IOException exception) {
+                        throw new GeneralException("Could not find license file: " + fileName);
+                    }
+                }
+                break;
+            }
+
+            // TODO: Velocity support
+            case VELOCITY: {
+                throw new GeneralException("Velocity isn't supported yet");
+            }
+
+            default:
+            case UNKNOWN: {
+                throw new GeneralException("Unknown server type");
+            }
+        }
+
+        final List<String> linesFromProperties = Files.readAllLines(fileToCopy.toPath());
+
+        // check if the license file is empty
+        if (linesFromProperties.isEmpty()) {
+            throw new GeneralException("Empty license file");
+        }
+
+        // check if the line size doesn't match
+        if (linesFromProperties.size() != 6) {
+            throw new GeneralException("Modified license file");
+        }
+
+        // read the key from the file
+        key = linesFromProperties.get(5);
+
+        // check if the key is valid
+        if (!key.startsWith("sonar-license=")) {
+            throw new GeneralException("Invalid license format (sonar-license=XXX)");
+        }
+
+        // replace the key option prefix
+        key = key.replaceFirst("sonar-license=", "");
+
         final HardwareID hardwareID = new HardwareID();
 
         // try to get the hardware id
@@ -33,26 +94,14 @@ public class LicenseLoader {
         // deobfuscation, reverse-engineering, ...
         hardwareID.tryAndGet();
 
-        switch (type) {
-            case BUNGEE: {
-
-                break;
-            }
-
-            case VELOCITY: {
-                break;
-            }
-
-            case UNKNOWN: {
-                return null;
-            }
-        }
-
         final License license = new License(hardwareID, key);
 
+        // validating license
         final WebResponse response = license.validate();
 
         switch (response) {
+
+            // license is invalid
             default:
             case INVALID:
             case NOT_EXISTING: {
@@ -62,6 +111,7 @@ public class LicenseLoader {
                         "The given license key or hardware id is invalid.");
             }
 
+            // api server down
             case PERM_REDIRECT:
             case TEMP_REDIRECT: {
                 return new LicenseResponse(license,
@@ -70,6 +120,7 @@ public class LicenseLoader {
                         "The api server seems to be offline. If this keep occurring, please contact support via Discord (https://discord.jonesdev.xyz).");
             }
 
+            // license is valid
             case SUCCESS: {
                 return new LicenseResponse(license,
                         response,

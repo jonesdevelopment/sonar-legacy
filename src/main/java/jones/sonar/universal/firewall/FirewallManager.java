@@ -16,13 +16,14 @@
 
 package jones.sonar.universal.firewall;
 
+import jones.sonar.universal.util.GeneralException;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class FirewallManager {
-    public void remove() throws FirewallException {
+    public void remove() throws GeneralException {
     }
 
-    public void install() throws FirewallException {
+    public void install() throws GeneralException {
     }
 }

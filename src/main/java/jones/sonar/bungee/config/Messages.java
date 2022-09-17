@@ -37,7 +37,7 @@ public class Messages {
 
     public void initialize() {
         try {
-            final File file = new File(SonarBungee.INSTANCE.getPlugin().getDataFolder().getPath(), fileName);
+            final File file = new File(SonarBungee.INSTANCE.getPlugin().getDataFolder(), fileName);
 
             if (!file.exists()) {
                 try (final InputStream in = SonarBungee.INSTANCE.getPlugin().getResourceAsStream("bungee/" + fileName)) {

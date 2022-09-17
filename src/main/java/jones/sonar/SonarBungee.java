@@ -69,17 +69,51 @@ public enum SonarBungee {
 
         this.plugin = plugin;
 
-        final LicenseResponse licenseResponse = LicenseLoader.loadFromFile(SonarBridgeType.BUNGEE);
+        createDataFolder();
 
-        running = licenseResponse.response == WebResponse.SUCCESS;
+        // cached license response
+        LicenseResponse licenseResponse;
 
+        // cached exception, if something goes wrong
+        Exception unhandledException = null;
+
+        try {
+
+            // try to load the license
+            licenseResponse = LicenseLoader.loadFromFile(SonarBridgeType.BUNGEE);
+
+            running = licenseResponse.response == WebResponse.SUCCESS;
+        } catch (Exception exception) {
+
+            // set to null if something goes wrong
+            licenseResponse = null;
+
+            // cache exception
+            unhandledException = exception;
+        }
+
+        // something did go wrong or the license is invalid
         if (!running) {
             Logger.INFO.log(LINE);
             Logger.INFO.log(" ");
             Logger.INFO.log(" §cSonar couldn't start because of following error:");
             Logger.INFO.log(" ");
-            Logger.INFO.log(" §7> §e" + licenseResponse.errorMessage);
-            Logger.INFO.log(" §7Your hardware id: §f" + licenseResponse.license.hardwareID.encryptedInformation);
+
+            // invalid license
+            if (licenseResponse != null) {
+                Logger.INFO.log(" §e" + licenseResponse.errorMessage);
+                Logger.INFO.log(" §r §r §7Your hardware id: §f" + licenseResponse.license.hardwareID.encryptedInformation);
+            }
+
+            // general exception
+            else {
+
+                // print the stack trace
+                unhandledException.printStackTrace();
+            }
+
+            Logger.INFO.log(" ");
+            Logger.INFO.log(" §7Support Discord:§f https://discord.jonesdev.xyz/");
             Logger.INFO.log(" ");
             Logger.INFO.log(LINE);
         }
@@ -111,8 +145,6 @@ public enum SonarBungee {
         /*
          * Load all configurations
          */
-
-        createDataFolder();
 
         Config.initialize();
 

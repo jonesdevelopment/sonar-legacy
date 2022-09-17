@@ -14,10 +14,10 @@
  *  limitations under the License.
  */
 
-package jones.sonar.universal.firewall;
+package jones.sonar.universal.util;
 
-public final class FirewallException extends RuntimeException {
-    public FirewallException(final String verbose) {
+public final class GeneralException extends RuntimeException {
+    public GeneralException(final String verbose) {
         super(verbose);
     }
 }

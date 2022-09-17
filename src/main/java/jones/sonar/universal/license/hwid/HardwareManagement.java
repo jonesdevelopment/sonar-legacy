@@ -27,8 +27,11 @@ import java.util.UUID;
 public class HardwareManagement {
     protected String get() throws Exception {
 
+        // get network interface
+        final NetworkInterface networkInterface = NetworkInterface.getNetworkInterfaces().nextElement();
+
         // get the hardware address of the next element in the interfaces() array
-        final byte[] networkAddress = NetworkInterface.getNetworkInterfaces().nextElement().getHardwareAddress();
+        final byte[] networkAddress = networkInterface.getHardwareAddress();
 
         final StringBuilder networkInformationBuilder = new StringBuilder();
 
@@ -45,7 +48,10 @@ public class HardwareManagement {
 
                 // also include the OS name and arch
                 + OperatingSystem.getOSName()
-                + OperatingSystem.OS_ARCH);
+                + OperatingSystem.OS_ARCH
+
+                // use the network interface name
+                + networkInterface.getName());
     }
 
     private String hash(String information) throws Exception {
