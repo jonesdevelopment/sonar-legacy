@@ -17,6 +17,7 @@ package jones.sonar;
 
 import jones.sonar.api.event.SonarReloadEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
+import jones.sonar.bungee.caching.CachePool;
 import jones.sonar.bungee.command.SonarCommand;
 import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Config;
@@ -126,7 +127,9 @@ public enum SonarBungee {
 
         new QueueThread().start();
 
-        new ActionBar(this);
+        new ActionBar(this).start();
+
+        new CachePool().start();
 
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");

@@ -29,29 +29,29 @@ public class ServerPingCache {
 
     public boolean needsUpdate = true;
 
-    public ServerPing getCached(final ListenerInfo server, final String motd, final int protocol) {
+    public ServerPing getCached(final ListenerInfo server, final String motd) {
         if (!Config.Values.CACHE_MOTDS) {
-            return getServerPing(server, motd, protocol);
+            return getServerPing(server, motd);
         }
 
         if (needsUpdate || cachedServerPing == null) {
             needsUpdate = false;
 
-            return update(server, motd, protocol);
+            return update(server, motd);
         }
 
         return cachedServerPing;
     }
 
-    private ServerPing update(final ListenerInfo server, final String motd, final int protocol) {
-        cachedServerPing = getServerPing(server, motd, protocol);
+    private ServerPing update(final ListenerInfo server, final String motd) {
+        cachedServerPing = getServerPing(server, motd);
 
         return cachedServerPing;
     }
 
-    private ServerPing getServerPing(final ListenerInfo server, final String motd, final int protocol) {
+    private ServerPing getServerPing(final ListenerInfo server, final String motd) {
         return new ServerPing(
-                new ServerPing.Protocol(Config.Values.SERVER_BRAND, protocol),
+                new ServerPing.Protocol(Config.Values.SERVER_BRAND, 120),
                 new ServerPing.Players(server.getMaxPlayers(), SonarBungee.INSTANCE.proxy.getOnlineCount(), null),
                 motd, SonarBungee.INSTANCE.proxy.getConfig().getFaviconObject());
     }

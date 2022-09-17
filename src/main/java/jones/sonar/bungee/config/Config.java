@@ -66,7 +66,7 @@ public class Config {
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
-                ALLOW_PROXY_PROTOCOL;
+                ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -93,6 +93,7 @@ public class Config {
                 MAXIMUM_ONLINE_PER_IP = Math.max(config.getInt("general.maximum-online-per-ip", 2), 1);
                 MAXIMUM_ONLINE_PER_IP_BLACKLIST = Math.max(config.getInt("general.maximum-online-per-ip-to-blacklist", 6), MAXIMUM_ONLINE_PER_IP);
                 MAXIMUM_QUEUE_POLL_RATE = Math.max(config.getInt("general.maximum-queue-poll-rate", 2000), 1);
+                ALLOW_PING_PASS_THROUGH = config.getBoolean("general.allow-forced-host-ping", false);
 
                 // checks
                 ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);

@@ -12,6 +12,9 @@ general:
   # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
   maximum-packet-capacity: 4096
 
+  # Enable this if you are using the motd of a spigot instance (forced host)
+  allow-forced-host-ping: false
+
   # The ClientConnectEvent is thrown whenever someone connects to your server
   # This could be used by some plugins, so please enable it if it causes issues
   use-client-connect-event: false

@@ -190,12 +190,14 @@ public final class PlayerHandler extends InitialHandler {
             sonar.callEvent(new ProxyPingEvent(this, result, callback));
         };
 
-        if (forced != null && listener.isPingPassthrough()) {
+        if (forced != null && listener.isPingPassthrough() && Config.Values.ALLOW_PING_PASS_THROUGH) {
             ((BungeeServerInfo) forced).ping(pingBack, handshake.getProtocolVersion());
         } else {
-            final String messageOfTheDay = forced != null ? forced.getMotd() : listener.getMotd();
+            final ServerPing serverPing = ServerPingCache.getCached(listener, forced != null ? forced.getMotd() : listener.getMotd());
 
-            pingBack.done(ServerPingCache.getCached(listener, messageOfTheDay, protocol), null);
+            serverPing.getVersion().setProtocol(getVersion());
+
+            pingBack.done(serverPing, null);
         }
 
         currentState = ConnectionState.PINGING;
