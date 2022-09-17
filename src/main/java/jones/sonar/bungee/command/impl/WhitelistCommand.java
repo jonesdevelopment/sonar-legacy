@@ -85,7 +85,7 @@ public final class WhitelistCommand extends SubCommand {
                             if (Whitelist.isWhitelisted(inetAddress)) {
                                 execution.send(Messages.Values.WHITELIST_ALREADY);
                             } else {
-                                Whitelist.isWhitelisted(inetAddress);
+                                Whitelist.addToWhitelist(inetAddress);
 
                                 execution.send(Messages.Values.WHITELIST_ADD_PLAYER
                                         .replaceAll("%player%", target.getName())

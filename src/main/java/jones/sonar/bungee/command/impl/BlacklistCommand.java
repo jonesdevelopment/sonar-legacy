@@ -96,6 +96,8 @@ public final class BlacklistCommand extends SubCommand {
                                 execution.send(Messages.Values.BLACKLIST_ADD_PLAYER
                                         .replaceAll("%player%", target.getName())
                                         .replaceAll("%ip%", inetAddress.toString().replaceAll("/", "")));
+
+                                target.disconnect("Disconnected");
                             }
                         } catch (Exception exception) {
                             execution.send(Messages.Values.BLACKLIST_INVALID_IP);

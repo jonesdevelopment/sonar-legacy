@@ -112,7 +112,7 @@ commands:
   blacklist:
     size: '%prefix%&7The blacklist currently contains &f%ips% &7ip address%es%.'
     attack-clear: '%prefix%&cYou cannot clear the blacklist during an attack. &7Bypass this restriction using &f/ab blacklist forceclear&7.'
-    clear: '%prefix%&7Successfully cleared &f%ips% &7blacklisted &fip address%es%&7.'
+    clear: '%prefix%&7Successfully cleared &f%ips% &7blacklisted ip address%es%.'
     empty: '%prefix%&cThe blacklist is currently empty!'
     invalid: '%prefix%&cYou must enter a valid ip address (or username).'
     not: '%prefix%&cThat ip address is not blacklisted!'
@@ -123,7 +123,7 @@ commands:
 
   whitelist:
     size: '%prefix%&7The whitelist currently contains &f%ips% &7ip address%es%.'
-    clear: '%prefix%&7Successfully cleared &f%ips% &7whitelisted &fip address%es%&7.'
+    clear: '%prefix%&7Successfully cleared &f%ips% &7whitelisted ip address%es%.'
     empty: '%prefix%&cThe whitelist is currently empty!'
     invalid: '%prefix%&cYou must enter a valid ip address (or username).'
     not: '%prefix%&cThat ip address is not whitelisted!'
