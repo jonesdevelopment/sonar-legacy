@@ -95,7 +95,7 @@ public class Messages {
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
                 NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS;
 
-        public int NOTIFY_DELAY, PEAK_DELAY;
+        public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK;
 
@@ -172,6 +172,7 @@ public class Messages {
                 // peak
                 ENABLE_PEAK = config.getBoolean("notifications.peak.enabled", true);
                 PEAK_DELAY = Math.max(config.getInt("notifications.peak.delay", 1500), 100);
+                PEAK_RESET_DELAY = Math.max(config.getInt("notifications.peak.reset-delay", 8000), 1000);
                 PEAK_FORMAT_CPS = format(config.getString("notifications.peak.format-new-cps"));
                 PEAK_FORMAT_IPS = format(config.getString("notifications.peak.format-new-ips"));
 

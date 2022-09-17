@@ -242,8 +242,7 @@ public enum SonarBungee {
     public void createDataFolder() {
         if (!plugin.getDataFolder().exists()) {
             if (!plugin.getDataFolder().mkdir()) {
-                Logger.INFO.log(" §cCould not create data folder §7(No permission?)");
-                Logger.INFO.log(" ");
+                Logger.INFO.log("§cCould not create data folder §7(No permission?)");
             }
         }
     }

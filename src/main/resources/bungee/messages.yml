@@ -65,6 +65,9 @@ notifications:
     # The delay between each peak notification in milliseconds
     delay: 2000
 
+    # The delay between each peak reset in milliseconds
+    reset-delay: 8000
+
     format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7-> &f%new%'
     format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7-> &f%new%'
 

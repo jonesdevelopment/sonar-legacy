@@ -31,20 +31,25 @@ public final class PeakThread extends Thread implements Runnable {
 
     private final SonarBungee sonar = SonarBungee.INSTANCE;
 
-    private long lastPeakChange = 0L;
-
     @Override
     public void run() {
         while (sonar.running) {
             try {
                 try {
-                    final long timeStamp = System.currentTimeMillis();
 
+                    // the server shouldn't be under attack when resetting the peak
+                    // in order to prevent a peak reset during an attack
                     if (!Sensibility.isUnderAttack()) {
-                        if (timeStamp - lastPeakChange > 8000L) {
-                            sonar.ipSecPeakCalculator.newPeak = 0L;
-                            sonar.ipSecPeakCalculator.lastPeak = 0L;
-                            sonar.ipSecPeakCalculator.realLastPeak = 0L;
+                        final long timeStamp = System.currentTimeMillis();
+
+                        // reset CPS peak if it didn't change in a few milliseconds
+                        if (timeStamp - sonar.cpsPeakCalculator.lastPeakChange > Messages.Values.PEAK_RESET_DELAY) {
+                            sonar.cpsPeakCalculator.reset();
+                        }
+
+                        // reset IPS peak if it didn't change in a few milliseconds
+                        if (timeStamp - sonar.ipSecPeakCalculator.lastPeakChange > Messages.Values.PEAK_RESET_DELAY) {
+                            sonar.ipSecPeakCalculator.reset();
                         }
                     }
 
@@ -67,8 +72,6 @@ public final class PeakThread extends Thread implements Runnable {
                                         + sonar.FORMAT.format(sonar.ipSecPeakCalculator.newPeak));
 
                         sonar.ipSecPeakCalculator.realLastPeak = sonar.ipSecPeakCalculator.newPeak;
-
-                        lastPeakChange = timeStamp;
 
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(ipsPeakMessage));
@@ -93,8 +96,6 @@ public final class PeakThread extends Thread implements Runnable {
                                         + sonar.FORMAT.format(sonar.cpsPeakCalculator.newPeak));
 
                         sonar.cpsPeakCalculator.realLastPeak = sonar.cpsPeakCalculator.newPeak;
-
-                        lastPeakChange = timeStamp;
 
                         // broadcast the new peak to every player
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(cpsPeakMessage));
