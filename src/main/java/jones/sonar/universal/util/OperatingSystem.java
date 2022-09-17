@@ -20,19 +20,23 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class OperatingSystem {
-    public final String OS = System.getProperty("os.name");
+    public final String OS_NAME = System.getProperty("os.name");
+
+    public final String OS_VERSION = System.getProperty("os.version");
+
+    public final String OS_ARCH = System.getProperty("os.arch");
 
     public String getOSName() {
-        if (OS.toLowerCase().contains("unix")) {
+        if (OS_NAME.toLowerCase().contains("unix")) {
             return "Unix / Linux";
         }
-        if (OS.toLowerCase().contains("os")) {
+        if (OS_NAME.toLowerCase().contains("os")) {
             return "macOS";
         }
-        if (OS.toLowerCase().contains("wind")) {
+        if (OS_NAME.toLowerCase().contains("wind")) {
             return "Windows";
         }
-        if (OS.toLowerCase().contains("linu")) {
+        if (OS_NAME.toLowerCase().contains("linu")) {
             return "Linux";
         }
         return "unknown";

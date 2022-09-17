@@ -27,6 +27,10 @@ import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.universal.bridge.SonarBridgeType;
+import jones.sonar.universal.license.LicenseLoader;
+import jones.sonar.universal.license.response.LicenseResponse;
+import jones.sonar.universal.license.response.WebResponse;
 import jones.sonar.universal.peak.PeakCalculator;
 import jones.sonar.universal.queue.QueueThread;
 import jones.sonar.universal.util.FastException;
@@ -52,6 +56,8 @@ public enum SonarBungee {
     public final PeakCalculator cpsPeakCalculator = new PeakCalculator(),
             ipSecPeakCalculator = new PeakCalculator();
 
+    private final String LINE = "§7§m«-----------------------------------------»§r";
+
     public String VERSION = "unknown";
 
     public boolean running = false;
@@ -63,19 +69,37 @@ public enum SonarBungee {
 
         this.plugin = plugin;
 
-        running = true;
+        final LicenseResponse licenseResponse = LicenseLoader.loadFromFile(SonarBridgeType.BUNGEE);
+
+        running = licenseResponse.response == WebResponse.SUCCESS;
+
+        if (!running) {
+            Logger.INFO.log(LINE);
+            Logger.INFO.log(" ");
+            Logger.INFO.log(" §cSonar couldn't start because of following error:");
+            Logger.INFO.log(" ");
+            Logger.INFO.log(" §7> §e" + licenseResponse.errorMessage);
+            Logger.INFO.log(" §7Your hardware id: §f" + licenseResponse.license.hardwareID.encryptedInformation);
+            Logger.INFO.log(" ");
+            Logger.INFO.log(LINE);
+        }
     }
 
     public void onEnable(final SonarBungeePlugin plugin) {
         assert plugin != null : "Error starting Sonar!";
+
+        // we don't want to continue loading Sonar if the license is invalid
+        // or the plugin hasn't started correctly
+        if (!running) {
+            plugin.onDisable();
+            return;
+        }
 
         final long start = System.currentTimeMillis();
 
         /*
          * Start-up message
          */
-
-        final String LINE = "§7§m«-----------------------------------------»§r";
 
         Logger.INFO.log(LINE);
         Logger.INFO.log(" ");
