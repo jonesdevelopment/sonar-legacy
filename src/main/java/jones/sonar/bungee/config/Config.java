@@ -42,7 +42,7 @@ public class Config {
             final File file = new File(SonarBungee.INSTANCE.getPlugin().getDataFolder().getPath(), fileName);
 
             if (!file.exists()) {
-                try (final InputStream in = SonarBungee.INSTANCE.getPlugin().getResourceAsStream(fileName)) {
+                try (final InputStream in = SonarBungee.INSTANCE.getPlugin().getResourceAsStream("bungee/" + fileName)) {
                     Files.copy(in, file.toPath());
                 } catch (IOException exception) {
                     exception.printStackTrace();
