@@ -122,9 +122,9 @@ public enum SonarBungee {
          * Process finished
          */
 
-        new ActionBar(this);
-
         new QueueThread().start();
+
+        new ActionBar(this);
 
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");

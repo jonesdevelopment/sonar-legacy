@@ -23,6 +23,7 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.SonarBungee;
+import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.network.decoder.SonarPacketDecoder;
 import jones.sonar.bungee.network.handler.BungeeHandler;
 import jones.sonar.bungee.network.handler.MainHandler;
@@ -133,13 +134,17 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             ctx.pipeline().get(MainHandler.class).setHandler(new PlayerHandler(ctx, listener));
 
-            if (listener.isProxyProtocol()) {
-                ctx.pipeline().addFirst(new HAProxyMessageDecoder());
+            if (Config.Values.ALLOW_PROXY_PROTOCOL) {
+                if (listener.isProxyProtocol()) {
+                    ctx.pipeline().addFirst(new HAProxyMessageDecoder());
+                }
             }
 
-            if (BungeeCord.getInstance().getPluginManager().callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
-                ctx.close();
-                ServerStatistics.BLOCKED_CONNECTIONS++;
+            if (Config.Values.CLIENT_CONNECT_EVENT) {
+                if (SonarBungee.INSTANCE.proxy.getPluginManager().callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
+                    ctx.close();
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
+                }
             }
         } finally {
             if (!ctx.isRemoved()) {

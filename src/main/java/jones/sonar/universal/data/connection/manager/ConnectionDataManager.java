@@ -16,12 +16,14 @@
 
 package jones.sonar.universal.data.connection.manager;
 
+import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
 import lombok.experimental.UtilityClass;
 
 import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class ConnectionDataManager {
@@ -33,6 +35,13 @@ public class ConnectionDataManager {
 
     public boolean contains(final InetAddress inetAddress) {
         return DATA.containsKey(inetAddress);
+    }
+
+    public void removeAllUnused() {
+        DATA.keySet().stream()
+                .filter(Blacklist::isBlacklisted)
+                .collect(Collectors.toSet())
+                .forEach(DATA::remove);
     }
 
     public boolean remove(final ConnectionData connectionData) {

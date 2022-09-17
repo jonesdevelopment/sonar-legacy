@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.universal.util;
+package jones.sonar.bungee.util;
 
 import jones.sonar.bungee.config.Config;
 import jones.sonar.universal.counter.Counter;

@@ -20,11 +20,11 @@ import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.ColorUtil;
+import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.queue.PlayerQueue;
-import jones.sonar.universal.util.Sensibility;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 

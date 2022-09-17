@@ -64,7 +64,8 @@ public class Config {
                 MAXIMUM_ONLINE_PER_IP_BLACKLIST, MAXIMUM_QUEUE_POLL_RATE;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
-                ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS;
+                ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
+                ALLOW_PROXY_PROTOCOL;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -79,8 +80,8 @@ public class Config {
                 CUSTOM_REGEXES.clear();
 
                 // general
-
                 CLIENT_CONNECT_EVENT = config.getBoolean("general.use-client-connect-event", false);
+                ALLOW_PROXY_PROTOCOL = config.getBoolean("general.use-proxy-protocol", false);
                 MAX_PACKET_INDEX = config.getInt("general.maximum-packet-index", 1024);
                 MAX_PACKET_BYTES = config.getInt("general.maximum-packet-bytes", 2048);
                 MAX_PACKET_CAPACITY = config.getInt("general.maximum-packet-capacity", 4096);

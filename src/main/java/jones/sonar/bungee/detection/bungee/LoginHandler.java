@@ -19,11 +19,11 @@ package jones.sonar.bungee.detection.bungee;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.detection.Detection;
 import jones.sonar.bungee.detection.Detections;
+import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.queue.PlayerQueue;
-import jones.sonar.universal.util.Sensibility;
 import lombok.experimental.UtilityClass;
 
 import java.util.Objects;
@@ -90,7 +90,8 @@ public final class LoginHandler implements Detections {
                 connectionData.checked = 3;
                 connectionData.underAttackChecks++;
 
-                if (connectionData.failedReconnect > 2 && connectionData.underAttackChecks <= 2) {
+                if (connectionData.failedReconnect > 2
+                        && connectionData.underAttackChecks < connectionData.failedReconnect) {
                     connectionData.botLevel++;
                 }
                 return DURING_ATTACK;

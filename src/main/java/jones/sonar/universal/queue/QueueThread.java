@@ -16,6 +16,8 @@
 
 package jones.sonar.universal.queue;
 
+import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+
 public final class QueueThread extends Thread implements Runnable {
 
     public QueueThread() {
@@ -26,7 +28,12 @@ public final class QueueThread extends Thread implements Runnable {
     public void run() {
         while(true) {
             try {
-                PlayerQueue.clear();
+                try {
+                    PlayerQueue.clear();
+                    ConnectionDataManager.removeAllUnused();
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
 
                 Thread.sleep(500);
             } catch (InterruptedException exception) {
