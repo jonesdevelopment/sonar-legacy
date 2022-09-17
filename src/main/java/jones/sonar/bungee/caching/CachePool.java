@@ -20,6 +20,10 @@ import jones.sonar.SonarBungee;
 
 public final class CachePool extends Thread implements Runnable {
 
+    public CachePool() {
+        super("sonar#cache");
+    }
+
     @Override
     public void run() {
         while (SonarBungee.INSTANCE.running) {
