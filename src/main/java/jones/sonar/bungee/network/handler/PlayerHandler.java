@@ -165,9 +165,6 @@ public final class PlayerHandler extends InitialHandler {
 
         final ServerInfo forced = ServerDataProvider.getForcedHost(listener, getVirtualHost());
 
-        final int protocol = (ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion()))
-                ? handshake.getProtocolVersion() : sonar.proxy.getProtocolVersion();
-
         final Callback<ServerPing> pingBack = (result, error) -> {
             if (error != null) return;
 

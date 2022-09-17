@@ -18,13 +18,12 @@ package jones.sonar.bungee.network.decoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToMessageDecoder;
-import jones.sonar.SonarBungee;
+import io.netty.handler.codec.ByteToMessageDecoder;
 import net.md_5.bungee.protocol.DefinedPacket;
 
 import java.util.List;
 
-public final class SonarPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
+public final class SonarPacketDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(final ChannelHandlerContext ctx, final ByteBuf in, final List<Object> out) throws Exception {
@@ -35,26 +34,17 @@ public final class SonarPacketDecoder extends MessageToMessageDecoder<ByteBuf> {
 
         in.markReaderIndex();
 
-        for(int i = 0; i < 3; ++i) {
-            if (!in.isReadable()) {
-                in.resetReaderIndex();
-                return;
-            }
-
-            byte read = in.readByte();
-            if (read >= 0) {
-                in.resetReaderIndex();
-                int length = DefinedPacket.readVarInt(in);
-                if (in.readableBytes() < length) {
-                    in.resetReaderIndex();
-                    return;
-                }
-
-                out.add(in.readRetainedSlice(length));
-                return;
-            }
+        if (!in.isReadable()) {
+            in.resetReaderIndex();
+            return;
         }
 
-        throw SonarBungee.INSTANCE.EXCEPTION;
+        byte read = in.readByte();
+
+        int length = DefinedPacket.readVarInt(in);
+
+        if (length == 0 && read == 0) {
+            in.clear();
+        }
     }
 }
