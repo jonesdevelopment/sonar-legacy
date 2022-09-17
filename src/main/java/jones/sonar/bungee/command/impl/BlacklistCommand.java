@@ -18,8 +18,6 @@ package jones.sonar.bungee.command.impl;
 
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
-import jones.sonar.universal.blacklist.Blacklist;
-import jones.sonar.universal.whitelist.Whitelist;
 
 public final class BlacklistCommand extends SubCommand {
 
@@ -29,7 +27,8 @@ public final class BlacklistCommand extends SubCommand {
 
     @Override
     public void execute(final CommandExecution execution) {
-        execution.send("§7Blacklist: §f" + Blacklist.size());
-        execution.send("§7Whitelist: §f" + Whitelist.size());
+        if (execution.arguments.length <= 1) {
+            execution.send("&cUsage: &7/ab blacklist <size|clear|remove|add> [ip|username]");
+        }
     }
 }

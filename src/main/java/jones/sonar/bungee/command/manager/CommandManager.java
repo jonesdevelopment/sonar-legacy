@@ -29,7 +29,12 @@ public class CommandManager {
     public final List<SubCommand> SUB_COMMANDS = new ArrayList<>();
 
     public void initialize() {
-        addCommands(new InfoCommand(), new StatsCommand(), new ReloadCommand(), new BlacklistCommand(), new WhitelistCommand());
+        addCommands(new InfoCommand(),
+                new StatsCommand(),
+                new ReloadCommand(),
+                new BlacklistCommand(),
+                new WhitelistCommand(),
+                new PingCommand());
     }
 
     private void addCommands(final SubCommand... command) {

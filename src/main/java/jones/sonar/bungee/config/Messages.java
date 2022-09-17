@@ -79,7 +79,11 @@ public class Messages {
                 NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND, RELOADING,
                 RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF,
                 DISCONNECT_UNSUPPORTED_VERSION, DISCONNECT_ALREADY_CONNECTED,
-                DISCONNECT_TOO_MANY_ONLINE, DISCONNECT_QUEUED, DISCONNECT_ATTACK;
+                DISCONNECT_TOO_MANY_ONLINE, DISCONNECT_QUEUED, DISCONNECT_ATTACK,
+                PING_SPECIFY, PING_OTHER, PING, BLACKLIST_EMPTY, BLACKLIST_INVALID_IP,
+                BLACKLIST_NOT, BLACKLIST_ALREADY, BLACKLIST_ADD_PLAYER, BLACKLIST_ADD_IP,
+                BLACKLIST_REMOVE, WHITELIST_EMPTY, WHITELIST_INVALID_IP, WHITELIST_ALREADY,
+                WHITELIST_NOT, WHITELIST_ADD_PLAYER, WHITELIST_ADD_IP, WHITELIST_REMOVE;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -102,6 +106,25 @@ public class Messages {
                 HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
                 RELOADING = format(config.getString("commands.reload.reloading", "Reloading..."));
                 RELOADED = format(config.getString("commands.reload.reloaded", "Reloaded in %time% ms"));
+                PING = format(config.getString("commands.ping.you"));
+                PING_SPECIFY = format(config.getString("commands.ping.specify"));
+                PING_OTHER = format(config.getString("commands.ping.other"));
+
+                WHITELIST_EMPTY = format(config.getString("commands.whitelist.empty"));
+                WHITELIST_INVALID_IP = format(config.getString("commands.whitelist.invalid"));
+                WHITELIST_NOT = format(config.getString("commands.whitelist.not"));
+                WHITELIST_ALREADY = format(config.getString("commands.whitelist.already"));
+                WHITELIST_ADD_PLAYER = format(config.getString("commands.whitelist.add-player"));
+                WHITELIST_ADD_IP = format(config.getString("commands.whitelist.add-ip"));
+                WHITELIST_REMOVE = format(config.getString("commands.whitelist.remove"));
+
+                BLACKLIST_EMPTY = format(config.getString("commands.blacklist.empty"));
+                BLACKLIST_INVALID_IP = format(config.getString("commands.blacklist.invalid"));
+                BLACKLIST_NOT = format(config.getString("commands.blacklist.not"));
+                BLACKLIST_ALREADY = format(config.getString("commands.blacklist.already"));
+                BLACKLIST_ADD_PLAYER = format(config.getString("commands.blacklist.add-player"));
+                BLACKLIST_ADD_IP = format(config.getString("commands.blacklist.add-ip"));
+                BLACKLIST_REMOVE = format(config.getString("commands.blacklist.remove"));
 
                 if (LIST_SYMBOL.length() > 2) LIST_SYMBOL = LIST_SYMBOL.substring(0, 2);
                 else if (LIST_SYMBOL.isEmpty()) LIST_SYMBOL = "▪";
