@@ -23,6 +23,8 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.HashSet;
+import java.util.Set;
 
 @RequiredArgsConstructor
 public final class ConnectionData {
@@ -30,7 +32,9 @@ public final class ConnectionData {
 
     public final CounterMap CONNECTIONS_PER_SECOND = new CounterMap(1000).build();
 
-    public String username = "", verifiedName = "", lastUsername = "";
+    public String username = "", verifiedName = "";
+
+    public final Set<String> verifiedNames = new HashSet<>(100);
 
     public long lastJoin = 0L, sinceLoggedIn = 0L;
 
