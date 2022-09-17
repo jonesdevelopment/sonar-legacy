@@ -20,6 +20,6 @@ import jones.sonar.universal.license.response.WebResponse;
 
 public final class WebRequest {
     protected WebResponse perform(final License license) {
-        return WebResponse.INVALID;
+        return WebResponse.SUCCESS;
     }
 }

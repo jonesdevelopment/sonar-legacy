@@ -34,7 +34,8 @@ import java.util.Set;
 
 @UtilityClass
 public class NotificationManager {
-    public final Set<String> SUBSCRIBED = new HashSet<>();
+
+    private final Set<String> SUBSCRIBED = new HashSet<>();
 
     private long lastNotification = 0L, lastWebhook = 0L;
 
@@ -56,13 +57,19 @@ public class NotificationManager {
 
                 // check if the last notification was sent more than 15 seconds ago
                 // to prevent chat spam
-                if (timeStamp - lastNotification > Messages.Values.NOTIFY_DELAY) {
+                if (timeStamp - lastNotification > Messages.Values.NOTIFY_DELAY
+
+                        // we want the peak to only show when there's an actual attack
+                        && Counter.IPS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND) {
+
+                    // cache all variables
                     final String cps = SonarBungee.INSTANCE.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()),
                             ips = SonarBungee.INSTANCE.FORMAT.format(Counter.IPS_PER_SECOND.get()),
                             joins = SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()),
                             pings = SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()),
                             encryptions = SonarBungee.INSTANCE.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get());
 
+                    // save the alert message dynamically to save performance
                     final String alert = Messages.Values.NOTIFY_FORMAT
                             .replaceAll("%cps%", cps)
                             .replaceAll("%ips%", ips)
