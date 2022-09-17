@@ -14,9 +14,9 @@
  *  limitations under the License.
  */
 
-package jones.sonar.universal.bridge;
+package jones.sonar.universal;
 
-public enum SonarBridgeType {
+public enum SonarPlatform {
     BUNGEE,
     VELOCITY,
     UNKNOWN

@@ -17,7 +17,7 @@
 package jones.sonar.universal.license;
 
 import jones.sonar.SonarBungee;
-import jones.sonar.universal.bridge.SonarBridgeType;
+import jones.sonar.universal.SonarPlatform;
 import jones.sonar.universal.license.hwid.HardwareID;
 import jones.sonar.universal.license.response.LicenseResponse;
 import jones.sonar.universal.license.response.WebResponse;
@@ -32,7 +32,7 @@ import java.util.List;
 
 @UtilityClass
 public class LicenseLoader {
-    public LicenseResponse loadFromFile(final SonarBridgeType type) throws Exception {
+    public LicenseResponse loadFromFile(final SonarPlatform type) throws Exception {
         String key = "unknown";
 
         final String fileName = "license.properties";

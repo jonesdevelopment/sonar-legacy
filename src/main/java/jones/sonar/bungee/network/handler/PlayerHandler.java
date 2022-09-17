@@ -28,7 +28,7 @@ import jones.sonar.bungee.detection.Detection;
 import jones.sonar.bungee.detection.DetectionResult;
 import jones.sonar.bungee.detection.bungee.LoginHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
-import jones.sonar.bungee.util.LegacyGsonFormat;
+import jones.sonar.bungee.util.json.LegacyGsonFormat;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.ConnectionData;

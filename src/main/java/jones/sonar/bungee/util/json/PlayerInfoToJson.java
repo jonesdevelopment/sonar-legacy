@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.util;
+package jones.sonar.bungee.util.json;
 
 import com.google.gson.*;
 import lombok.RequiredArgsConstructor;

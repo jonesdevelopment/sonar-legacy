@@ -27,7 +27,7 @@ import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
-import jones.sonar.universal.bridge.SonarBridgeType;
+import jones.sonar.universal.SonarPlatform;
 import jones.sonar.universal.license.LicenseLoader;
 import jones.sonar.universal.license.response.LicenseResponse;
 import jones.sonar.universal.license.response.WebResponse;
@@ -58,6 +58,8 @@ public enum SonarBungee {
 
     private final String LINE = "§7§m«-----------------------------------------»§r";
 
+    public final SonarPlatform platform = SonarPlatform.BUNGEE;
+
     public String VERSION = "unknown";
 
     public boolean running = false;
@@ -80,7 +82,7 @@ public enum SonarBungee {
         try {
 
             // try to load the license
-            licenseResponse = LicenseLoader.loadFromFile(SonarBridgeType.BUNGEE);
+            licenseResponse = LicenseLoader.loadFromFile(platform);
 
             running = licenseResponse.response == WebResponse.SUCCESS;
         } catch (Exception exception) {
