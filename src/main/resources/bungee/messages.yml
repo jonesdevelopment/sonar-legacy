@@ -47,7 +47,7 @@ notifications:
 
     format:
       - '%header-bar%'
-      - '&eSonar &7has detected an &cincoming attack &7on your server'
+      - '&e&lSonar &7has detected an incoming &c&nattack&r&7.'
       - ' '
       - ' &7%list% &fConnections per second: %cps%'
       - ' &7%list% &fIp addresses per second: %ips%'
@@ -85,7 +85,7 @@ disconnect:
     first-join:
       - ' '
       - '&7Your account has been successfully &aregistered&7.'
-      - '&7Please &nre-connect&r &7to verify yourself.'
+      - '&7Please &f&nre-connect&r &7to verify yourself.'
       - ' '
 
   invalid-name:
@@ -110,7 +110,7 @@ disconnect:
   verification-during-attack:
     - ' '
     - '&cSorry! &7There are too many players logging it at the same time.'
-    - '&7Please re-connect in order to be verified by the anti-bot protection.'
+    - '&7Please &fre-connect &7in order to be verified by the anti-bot protection.'
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
@@ -140,7 +140,7 @@ commands:
   listing: '▪'
 
   help:
-    layout: ' &7%list% &f/ab &f%command% &7- &f%description%'
+    layout: ' &7%list% &f/ab %command% &7- &f%description%'
     usage: '%prefix%&cUsage: &7%command%'
 
   blacklist:
@@ -168,10 +168,11 @@ commands:
 
   reload:
     wait: '%prefix%&cPlease wait a bit before reloading Sonar again.'
-    reloading: '%prefix%&7Reloading &fSonar&7...'
+    confirmation: '%prefix%&7Please type &f/sonar reload confirm &7to reload Sonar during an attack.'
+    reloading: '%prefix%&7Reloading &fSonar &7(version &f%version%&7)...'
     reloaded: '%prefix%&aSuccessfully reloaded Sonar. &7(%seconds% s)'
 
   ping:
-    specify: '%prefix%&cYou need to specify a player when executing this command through console.'
+    specify: '%prefix%&cYou need to specify a player when executing this command via console.'
     you: '%prefix%&7You currently have a ping of &f%ping% ms&7.'
     other: '%prefix%%player% &7currently has a ping of &f%ping% ms&7.'

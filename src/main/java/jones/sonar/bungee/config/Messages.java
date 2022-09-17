@@ -93,7 +93,8 @@ public class Messages {
                 BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
-                NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS;
+                NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS,
+                RELOAD_CONFIRMATION_ATTACK;
 
         public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY;
 
@@ -109,18 +110,19 @@ public class Messages {
 
                 if (PREFIX.length() > 32) PREFIX = PREFIX.substring(0, 32);
 
-                NO_PERMISSION = format(config.getString("no-permission", "&cNo permission!"));
-                NO_PERMISSION_SUB_COMMAND = format(config.getString("no-permission-sub", "&cNo permission!"));
-                UNKNOWN_SUB_COMMAND = format(config.getString("unknown-sub-command", "&cUnknown sub-command."));
-                ONLY_PLAYERS = format(config.getString("only-players", "&cOnly players!"));
+                NO_PERMISSION = format(config.getString("no-permission"));
+                NO_PERMISSION_SUB_COMMAND = format(config.getString("no-permission-sub"));
+                UNKNOWN_SUB_COMMAND = format(config.getString("unknown-sub-command"));
+                ONLY_PLAYERS = format(config.getString("only-players"));
 
                 // commands
-                HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
-                COMMAND_USAGE = format(config.getString("commands.help.usage", "Usage: %command%"));
+                HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout"));
+                COMMAND_USAGE = format(config.getString("commands.help.usage"));
 
-                RELOAD_WAIT = format(config.getString("commands.reload.wait", "Wait a bit, please."));
-                RELOADING = format(config.getString("commands.reload.reloading", "Reloading..."));
-                RELOADED = format(config.getString("commands.reload.reloaded", "Reloaded in %time% ms"));
+                RELOAD_WAIT = format(config.getString("commands.reload.wait"));
+                RELOADING = format(config.getString("commands.reload.reloading"));
+                RELOADED = format(config.getString("commands.reload.reloaded"));
+                RELOAD_CONFIRMATION_ATTACK = format(config.getString("commands.reload.confirmation"));
 
                 PING = format(config.getString("commands.ping.you"));
                 PING_SPECIFY = format(config.getString("commands.ping.specify"));
