@@ -43,7 +43,6 @@ public final class LoginHandler implements Detections {
 
             connectionData.checked = 0;
             connectionData.botLevel++;
-
             return INVALID_NAME;
         }
 
@@ -79,7 +78,6 @@ public final class LoginHandler implements Detections {
 
                 connectionData.checked = 0;
                 connectionData.botLevel++;
-
                 return INVALID_NAME;
             }
         }
@@ -87,7 +85,8 @@ public final class LoginHandler implements Detections {
         if (connectionData.checked == 1) {
             connectionData.checked = 2;
 
-            if (!Objects.equals(connectionData.verifiedName, connectionData.username)) {
+            if (!Objects.equals(connectionData.verifiedName, connectionData.username)
+                    && !connectionData.allowedNames.contains(connectionData.username)) {
                 ConnectionDataManager.remove(connectionData);
                 return BLACKLIST;
             }
@@ -151,6 +150,8 @@ public final class LoginHandler implements Detections {
                 connectionData.botLevel--;
             }
         }
+
+        connectionData.allowedNames.add(connectionData.username);
 
         return ALLOW;
     }

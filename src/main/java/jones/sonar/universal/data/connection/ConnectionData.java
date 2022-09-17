@@ -34,7 +34,8 @@ public final class ConnectionData {
 
     public String username = "", verifiedName = "";
 
-    public final Set<String> verifiedNames = new HashSet<>(100);
+    public final Set<String> verifiedNames = new HashSet<>(50),
+            allowedNames = new HashSet<>(50);
 
     public long lastJoin = 0L, sinceLoggedIn = 0L;
 
