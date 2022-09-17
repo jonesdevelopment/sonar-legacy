@@ -72,7 +72,7 @@ public final class ActionBar extends Thread implements Runnable {
 
                     // adding empty lines in front of the message to align the message in
                     // the center of the players' screen
-                    GENERAL_FORMAT = repeat(" ", Math.min(colorCodeCount, 16)) + GENERAL_FORMAT;
+                    GENERAL_FORMAT = repeat(" ", Math.min(colorCodeCount, 24)) + GENERAL_FORMAT;
 
                     final TextComponent counter = new TextComponent(GENERAL_FORMAT
                             .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
