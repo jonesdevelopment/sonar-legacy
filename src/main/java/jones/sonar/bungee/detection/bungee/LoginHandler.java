@@ -31,8 +31,17 @@ import java.util.Objects;
 @UtilityClass
 public final class LoginHandler implements Detections {
     public Detection check(final ConnectionData connectionData) {
+        final boolean underAttack = Sensibility.isUnderAttack();
+
         if (!connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
+            if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
+                    || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
+                ConnectionDataManager.remove(connectionData);
+                return BLACKLIST;
+            }
+
             connectionData.checked = 0;
+
             return INVALID_NAME;
         }
 
@@ -53,18 +62,16 @@ public final class LoginHandler implements Detections {
             return FIRST_JOIN_KICK;
         }
 
-        final boolean underAttack = Sensibility.isUnderAttack();
-
         if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                 || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
             if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
-                connectionData.checked = 0;
-
                 if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                         || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
                     ConnectionDataManager.remove(connectionData);
                     return BLACKLIST;
                 }
+
+                connectionData.checked = 0;
 
                 return INVALID_NAME;
             }

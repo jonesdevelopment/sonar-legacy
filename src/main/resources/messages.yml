@@ -62,7 +62,7 @@ disconnect:
 
   already-connected:
     - ' '
-    - '&cSorry! &7Seem like you are already connected to the server.'
+    - '&7Seems like you are already connected to the server.'
     - '&cIf this error keeps occurring, please contact an administrator!'
     - ' '
 
