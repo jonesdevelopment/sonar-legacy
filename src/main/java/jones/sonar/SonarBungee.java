@@ -27,6 +27,7 @@ import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.universal.peak.PeakCalculator;
 import jones.sonar.universal.queue.QueueThread;
 import jones.sonar.universal.util.FastException;
 import lombok.Getter;
@@ -47,6 +48,9 @@ public enum SonarBungee {
     public final DecimalFormat FORMAT = new DecimalFormat("#,###");
 
     public final FastException EXCEPTION = new FastException();
+
+    public final PeakCalculator cpsPeakCalculator = new PeakCalculator(),
+            ipSecPeakCalculator = new PeakCalculator();
 
     public String VERSION = "unknown";
 

@@ -16,55 +16,15 @@
 
 package jones.sonar.universal.peak;
 
-import jones.sonar.universal.counter.CounterMap;
-import jones.sonar.universal.peak.result.PeakCalculation;
-import jones.sonar.universal.peak.result.PeakSubmitResult;
-import lombok.experimental.UtilityClass;
+public final class PeakCalculator {
+    public long lastPeak, newPeak;
+    public boolean broadcasted = false;
 
-import java.util.HashMap;
-import java.util.Map;
-
-@UtilityClass
-public class PeakCalculator {
-    private final PeakCalculation NONE = new PeakCalculation(PeakSubmitResult.UNKNOWN,
-            null, 0, 0);
-
-    private final Map<CounterMap, PeakRecord> PEAKS = new HashMap<>();
-
-    public PeakCalculation submit(final CounterMap counter) {
-        final long current = counter.get();
-
-        // only use this if needed
-        final PeakRecord currentAsPeak = new PeakRecord(current);
-
-        // if the counter doesn't exist, create it
-        if (!contains(counter)) {
-            PEAKS.put(counter, currentAsPeak);
-
-            return new PeakCalculation(PeakSubmitResult.NOT_EXISTING, counter, current, current);
+    public void submit(final long current) {
+        if (current > newPeak) {
+            lastPeak = newPeak;
+            newPeak = current;
+            broadcasted = false;
         }
-
-        // the last peak from the counter was less than the current value
-        else if (current > get(counter)) {
-            final long lastPeak = get(counter);
-
-            PEAKS.replace(counter, currentAsPeak);
-
-            return new PeakCalculation(PeakSubmitResult.NEW_PEAK, counter, current, lastPeak);
-        }
-
-        return NONE;
-    }
-
-    public long get(final CounterMap counter) {
-        if (contains(counter)) {
-            return PEAKS.get(counter).value;
-        }
-
-        return 0;
-    }
-
-    private boolean contains(final CounterMap counter) {
-        return PEAKS.containsKey(counter);
     }
 }

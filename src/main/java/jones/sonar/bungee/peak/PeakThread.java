@@ -17,14 +17,9 @@
 package jones.sonar.bungee.peak;
 
 import jones.sonar.SonarBungee;
-import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBarManager;
 import jones.sonar.bungee.util.ColorUtil;
-import jones.sonar.universal.counter.Counter;
-import jones.sonar.universal.peak.PeakCalculator;
-import jones.sonar.universal.peak.result.PeakCalculation;
-import jones.sonar.universal.peak.result.PeakSubmitResult;
 
 public final class PeakThread extends Thread implements Runnable {
 
@@ -32,48 +27,50 @@ public final class PeakThread extends Thread implements Runnable {
         super("sonar#peak");
     }
 
+    private final SonarBungee sonar = SonarBungee.INSTANCE;
+
     @Override
     public void run() {
-        while (SonarBungee.INSTANCE.running) {
+        while (sonar.running) {
             try {
                 try {
 
-                    // We only want to calculate the peak if the module is enabled
-                    if (Messages.Values.ENABLE_PEAK) {
+                    // if the peak is greater than the last peak
+                    if (sonar.ipSecPeakCalculator.newPeak > sonar.ipSecPeakCalculator.lastPeak
 
-                        // calculate the peak
-                        final PeakCalculation cpsPeak = PeakCalculator.submit(Counter.CONNECTIONS_PER_SECOND);
-                        final PeakCalculation ipsPeak = PeakCalculator.submit(Counter.IPS_PER_SECOND);
+                            // we don't want to send messages twice
+                            && !sonar.ipSecPeakCalculator.broadcasted) {
 
-                        // check if there's a new peak for CPS
-                        if (cpsPeak.submitResult == PeakSubmitResult.NEW_PEAK
+                        sonar.ipSecPeakCalculator.broadcasted = true;
 
-                                // only broadcast a new CPS peak if the cps are high enough
-                                && cpsPeak.newPeak > (Config.Values.MINIMUM_JOINS_PER_SECOND * 2L)) {
+                        // generate and format the message that needs to be sent to all players
+                        final String ipsPeakMessage = Messages.Values.PEAK_FORMAT_IPS
+                                .replaceAll("%old%", ColorUtil.getColorForCounter(sonar.ipSecPeakCalculator.lastPeak)
+                                        + sonar.FORMAT.format(sonar.ipSecPeakCalculator.lastPeak))
+                                .replaceAll("%new%", ColorUtil.getColorForCounter(sonar.ipSecPeakCalculator.newPeak)
+                                        + sonar.FORMAT.format(sonar.ipSecPeakCalculator.newPeak));
 
-                            // generate and format the message that needs to be sent to all players
-                            final String cpsPeakMessage = Messages.Values.PEAK_FORMAT_CPS
-                                    .replaceAll("%old%", ColorUtil.getColorForCounter(cpsPeak.lastPeak) + SonarBungee.INSTANCE.FORMAT.format(cpsPeak.lastPeak))
-                                    .replaceAll("%new%", ColorUtil.getColorForCounter(cpsPeak.newPeak) + SonarBungee.INSTANCE.FORMAT.format(cpsPeak.newPeak));
+                        // broadcast the new peak to every player
+                        ActionBarManager.getPlayers().forEach(player -> player.sendMessage(ipsPeakMessage));
+                    }
 
-                            // broadcast the new peak to every player
-                            ActionBarManager.getPlayers().forEach(player -> player.sendMessage(cpsPeakMessage));
-                        }
+                    // if the peak is greater than the last peak
+                    if (sonar.cpsPeakCalculator.newPeak > sonar.cpsPeakCalculator.lastPeak
 
-                        // check if there's a new peak for IPs/sec
-                        if (ipsPeak.submitResult == PeakSubmitResult.NEW_PEAK
+                            // we don't want to send messages twice
+                            && !sonar.cpsPeakCalculator.broadcasted) {
 
-                                // only broadcast a new IPs/sec peak if the ips are high enough
-                                && ipsPeak.newPeak > (Config.Values.MINIMUM_JOINS_PER_SECOND)) {
+                        sonar.cpsPeakCalculator.broadcasted = true;
 
-                            // generate and format the message that needs to be sent to all players
-                            final String ipsPeakMessage = Messages.Values.PEAK_FORMAT_IPS
-                                    .replaceAll("%old%", ColorUtil.getColorForCounter(ipsPeak.lastPeak) + SonarBungee.INSTANCE.FORMAT.format(ipsPeak.lastPeak))
-                                    .replaceAll("%new%", ColorUtil.getColorForCounter(ipsPeak.newPeak) + SonarBungee.INSTANCE.FORMAT.format(ipsPeak.newPeak));
+                        // generate and format the message that needs to be sent to all players
+                        final String cpsPeakMessage = Messages.Values.PEAK_FORMAT_CPS
+                                .replaceAll("%old%", ColorUtil.getColorForCounter(sonar.cpsPeakCalculator.lastPeak)
+                                        + sonar.FORMAT.format(sonar.cpsPeakCalculator.lastPeak))
+                                .replaceAll("%new%", ColorUtil.getColorForCounter(sonar.cpsPeakCalculator.newPeak)
+                                        + sonar.FORMAT.format(sonar.cpsPeakCalculator.newPeak));
 
-                            // broadcast the new peak to every player
-                            ActionBarManager.getPlayers().forEach(player -> player.sendMessage(ipsPeakMessage));
-                        }
+                        // broadcast the new peak to every player
+                        ActionBarManager.getPlayers().forEach(player -> player.sendMessage(cpsPeakMessage));
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();

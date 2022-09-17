@@ -40,7 +40,7 @@ public final class ActionBar extends Thread implements Runnable {
     public void run() {
         int index = 0;
 
-        while (SonarBungee.INSTANCE.running) {
+        while (sonar.running) {
             try {
                 try {
                     if (index > 8) index = 0;
@@ -51,6 +51,10 @@ public final class ActionBar extends Thread implements Runnable {
                             eps = Counter.ENCRYPTIONS_PER_SECOND.get(),
                             ips = Counter.IPS_PER_SECOND.get(),
                             jps = Counter.JOINS_PER_SECOND.get();
+
+                    // submit our counter results to the peak calculation
+                    sonar.ipSecPeakCalculator.submit(ips);
+                    sonar.cpsPeakCalculator.submit(cps);
 
                     // this is needed to make the action bar align in the middle
                     String GENERAL_FORMAT = (!Sensibility.isUnderAttack() && Messages.Values.ENABLE_COUNTER_WAITING_FORMAT
