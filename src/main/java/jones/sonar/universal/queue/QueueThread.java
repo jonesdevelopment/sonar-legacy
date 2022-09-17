@@ -34,23 +34,21 @@ public final class QueueThread extends Thread implements Runnable {
         while(true) {
             try {
                 try {
-                    if (PlayerQueue.QUEUE.isEmpty()) return;
+                    if (!PlayerQueue.QUEUE.isEmpty()) {
+                        final Map<String, Long> cleaned = new HashMap<>(PlayerQueue.QUEUE);
 
-                    final Map<String, Long> cleaned = new HashMap<>(PlayerQueue.QUEUE);
+                        final AtomicInteger currentIndex = new AtomicInteger(0);
 
-                    final AtomicInteger currentIndex = new AtomicInteger(0);
+                        cleaned.forEach((name, position) -> {
+                            if (position < 200 && currentIndex.get() <= Config.Values.MAXIMUM_QUEUE_POLL_RATE) {
+                                currentIndex.incrementAndGet();
 
-                    cleaned.forEach((name, position) -> {
-                        if (currentIndex.get() > Config.Values.MAXIMUM_QUEUE_POLL_RATE) return;
+                                PlayerQueue.remove(name);
+                            }
+                        });
 
-                        if (position < 200) {
-                            currentIndex.incrementAndGet();
-
-                            PlayerQueue.remove(name);
-                        }
-                    });
-
-                    PlayerQueue.QUEUE.forEach((name, position) -> PlayerQueue.QUEUE.replace(name, position - currentIndex.get()));
+                        PlayerQueue.QUEUE.forEach((name, position) -> PlayerQueue.QUEUE.replace(name, position - currentIndex.get()));
+                    }
 
                     ConnectionDataManager.removeAllUnused();
                 } catch (Exception exception) {
