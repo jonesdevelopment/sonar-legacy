@@ -231,8 +231,7 @@ public final class PlayerHandler extends InitialHandler {
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.disconnectMessageKey) {
                 default: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
-                    //throw sonar.EXCEPTION;
+                    throw sonar.EXCEPTION;
                 }
 
                 case "1": {

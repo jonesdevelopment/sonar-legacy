@@ -67,7 +67,6 @@ public final class LoginHandler implements Detections {
             connectionData.checked = 2;
 
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)) {
-                connectionData.checked = 0;
                 ConnectionDataManager.remove(connectionData);
                 return BLACKLIST;
             }
@@ -76,6 +75,7 @@ public final class LoginHandler implements Detections {
         final long timeStamp = System.currentTimeMillis();
 
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
+            connectionData.checked = 2;
             return TOO_FAST_RECONNECT;
         }
 
