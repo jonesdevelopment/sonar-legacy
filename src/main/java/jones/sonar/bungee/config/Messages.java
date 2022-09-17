@@ -67,7 +67,9 @@ public class Messages {
     private String format(final String message) {
         return ColorUtil.format(message)
                 .replaceAll("%prefix%", Values.PREFIX)
-                .replaceAll("%list%", Values.LIST_SYMBOL);
+                .replaceAll("%list%", Values.LIST_SYMBOL)
+                .replaceAll("%footer-bar%", Values.FOOTER_BAR)
+                .replaceAll("%header-bar%", Values.HEADER_BAR);
     }
 
     @UtilityClass
@@ -87,7 +89,9 @@ public class Messages {
                 BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
-                NOTIFY_DISABLED_OTHER;
+                NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT;
+
+        public int NOTIFY_DELAY;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -96,6 +100,8 @@ public class Messages {
                 // general
                 PREFIX = ColorUtil.format(config.getString("prefix", "&e&lSonar &7» &f"));
                 LIST_SYMBOL = config.getString("commands.listing", "▪");
+                FOOTER_BAR = ColorUtil.format(config.getString("footer-bar", "&7---&r"));
+                HEADER_BAR = ColorUtil.format(config.getString("header-bar", "&7---&r"));
 
                 if (PREFIX.length() > 32) PREFIX = PREFIX.substring(0, 32);
 
@@ -103,8 +109,6 @@ public class Messages {
                 NO_PERMISSION_SUB_COMMAND = format(config.getString("no-permission-sub", "&cNo permission!"));
                 UNKNOWN_SUB_COMMAND = format(config.getString("unknown-sub-command", "&cUnknown sub-command."));
                 ONLY_PLAYERS = format(config.getString("only-players", "&cOnly players!"));
-                FOOTER_BAR = format(config.getString("footer-bar", "&7---&r"));
-                HEADER_BAR = format(config.getString("header-bar", "&7---&r"));
 
                 // commands
                 HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout", "» /ab %command% - %description%"));
@@ -143,6 +147,8 @@ public class Messages {
                 else if (LIST_SYMBOL.isEmpty()) LIST_SYMBOL = "▪";
 
                 // notifications
+                NOTIFY_DELAY = Math.max(config.getInt("notifications.chat.delay", 25000), 100);
+                NOTIFY_FORMAT = format(fromList(config.getStringList("notifications.chat.format")));
                 NOTIFY_ENABLED = format(config.getString("notifications.chat.enabled"));
                 NOTIFY_DISABLED = format(config.getString("notifications.chat.disabled"));
                 NOTIFY_ENABLED_OTHER = format(config.getString("notifications.chat.enabled-other"));

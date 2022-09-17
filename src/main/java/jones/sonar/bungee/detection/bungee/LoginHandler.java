@@ -82,7 +82,6 @@ public final class LoginHandler implements Detections {
             connectionData.checked = 2;
 
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)) {
-                System.out.println(connectionData.verifiedName + " " + connectionData.username);
                 ConnectionDataManager.remove(connectionData);
                 return BLACKLIST;
             }

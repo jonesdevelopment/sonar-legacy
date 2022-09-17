@@ -5,6 +5,7 @@ no-permission-sub: '%prefix%&cYou do not have the permission to execute this sub
 unknown-sub-command: '%prefix%&cUnknown sub-command. Try &7/sonar &cfor help.'
 only-players: '%prefix%&cYou can only execute this command as a player!'
 
+# You can implement this in your custom messages by using '%header-bar%' or '%footer-bar%'
 header-bar: '&7&m                                                              &r'
 footer-bar: '&7&m                                                              &r'
 
@@ -43,6 +44,17 @@ notifications:
 
     enabled-other: '%prefix%%player% &7is &anow &7receiving chat notifications.'
     disabled-other: '%prefix%%player% &7is &cno longer &7receiving chat notifications.'
+
+    format:
+      - '%header-bar%'
+      - '&eSonar &7has detected an &cincoming attack &7on your server'
+      - ' '
+      - ' &7%list% &fConnections per second: %cps%'
+      - ' &7%list% &fIp addresses per second: %ips%'
+      - '%footer-bar%'
+
+    # The delay between each chat notification in milliseconds
+    delay: 25000
 
 disconnect:
   reconnect-check:

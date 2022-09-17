@@ -17,6 +17,7 @@
 package jones.sonar.bungee.caching;
 
 import jones.sonar.SonarBungee;
+import jones.sonar.bungee.caching.notifications.NotificationManager;
 
 public final class CachePool extends Thread implements Runnable {
 
@@ -30,6 +31,8 @@ public final class CachePool extends Thread implements Runnable {
             try {
                 try {
                     ServerPingCache.needsUpdate = true;
+
+                    NotificationManager.checkForAttack();
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

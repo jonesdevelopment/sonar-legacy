@@ -16,15 +16,65 @@
 
 package jones.sonar.bungee.caching.notifications;
 
+import jones.sonar.SonarBungee;
+import jones.sonar.bungee.config.Messages;
+import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.counter.Counter;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @UtilityClass
 public class NotificationManager {
     public final Set<String> SUBSCRIBED = new HashSet<>();
+
+    private long lastNotification = 0L;
+
+    public void checkForAttack() {
+        if (Sensibility.isUnderAttack()) {
+            final long timeStamp = System.currentTimeMillis();
+
+            // if the currentlyUnderAttack is already set, we want to reset
+            // the timer to sure the timer is working perfectly and doesn't cause issues
+            if (Sensibility.currentlyUnderAttack) {
+                Sensibility.sinceLastAttack = timeStamp;
+            }
+
+            // we want accurate counting, that's why we need to wait one second
+            // after an attack was detected to ensure the results (cps, ips, ...)
+            // are valid and accurate.
+            else if (timeStamp - Sensibility.sinceLastAttack > 1000L) {
+                Sensibility.currentlyUnderAttack = true;
+
+                // check if the last notification was sent more than 15 seconds ago
+                // to prevent chat spam
+                if (timeStamp - lastNotification > Messages.Values.NOTIFY_DELAY) {
+                    final String alert = Messages.Values.NOTIFY_FORMAT
+                            .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(Counter.CONNECTIONS_PER_SECOND.get()))
+                            .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(Counter.IPS_PER_SECOND.get()))
+                            .replaceAll("%joins%", SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()))
+                            .replaceAll("%pings%", SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()))
+                            .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get()));
+
+                    // broadcast the notification to each player who has notifications enabled
+                    SUBSCRIBED.stream()
+                            .map(SonarBungee.INSTANCE.proxy::getPlayer)
+                            .filter(Objects::nonNull)
+                            .forEach(player -> player.sendMessage(alert));
+
+                    // reset the lastNotification timer
+                    lastNotification = timeStamp;
+                }
+            }
+        } else {
+
+            // The server is not under attack anymore
+            Sensibility.currentlyUnderAttack = false;
+        }
+    }
 
     public boolean toggle(final ProxiedPlayer player) {
         if (!contains(player.getName())) {
