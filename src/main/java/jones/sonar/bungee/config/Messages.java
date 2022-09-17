@@ -86,7 +86,8 @@ public class Messages {
                 WHITELIST_NOT, WHITELIST_ADD_PLAYER, WHITELIST_ADD_IP, WHITELIST_REMOVE,
                 BLACKLIST_SIZE, WHITELIST_SIZE, COMMAND_USAGE, BLACKLIST_CLEAR_ATTACK,
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
-                COUNTER_DISABLED_OTHER;
+                COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
+                NOTIFY_DISABLED_OTHER;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -141,16 +142,22 @@ public class Messages {
                 if (LIST_SYMBOL.length() > 2) LIST_SYMBOL = LIST_SYMBOL.substring(0, 2);
                 else if (LIST_SYMBOL.isEmpty()) LIST_SYMBOL = "▪";
 
+                // notifications
+                NOTIFY_ENABLED = format(config.getString("notifications.chat.enabled"));
+                NOTIFY_DISABLED = format(config.getString("notifications.chat.disabled"));
+                NOTIFY_ENABLED_OTHER = format(config.getString("notifications.chat.enabled-other"));
+                NOTIFY_DISABLED_OTHER = format(config.getString("notifications.chat.disabled-other"));
+
                 // counter
-                COUNTER_ENABLED = format(config.getString("counter.action-bar.enabled"));
-                COUNTER_DISABLED = format(config.getString("counter.action-bar.disabled"));
-                COUNTER_ENABLED_OTHER = format(config.getString("counter.action-bar.enabled-other"));
-                COUNTER_DISABLED_OTHER = format(config.getString("counter.action-bar.disabled-other"));
-                COUNTER_FORMAT = format(config.getString("counter.action-bar.format"));
-                COUNTER_WAITING_FORMAT = format(config.getString("counter.action-bar.waiting"));
-                ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("counter.action-bar.enable-waiting-message");
-                FILTER_SYMBOL_ON = format(config.getString("counter.action-bar.filter-enabled-symbol"));
-                FILTER_SYMBOL_OFF = format(config.getString("counter.action-bar.filter-disabled-symbol"));
+                COUNTER_ENABLED = format(config.getString("notifications.action-bar.enabled"));
+                COUNTER_DISABLED = format(config.getString("notifications.action-bar.disabled"));
+                COUNTER_ENABLED_OTHER = format(config.getString("notifications.action-bar.enabled-other"));
+                COUNTER_DISABLED_OTHER = format(config.getString("notifications.action-bar.disabled-other"));
+                COUNTER_FORMAT = format(config.getString("notifications.action-bar.format"));
+                COUNTER_WAITING_FORMAT = format(config.getString("notifications.action-bar.waiting"));
+                ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("notifications.action-bar.enable-waiting-message");
+                FILTER_SYMBOL_ON = format(config.getString("notifications.action-bar.filter-enabled-symbol"));
+                FILTER_SYMBOL_OFF = format(config.getString("notifications.action-bar.filter-disabled-symbol"));
 
                 // disconnect messages
                 DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect"))

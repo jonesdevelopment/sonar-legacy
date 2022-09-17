@@ -20,7 +20,6 @@ import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Messages;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 
 public final class SonarCommand extends Command {
@@ -39,12 +38,9 @@ public final class SonarCommand extends Command {
         if (args.length == 0) {
             sender.sendMessage(Messages.Values.HEADER_BAR);
 
-            CommandManager.SUB_COMMANDS.stream()
-                    .filter(command -> !command.name.equals("notify") || sender instanceof ProxiedPlayer)
-                    .forEach(command ->
-                            sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
-                                    .replaceAll("%command%", command.name)
-                                    .replaceAll("%description%", command.description)));
+            CommandManager.SUB_COMMANDS.forEach(command -> sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
+                    .replaceAll("%command%", command.name)
+                    .replaceAll("%description%", command.description)));
 
             sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + SonarBungee.INSTANCE.VERSION + " §f§oby §f§ojonesdev.xyz§r");
             sender.sendMessage(Messages.Values.FOOTER_BAR);

@@ -8,7 +8,7 @@ only-players: '%prefix%&cYou can only execute this command as a player!'
 header-bar: '&7&m                                                              &r'
 footer-bar: '&7&m                                                              &r'
 
-counter:
+notifications:
   action-bar:
     enabled: '%prefix%&7You are &anow &7viewing the counter.'
     disabled: '%prefix%&7You are &cno longer &7viewing the counter.'
@@ -36,6 +36,13 @@ counter:
 
     # Set this to false if you always want to see the full counter
     enable-waiting-message: true
+
+  chat:
+    enabled: '%prefix%&7You are &anow &7receiving chat notifications.'
+    disabled: '%prefix%&7You are &cno longer &7receiving chat notifications.'
+
+    enabled-other: '%prefix%%player% &7is &anow &7receiving chat notifications.'
+    disabled-other: '%prefix%%player% &7is &cno longer &7receiving chat notifications.'
 
 disconnect:
   reconnect-check:

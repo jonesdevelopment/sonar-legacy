@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -84,9 +83,7 @@ public final class ActionBar extends Thread implements Runnable {
                             .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
                             .replaceAll("%joins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
 
-                    ActionBarManager.VERBOSE_ENABLED.stream()
-                            .map(sonar.proxy::getPlayer)
-                            .filter(Objects::nonNull)
+                    ActionBarManager.getPlayers()
                             .filter(player -> player.hasPermission("sonar.verbose"))
                             .collect(Collectors.toSet())
                             .forEach(player -> player.sendMessage(ChatMessageType.ACTION_BAR, counter));

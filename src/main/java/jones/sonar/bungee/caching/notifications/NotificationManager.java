@@ -14,50 +14,40 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.counter;
+package jones.sonar.bungee.caching.notifications;
 
-import jones.sonar.SonarBungee;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Stream;
 
 @UtilityClass
-public class ActionBarManager {
-    private final Set<String> VERBOSE_ENABLED = new HashSet<>();
-
-    public Stream<ProxiedPlayer> getPlayers() {
-        return VERBOSE_ENABLED.stream()
-                .map(SonarBungee.INSTANCE.proxy::getPlayer)
-                .filter(Objects::nonNull);
-    }
+public class NotificationManager {
+    public final Set<String> SUBSCRIBED = new HashSet<>();
 
     public boolean toggle(final ProxiedPlayer player) {
-        if (contains(player.getName())) {
-            remove(player.getName());
+        if (!contains(player.getName())) {
+            subscribe(player.getName());
         } else {
-            add(player.getName());
+            unsubscribe(player.getName());
         }
-
         return contains(player.getName());
     }
 
-    public void add(final String playerName) {
+    public void subscribe(final String playerName) {
         if (!contains(playerName)) {
-            VERBOSE_ENABLED.add(playerName);
+            SUBSCRIBED.add(playerName);
         }
     }
 
-    public void remove(final String playerName) {
+    public void unsubscribe(final String playerName) {
         if (contains(playerName)) {
-            VERBOSE_ENABLED.remove(playerName);
+            SUBSCRIBED.remove(playerName);
         }
     }
 
     public boolean contains(final String playerName) {
-        return VERBOSE_ENABLED.contains(playerName);
+        return SUBSCRIBED.contains(playerName);
     }
 }
