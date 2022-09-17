@@ -63,6 +63,9 @@ checks:
   invalid-name:
     enabled: true
 
+    # Maximum length of a name
+    max-length: 16
+
     # This is the regex for invalid names
     # Names with special characters are automatically detected by this regex
     # If you want to add more, custom regexes, you can do that below this option

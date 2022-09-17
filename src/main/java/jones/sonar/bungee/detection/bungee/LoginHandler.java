@@ -33,7 +33,8 @@ public final class LoginHandler implements Detections {
     public Detection check(final ConnectionData connectionData) {
         final boolean underAttack = Sensibility.isUnderAttack();
 
-        if (!connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
+        if (connectionData.username.length() > Config.Values.MAX_NAME_LENGTH
+                || !connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
             if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
                 ConnectionDataManager.remove(connectionData);
@@ -54,13 +55,18 @@ public final class LoginHandler implements Detections {
 
         final long timeStamp = System.currentTimeMillis();
 
-        if (connectionData.checked == 0) {
+        final boolean newUsername = !Objects.equals(connectionData.lastUsername, connectionData.username)
+                && !connectionData.lastUsername.isEmpty();
+
+        if (connectionData.checked == 0 || newUsername) {
             connectionData.checked = 1;
             connectionData.verifiedName = connectionData.username;
 
             connectionData.lastJoin = timeStamp;
             return FIRST_JOIN_KICK;
         }
+
+        connectionData.lastUsername = connectionData.username;
 
         if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                 || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
@@ -81,6 +87,7 @@ public final class LoginHandler implements Detections {
             connectionData.checked = 2;
 
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)) {
+                System.out.println(connectionData.verifiedName + " " + connectionData.username);
                 ConnectionDataManager.remove(connectionData);
                 return BLACKLIST;
             }

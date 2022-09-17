@@ -30,7 +30,7 @@ public final class ConnectionData {
 
     public final CounterMap CONNECTIONS_PER_SECOND = new CounterMap(1000).build();
 
-    public String username = "", verifiedName = "";
+    public String username = "", verifiedName = "", lastUsername = "";
 
     public long lastJoin = 0L, sinceLoggedIn = 0L;
 

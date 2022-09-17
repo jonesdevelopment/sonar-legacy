@@ -61,7 +61,8 @@ public class Config {
         public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY,
                 REJOIN_DELAY, MAX_REJOINS_PER_SECOND, MINIMUM_JOINS_PER_SECOND,
                 ACTION_BAR_COUNTER_DELAY, MAXIMUM_ONLINE_PER_IP,
-                MAXIMUM_ONLINE_PER_IP_BLACKLIST, MAXIMUM_QUEUE_POLL_RATE;
+                MAXIMUM_ONLINE_PER_IP_BLACKLIST, MAXIMUM_QUEUE_POLL_RATE,
+                MAX_NAME_LENGTH;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
@@ -100,6 +101,7 @@ public class Config {
                 MAX_REJOINS_PER_SECOND = config.getInt("checks.reconnect-check.maximum-rejoins-per-second", 8);
 
                 ENABLE_INVALID_NAME_CHECK = config.getBoolean("checks.invalid-name.enabled", true);
+                MAX_NAME_LENGTH = Math.max(config.getInt("checks.invalid-name.max-length", 16), 1);
                 NAME_VALIDATION_REGEX = config.getString("checks.invalid-name.regex", "^[a-zA-Z0-9_.]*$");
 
                 switch (config.getString("checks.invalid-name.blacklist-custom-regexes", "during_attack").toLowerCase()) {
