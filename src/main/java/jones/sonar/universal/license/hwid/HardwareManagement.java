@@ -37,7 +37,7 @@ public class HardwareManagement {
 
         // cache and save all characters out of the network address
         for (final byte character : networkAddress) {
-            networkInformationBuilder.append((char) (character ^ 2));       // apply some XOR to make it harder for decryption/deobfuscation
+            networkInformationBuilder.append((char) (character ^ -networkInterface.getName().length()));       // apply some XOR to make it harder for decryption/deobfuscation
         }
 
         // store the network address dynamically
@@ -55,10 +55,14 @@ public class HardwareManagement {
     }
 
     private String hash(String information) throws Exception {
+
+        // get the unique id from the string
         information = UUID.nameUUIDFromBytes(information.getBytes()).toString();
 
+        // take the hash code
         information = "#" + information.hashCode();
 
+        // return an encrypted hash code of the hardware id
         return new String(Base64.getEncoder().encode(information.getBytes()));
     }
 }
