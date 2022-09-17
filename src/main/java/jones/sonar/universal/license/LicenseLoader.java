@@ -87,6 +87,11 @@ public class LicenseLoader {
         // replace the key option prefix
         key = key.replaceFirst("sonar-license=", "");
 
+        // check if the length of the key is valid
+        if (key.isEmpty()) {
+            throw new GeneralException("Invalid license key length");
+        }
+
         final HardwareID hardwareID = new HardwareID();
 
         // try to get the hardware id

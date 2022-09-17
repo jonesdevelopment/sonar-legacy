@@ -109,7 +109,7 @@ public enum SonarBungee {
             else {
 
                 // print the stack trace
-                unhandledException.printStackTrace();
+                Logger.INFO.log(" §cException: §e" + unhandledException.getMessage());
             }
 
             Logger.INFO.log(" ");
