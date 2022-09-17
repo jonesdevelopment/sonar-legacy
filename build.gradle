@@ -44,7 +44,7 @@ task myProguardTask(type: proguard.gradle.ProGuardTask) {
     println("Performing obfuscation...")
 
     // run proguard
-    configuration 'proguard/proguard.conf'
+    configuration 'proguard/config'
 
     injars "${outputJar}"
     outjars "${buildDir}/libs/${rootProject.name}_proguard.jar"
