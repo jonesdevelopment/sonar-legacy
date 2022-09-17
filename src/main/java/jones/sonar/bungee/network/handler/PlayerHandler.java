@@ -231,35 +231,35 @@ public final class PlayerHandler extends InitialHandler {
         final Detection detection = LoginHandler.check(data);
 
         if (detection.result == DetectionResult.DENIED) {
-            switch (detection.disconnectMessageKey) {
+            switch (detection.key) {
                 default: {
                     throw sonar.EXCEPTION;
                 }
 
-                case "1": {
+                case 1: {
                     disconnect(Messages.Values.DISCONNECT_FIRST_JOIN);
                     return;
                 }
 
-                case "2": {
+                case 2: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_INVALID_NAME);
                     return;
                 }
 
-                case "3": {
+                case 3: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
                     return;
                 }
 
-                case "4": {
+                case 4: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
                     return;
                 }
 
-                case "5": {
+                case 5: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_QUEUED
                             .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
@@ -267,13 +267,13 @@ public final class PlayerHandler extends InitialHandler {
                     return;
                 }
 
-                case "6": {
+                case 6: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_ATTACK);
                     return;
                 }
 
-                case "7": {
+                case 7: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
                     return;
