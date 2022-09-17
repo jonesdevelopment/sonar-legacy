@@ -79,7 +79,7 @@ public class Messages {
                 NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND, RELOADING,
                 RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF,
                 DISCONNECT_UNSUPPORTED_VERSION, DISCONNECT_ALREADY_CONNECTED,
-                DISCONNECT_TOO_MANY_ONLINE, DISCONNECT_QUEUED;
+                DISCONNECT_TOO_MANY_ONLINE, DISCONNECT_QUEUED, DISCONNECT_ATTACK;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT;
 
@@ -116,7 +116,9 @@ public class Messages {
                 FILTER_SYMBOL_OFF = format(config.getString("counter.action-bar.filter-disabled-symbol"));
 
                 // disconnect messages
-                DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect")));
+                DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect"))
+                        .replaceAll("%seconds%", String.format("%.2f", Config.Values.REJOIN_DELAY / 1000D)
+                                .replaceAll("\\.00", "")));
                 DISCONNECT_FIRST_JOIN = format(fromList(config.getStringList("disconnect.reconnect-check.first-join")));
                 DISCONNECT_INVALID_NAME = format(fromList(config.getStringList("disconnect.invalid-name")));
                 DISCONNECT_UNSUPPORTED_VERSION = format(fromList(config.getStringList("disconnect.unsupported-version")));
@@ -124,6 +126,7 @@ public class Messages {
                 DISCONNECT_TOO_MANY_ONLINE = format(fromList(config.getStringList("disconnect.too-many-accounts-per-ip"))
                         .replaceAll("%max%", "" + Config.Values.MAXIMUM_ONLINE_PER_IP));
                 DISCONNECT_QUEUED = format(fromList(config.getStringList("disconnect.currently-in-queue")));
+                DISCONNECT_ATTACK = format(fromList(config.getStringList("disconnect.verification-during-attack")));
                 return true;
             } catch (final Exception exception) {
                 return false;

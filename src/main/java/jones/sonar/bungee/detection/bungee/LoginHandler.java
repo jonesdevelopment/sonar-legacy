@@ -82,6 +82,11 @@ public final class LoginHandler implements Detections {
         connectionData.lastJoin = timeStamp;
 
         if (Sensibility.isUnderAttack()) {
+            if (connectionData.checked == 2) {
+                connectionData.checked = 3;
+                return DURING_ATTACK;
+            }
+
             PlayerQueue.addToQueue(connectionData.username);
 
             if (PlayerQueue.getPosition(connectionData.username) > 1) {

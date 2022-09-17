@@ -32,6 +32,9 @@ public interface Detections {
     Detection PLAYER_IN_QUEUE    = new Detection(DetectionResult.DENIED,
             "5");
 
+    Detection DURING_ATTACK      = new Detection(DetectionResult.DENIED,
+            "6");
+
     Detection BLACKLIST          = new Detection(DetectionResult.DENIED,
             "");
 

@@ -231,7 +231,8 @@ public final class PlayerHandler extends InitialHandler {
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.disconnectMessageKey) {
                 default: {
-                    throw sonar.EXCEPTION;
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
+                    //throw sonar.EXCEPTION;
                 }
 
                 case "1": {
@@ -258,9 +259,16 @@ public final class PlayerHandler extends InitialHandler {
                 }
 
                 case "5": {
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect(Messages.Values.DISCONNECT_QUEUED
                             .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
                             .replaceAll("%size%", sonar.FORMAT.format(PlayerQueue.QUEUE.size())));
+                    return;
+                }
+
+                case "6": {
+                    ServerStatistics.BLOCKED_CONNECTIONS++;
+                    disconnect(Messages.Values.DISCONNECT_ATTACK);
                     return;
                 }
             }

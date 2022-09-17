@@ -72,6 +72,13 @@ disconnect:
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
+  verification-during-attack:
+    - ' '
+    - '&cSorry! &7There are too many players logging it at the same time.'
+    - '&7Please re-connect in order to be verified by the anti-bot protection.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
   # You can use the following variables:
   #   %max% - Number of maximum accounts online per ip address
   too-many-accounts-per-ip:
