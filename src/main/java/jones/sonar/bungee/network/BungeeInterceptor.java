@@ -39,6 +39,7 @@ import net.md_5.bungee.api.event.ClientConnectEvent;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -75,6 +76,9 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
         ServerStatistics.BLOCKED_CONNECTIONS++;
+
+        if (cause instanceof IOException) return;
+
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
     }
 

@@ -21,6 +21,7 @@ import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.ServerStatistics;
 import net.md_5.bungee.netty.HandlerBoss;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public final class MainHandler extends HandlerBoss {
@@ -29,6 +30,9 @@ public final class MainHandler extends HandlerBoss {
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
         ServerStatistics.BLOCKED_CONNECTIONS++;
+
+        if (cause instanceof IOException) return;
+
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
     }
 }

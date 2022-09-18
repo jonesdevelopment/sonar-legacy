@@ -22,6 +22,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.ServerStatistics;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 
 public final class BungeeHandler extends ChannelInboundHandlerAdapter implements SonarHandler {
@@ -30,6 +31,9 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter implements
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ctx.close();
         ServerStatistics.BLOCKED_CONNECTIONS++;
+
+        if (cause instanceof IOException) return;
+
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
     }
 
