@@ -76,7 +76,7 @@ public class NotificationManager {
                     final String alert = Messages.Values.NOTIFY_FORMAT
                             .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(cps))
                             .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(ips))
-                            .replaceAll("%joins%", SonarBungee.INSTANCE.FORMAT.format(joins))
+                            .replaceAll("%logins%", SonarBungee.INSTANCE.FORMAT.format(joins))
                             .replaceAll("%pings%", SonarBungee.INSTANCE.FORMAT.format(pings))
                             .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(encryptions))
                             .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
@@ -103,7 +103,7 @@ public class NotificationManager {
                             WebhookSender.sendWebhook(Config.Values.WEBHOOK_FORMAT
                                             .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(cps))
                                             .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(ips))
-                                            .replaceAll("%joins%", SonarBungee.INSTANCE.FORMAT.format(joins))
+                                            .replaceAll("%logins%", SonarBungee.INSTANCE.FORMAT.format(joins))
                                             .replaceAll("%pings%", SonarBungee.INSTANCE.FORMAT.format(pings))
                                             .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(Counter.ENCRYPTIONS_PER_SECOND.get()))
                                             .replaceAll("%online%", SonarBungee.INSTANCE.FORMAT.format(SonarBungee.INSTANCE.proxy.getPlayers().size()))

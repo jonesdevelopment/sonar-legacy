@@ -62,7 +62,7 @@ public final class ActionBar extends Thread implements Runnable {
                     sonar.cpsPeakCalculator.submit(cps);
 
                     // this is needed to make the action bar align in the middle
-                    String GENERAL_FORMAT = (!Sensibility.isUnderAttack() && Messages.Values.ENABLE_COUNTER_WAITING_FORMAT
+                    final String GENERAL_FORMAT = (!Sensibility.isUnderAttack() && Messages.Values.ENABLE_COUNTER_WAITING_FORMAT
                             ? Messages.Values.COUNTER_WAITING_FORMAT
                             : Messages.Values.COUNTER_FORMAT);
 
@@ -93,7 +93,7 @@ public final class ActionBar extends Thread implements Runnable {
                             .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
                             .replaceAll("%queue%", sonar.FORMAT.format(PlayerQueue.QUEUE.size() + IPSQueue.QUEUE.size()))
                             .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
-                            .replaceAll("%joins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
+                            .replaceAll("%logins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
 
                     final TextComponent legacyCounter = new TextComponent(counter);
 

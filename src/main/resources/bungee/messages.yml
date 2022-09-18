@@ -20,7 +20,7 @@ notifications:
     # You can use the following variables:
     #   %ips% - Current ips per second count (formatted)
     #   %cps% - Current connections per second count (formatted)
-    #   %joins% - Current joins per second count (formatted)
+    #   %logins% - Current logins per second count (formatted)
     #   %pings% - Current pings per second count (formatted)
     #   %verify% - Number of verifying players (formatted)
     #   %queue% - Number of players in queue during attack (formatted)
@@ -32,7 +32,7 @@ notifications:
     #   %filter-symbol% - Symbol of the current filter status
     #   %arrow% - A arrow symbol which means that the server is working
     # The correct color is automatically applied to each variable
-    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Joins: &f%joins% &3▪ &7Pings: &f%pings% &3▪ &7Handshakes: &f%handshakes% &3▪ &7Verification: &f%verify% &3▪ &7Queue: &f%queue% &3▪ &7Blocked: &f%blocked%'
+    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Logins: &f%logins% &3▪ &7Pings: &f%pings% &3▪ &7Handshakes: &f%handshakes% &3▪ &7Verification: &f%verify% &3▪ &7Queue: &f%queue% &3▪ &7Blocked: &f%blocked%'
     waiting: '%prefix%&7CPS: &f%cps% &3▪ &7Queue: &f%queue% &3▪ &7Waiting for new attacks to arrive...'
 
     filter-enabled-symbol: '&a✔'
@@ -69,7 +69,7 @@ notifications:
     delay: 2000
 
     # The delay between each peak reset in milliseconds
-    reset-delay: 12000
+    reset-delay: 30000
 
     format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7-> &f%new%'
     format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7-> &f%new%'
