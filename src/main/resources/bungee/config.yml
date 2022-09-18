@@ -34,7 +34,10 @@ general:
   # Refresh delay of the action bar counter (in milliseconds)
   action-bar-counter-delay: 80
 
-  # Number of maximum accounts being removed from the queue every half second
+  # Number of accounts being removed from the queue
+  queue-poll-rate: 1000
+
+  # Number of maximum accounts being removed from the queue
   maximum-queue-poll-rate: 2000
 
   # Disable this if you don't want Sonar to cache all server list pings
