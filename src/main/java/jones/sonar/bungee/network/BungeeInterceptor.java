@@ -24,7 +24,6 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
-import jones.sonar.bungee.network.decoder.SonarPacketDecoder;
 import jones.sonar.bungee.network.handler.BungeeHandler;
 import jones.sonar.bungee.network.handler.MainHandler;
 import jones.sonar.bungee.network.handler.PlayerHandler;
@@ -116,7 +115,6 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             }
 
             ctx.pipeline().addFirst(HANDLER, new BungeeHandler());
-            ctx.pipeline().addLast(DECODER, new SonarPacketDecoder());
 
             if (throttler != null
                     && throttler.throttle(ctx.channel().remoteAddress())) {
