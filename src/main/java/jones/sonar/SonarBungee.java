@@ -23,6 +23,7 @@ import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBar;
+import jones.sonar.bungee.filter.ConsoleFilter;
 import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
@@ -198,6 +199,8 @@ public enum SonarBungee {
         new CacheThread().start();
 
         new PeakThread().start();
+
+        ConsoleFilter.apply(this);
 
         /*
          * Process finished

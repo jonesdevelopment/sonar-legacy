@@ -112,7 +112,8 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             }
 
             if (Blacklist.isBlacklisted(inetAddress)) {
-                ctx.close();
+                ctx.channel().unsafe().closeForcibly();
+
                 ServerStatistics.BLOCKED_CONNECTIONS++;
                 return;
             }

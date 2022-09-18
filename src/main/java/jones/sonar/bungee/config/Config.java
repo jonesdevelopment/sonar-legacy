@@ -67,7 +67,8 @@ public class Config {
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
-                ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED;
+                ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
+                LOG_CONNECTIONS;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -96,6 +97,7 @@ public class Config {
                 MAXIMUM_QUEUE_POLL_RATE = Math.max(config.getInt("general.maximum-queue-poll-rate", 2000), 1);
                 QUEUE_POLL_RATE = Math.max(Math.min(config.getInt("general.queue-poll-rate", 1000), MAXIMUM_QUEUE_POLL_RATE), 1);
                 ALLOW_PING_PASS_THROUGH = config.getBoolean("general.allow-forced-host-ping", false);
+                LOG_CONNECTIONS = config.getBoolean("general.log-connections", false);
 
                 // webhook
                 WEBHOOK_ENABLED = config.getBoolean("notifications.webhook.enabled", false);

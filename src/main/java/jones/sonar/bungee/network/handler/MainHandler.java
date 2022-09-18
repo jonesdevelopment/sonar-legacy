@@ -28,7 +28,8 @@ public final class MainHandler extends HandlerBoss {
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-        ctx.close();
+        ctx.channel().unsafe().closeForcibly();
+
         ServerStatistics.BLOCKED_CONNECTIONS++;
 
         if (cause instanceof IOException) return;

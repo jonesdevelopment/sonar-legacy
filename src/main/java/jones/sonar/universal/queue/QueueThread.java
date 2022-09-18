@@ -60,7 +60,11 @@ public final class QueueThread extends Thread implements Runnable {
                             if (position < Config.Values.QUEUE_POLL_RATE && currentIndex.get() <= Config.Values.MAXIMUM_QUEUE_POLL_RATE) {
                                 currentIndex.incrementAndGet();
 
-                                IPSQueue.remove(inetAddress);
+                                IPSQueue.QUEUE.replace(inetAddress, IPSQueue.getPosition(inetAddress) - 1L);
+
+                                if (IPSQueue.getPosition(inetAddress) < 1) {
+                                    IPSQueue.remove(inetAddress);
+                                }
                             }
                         });
 

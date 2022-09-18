@@ -78,7 +78,7 @@ public final class PlayerHandler extends InitialHandler {
 
     @Override
     public void exception(final Throwable cause) throws Exception {
-        ctx.close();
+        ctx.channel().unsafe().closeForcibly();
     }
 
     @Override
@@ -161,17 +161,6 @@ public final class PlayerHandler extends InitialHandler {
             disconnect(Messages.Values.DISCONNECT_QUEUED
                     .replaceAll("%position%", sonar.FORMAT.format(IPSQueue.getPosition(inetAddress)))
                     .replaceAll("%size%", sonar.FORMAT.format(IPSQueue.QUEUE.size())));
-
-            /*final ConnectionData data = ConnectionDataManager.createOrReturn(inetAddress);
-
-            data.handleHandshake();
-
-            ctx.channel().eventLoop().schedule(() -> {
-                if (data.hasFailedHandshakeJoinCheck()) {
-                    ConnectionDataManager.remove(data);
-                    throw sonar.EXCEPTION;
-                }
-            }, 1000L, TimeUnit.MILLISECONDS);*/
         }
     }
 
@@ -235,7 +224,7 @@ public final class PlayerHandler extends InitialHandler {
 
         unsafe().sendPacket(ping);
 
-        ctx.close();
+        ctx.channel().unsafe().closeForcibly();
     }
 
     @Override

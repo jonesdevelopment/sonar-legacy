@@ -44,7 +44,6 @@ public interface SonarHandler {
                 || byteBuf.readerIndex() > Config.Values.MAX_PACKET_BYTES
                 || readableBytes <= 0) {
             byteBuf.clear();
-            ctx.close();
             throw SonarBungee.INSTANCE.EXCEPTION;
         }
 
