@@ -24,6 +24,7 @@ notifications:
     #   %pings% - Current pings per second count (formatted)
     #   %verify% - Number of verifying players (formatted)
     #   %queue% - Number of players in queue during attack (formatted)
+    #   %handshakes% - Current handshakes per second count (formatted)
     #   %blocked% - Number of blocked connections (formatted)
     #   %blacklisted% - Number of blacklisted ip addresses (formatted)
     #   %whitelisted% - Number of whitelisted ip addresses (formatted)
@@ -31,7 +32,7 @@ notifications:
     #   %filter-symbol% - Symbol of the current filter status
     #   %arrow% - A arrow symbol which means that the server is working
     # The correct color is automatically applied to each variable
-    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Joins: &f%joins% &3▪ &7Pings: &f%pings% &3▪ &7Verification: &f%verify% &3▪ &7Queue: &f%queue% &3▪ &7Blacklist: &f%blacklisted% &3▪ &7Blocked: &f%blocked%'
+    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Joins: &f%joins% &3▪ &7Pings: &f%pings% &3▪ &7Handshakes: &f%handshakes% &3▪ &7Verification: &f%verify% &3▪ &7Queue: &f%queue% &3▪ &7Blocked: &f%blocked%'
     waiting: '%prefix%&7CPS: &f%cps% &3▪ &7Queue: &f%queue% &3▪ &7Waiting for new attacks to arrive...'
 
     filter-enabled-symbol: '&a✔'
@@ -108,13 +109,6 @@ disconnect:
     - ' '
     - '&7Seems like you are already connected to the server.'
     - '&cIf this error keeps occurring, please contact an administrator!'
-    - ' '
-
-  unsupported-version:
-    - ' '
-    - '&cYour Minecraft version is not supported!'
-    - '&7Please use a version that is being supported by the server.'
-    - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
   verification-during-attack:

@@ -55,10 +55,10 @@ public class ColorUtil {
 
     public String getColorForCounter(final long counterResult) {
         if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND) return format("§a");
-        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 50L) return format("§e");
-        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 110L) return format("§6");
-        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 220L) return format("§c");
-        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 330L) return format("§4");
+        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 70L) return format("§e");
+        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 200L) return format("§6");
+        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 340L) return format("§c");
+        if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 450L) return format("§4");
         return "§f";
     }
 

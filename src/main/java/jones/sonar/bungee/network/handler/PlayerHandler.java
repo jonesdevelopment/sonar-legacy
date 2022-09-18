@@ -17,7 +17,6 @@
 package jones.sonar.bungee.network.handler;
 
 import com.google.gson.Gson;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.caching.ServerDataProvider;
@@ -66,6 +65,8 @@ public final class PlayerHandler extends InitialHandler {
 
     private final ChannelHandlerContext ctx;
 
+    private boolean queue = false;
+
     @Override
     public void exception(final Throwable cause) throws Exception {
         ctx.close();
@@ -96,6 +97,8 @@ public final class PlayerHandler extends InitialHandler {
 
     @Override
     public void handle(final Handshake handshake) throws Exception {
+        Counter.HANDSHAKES_PER_SECOND.increment();
+
         if (currentState != ConnectionState.HANDSHAKE) {
             throw sonar.EXCEPTION;
         }
@@ -111,8 +114,6 @@ public final class PlayerHandler extends InitialHandler {
              */
 
             case 1: {
-                Counter.PINGS_PER_SECOND.increment();
-
                 currentState = ConnectionState.PINGING;
                 break;
             }
@@ -122,24 +123,12 @@ public final class PlayerHandler extends InitialHandler {
              */
 
             case 2: {
-                Counter.JOINS_PER_SECOND.increment();
-
                 currentState = ConnectionState.JOINING;
 
-                if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
-                    close(new Kick(Messages.Values.DISCONNECT_UNSUPPORTED_VERSION));
-                    return;
-                }
-
-                if (Sensibility.isUnderAttack()) {
+                if (Sensibility.isUnderAttackHandshakes() && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
                     IPSQueue.addToQueue(inetAddress);
 
-                    if (IPSQueue.getPosition(inetAddress) > 1) {
-                        close(new Kick(Messages.Values.DISCONNECT_QUEUED
-                                .replaceAll("%position%", sonar.FORMAT.format(IPSQueue.getPosition(inetAddress)))
-                                .replaceAll("%size%", sonar.FORMAT.format(IPSQueue.QUEUE.size()))));
-                        return;
-                    }
+                    queue = IPSQueue.getPosition(inetAddress) > 1;
                 }
                 break;
             }
@@ -156,16 +145,20 @@ public final class PlayerHandler extends InitialHandler {
         }
 
         super.handle(handshake);
-    }
 
-    public void close(final Object packet) {
-        if (ctx.channel().isActive()) {
-            ctx.channel().writeAndFlush(packet).addListeners(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, ChannelFutureListener.CLOSE);
+        if (queue) {
+            currentState = ConnectionState.PROCESSING;
+
+            disconnect(Messages.Values.DISCONNECT_QUEUED
+                    .replaceAll("%position%", sonar.FORMAT.format(IPSQueue.getPosition(inetAddress)))
+                    .replaceAll("%size%", sonar.FORMAT.format(IPSQueue.QUEUE.size())));
         }
     }
 
     @Override
     public void handle(final StatusRequest statusRequest) throws Exception {
+        Counter.PINGS_PER_SECOND.increment();
+
         if (currentState != ConnectionState.PINGING) {
             throw sonar.EXCEPTION;
         }
@@ -227,6 +220,8 @@ public final class PlayerHandler extends InitialHandler {
 
     @Override
     public void handle(final LoginRequest loginRequest) throws Exception {
+        Counter.JOINS_PER_SECOND.increment();
+
         if (currentState != ConnectionState.JOINING) {
             throw sonar.EXCEPTION;
         }

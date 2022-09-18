@@ -27,10 +27,15 @@ public class Sensibility {
 
     public boolean isUnderAttack() {
         return isUnderAttackJoins()
+                || isUnderAttackHandshakes()
                 || Counter.CONNECTIONS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND * 3L;
     }
 
     public boolean isUnderAttackJoins() {
         return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND;
+    }
+
+    public boolean isUnderAttackHandshakes() {
+        return Counter.HANDSHAKES_PER_SECOND.get() > (Config.Values.MINIMUM_JOINS_PER_SECOND * 2L);
     }
 }

@@ -54,7 +54,8 @@ public final class ActionBar extends Thread implements Runnable {
                             pps = Counter.PINGS_PER_SECOND.get(),
                             eps = Counter.ENCRYPTIONS_PER_SECOND.get(),
                             ips = Counter.IPS_PER_SECOND.get(),
-                            jps = Counter.JOINS_PER_SECOND.get();
+                            jps = Counter.JOINS_PER_SECOND.get(),
+                            handshakes = Counter.HANDSHAKES_PER_SECOND.get();
 
                     // submit our counter results to the peak calculation
                     sonar.ipSecPeakCalculator.submit(ips);
@@ -88,6 +89,7 @@ public final class ActionBar extends Thread implements Runnable {
                             .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + sonar.FORMAT.format(ips))
                             .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
                             .replaceAll("%arrow%", getSpinningSymbol(index++))
+                            .replaceAll("%handshakes%", ColorUtil.getColorForCounter(handshakes) + sonar.FORMAT.format(handshakes))
                             .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
                             .replaceAll("%queue%", sonar.FORMAT.format(PlayerQueue.QUEUE.size() + IPSQueue.QUEUE.size()))
                             .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
