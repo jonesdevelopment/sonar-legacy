@@ -100,7 +100,7 @@ public final class ActionBar extends Thread implements Runnable {
                             .filter(player -> player.hasPermission("sonar.verbose"))
                             .collect(Collectors.toSet())
                             .forEach(player -> {
-                                if (player.getPendingConnection().getVersion() <= ProtocolConstants.MINECRAFT_1_13) {
+                                if (player.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_13) {
                                     player.sendMessage(ChatMessageType.ACTION_BAR, legacyCounter);
                                 } else {
                                     player.sendMessage(ChatMessageType.ACTION_BAR, counter);
