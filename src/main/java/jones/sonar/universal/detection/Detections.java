@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.detection;
+package jones.sonar.universal.detection;
 
 public interface Detections {
     Detection FIRST_JOIN_KICK    = new Detection(DetectionResult.DENIED,

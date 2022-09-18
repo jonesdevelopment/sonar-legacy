@@ -14,15 +14,15 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.detection.bungee;
+package jones.sonar.bungee.detection;
 
 import jones.sonar.bungee.config.Config;
-import jones.sonar.bungee.detection.Detection;
-import jones.sonar.bungee.detection.Detections;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.detection.Detection;
+import jones.sonar.universal.detection.Detections;
 import jones.sonar.universal.queue.PlayerQueue;
 import lombok.experimental.UtilityClass;
 
