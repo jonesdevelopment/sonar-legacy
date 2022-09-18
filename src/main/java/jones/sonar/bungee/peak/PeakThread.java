@@ -40,10 +40,11 @@ public final class PeakThread extends Thread implements Runnable {
             try {
                 try {
 
+                    final long timeStamp = System.currentTimeMillis();
+
                     // the server shouldn't be under attack when resetting the peak
                     // in order to prevent a peak reset during an attack
                     if (!Sensibility.isUnderAttack()) {
-                        final long timeStamp = System.currentTimeMillis();
 
                         // reset CPS peak if it didn't change in a few milliseconds
                         if (timeStamp - sonar.cpsPeakCalculator.lastPeakChange > Messages.Values.PEAK_RESET_DELAY) {
@@ -58,6 +59,9 @@ public final class PeakThread extends Thread implements Runnable {
 
                             sonar.callEvent(new SonarPeakResetEvent(PeakType.IP_ADDRESSES_PER_SECOND));
                         }
+                    } else {
+                        sonar.cpsPeakCalculator.lastPeakChange = timeStamp;
+                        sonar.ipSecPeakCalculator.lastPeakChange = timeStamp;
                     }
 
                     // if the peak is greater than the last peak
