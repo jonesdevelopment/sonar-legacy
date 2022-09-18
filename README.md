@@ -1,4 +1,6 @@
-# ⚡ Sonar Anti Bot ▪ Intelligent Minecraft bot protection
+# ⚡ Sonar Anti Bot
+
+## Intelligent Minecraft bot protection
 
 ### Features:
 * Bad packet filter
