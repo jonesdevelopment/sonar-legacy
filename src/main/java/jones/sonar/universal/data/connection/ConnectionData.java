@@ -37,7 +37,7 @@ public final class ConnectionData {
     public final Set<String> verifiedNames = new HashSet<>(50),
             allowedNames = new HashSet<>(50);
 
-    public long lastJoin = 0L, sinceLoggedIn = 0L;
+    public long lastJoin = 0L;
 
     public int checked = 0, clientSettingsPackets = 0,
             customPayloadPackets = 0, failedReconnect = 0,

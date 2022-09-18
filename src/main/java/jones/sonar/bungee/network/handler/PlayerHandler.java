@@ -132,14 +132,13 @@ public final class PlayerHandler extends InitialHandler {
              */
 
             case 2: {
+                currentState = ConnectionState.JOINING;
+
                 if (Sensibility.isUnderAttackHandshakes() && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
                     IPSQueue.addToQueue(inetAddress);
 
                     queue = IPSQueue.getPosition(inetAddress) > 1;
-                    break;
                 }
-
-                currentState = ConnectionState.JOINING;
                 break;
             }
 
@@ -159,9 +158,20 @@ public final class PlayerHandler extends InitialHandler {
         if (queue) {
             ServerStatistics.BLOCKED_CONNECTIONS++;
 
-            channelWrapper.close(Messages.Values.DISCONNECT_QUEUED
+            disconnect(Messages.Values.DISCONNECT_QUEUED
                     .replaceAll("%position%", sonar.FORMAT.format(IPSQueue.getPosition(inetAddress)))
                     .replaceAll("%size%", sonar.FORMAT.format(IPSQueue.QUEUE.size())));
+
+            /*final ConnectionData data = ConnectionDataManager.createOrReturn(inetAddress);
+
+            data.handleHandshake();
+
+            ctx.channel().eventLoop().schedule(() -> {
+                if (data.hasFailedHandshakeJoinCheck()) {
+                    ConnectionDataManager.remove(data);
+                    throw sonar.EXCEPTION;
+                }
+            }, 1000L, TimeUnit.MILLISECONDS);*/
         }
     }
 
