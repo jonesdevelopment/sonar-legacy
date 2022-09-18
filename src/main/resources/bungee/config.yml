@@ -35,7 +35,7 @@ general:
   action-bar-counter-delay: 80
 
   # Number of accounts being removed from the queue
-  queue-poll-rate: 1000
+  queue-poll-rate: 2000
 
   # Number of maximum accounts being removed from the queue
   maximum-queue-poll-rate: 2000

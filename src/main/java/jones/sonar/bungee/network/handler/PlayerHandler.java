@@ -43,6 +43,7 @@ import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.connection.InitialHandler;
+import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
@@ -65,7 +66,15 @@ public final class PlayerHandler extends InitialHandler {
 
     private final ChannelHandlerContext ctx;
 
+    private ChannelWrapper channelWrapper;
+
     private boolean queue = false;
+
+    @Override
+    public void connected(final ChannelWrapper channelWrapper) throws Exception {
+        this.channelWrapper = channelWrapper;
+        super.connected(channelWrapper);
+    }
 
     @Override
     public void exception(final Throwable cause) throws Exception {
@@ -123,13 +132,14 @@ public final class PlayerHandler extends InitialHandler {
              */
 
             case 2: {
-                currentState = ConnectionState.JOINING;
-
                 if (Sensibility.isUnderAttackHandshakes() && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
                     IPSQueue.addToQueue(inetAddress);
 
                     queue = IPSQueue.getPosition(inetAddress) > 1;
+                    break;
                 }
+
+                currentState = ConnectionState.JOINING;
                 break;
             }
 
@@ -147,9 +157,9 @@ public final class PlayerHandler extends InitialHandler {
         super.handle(handshake);
 
         if (queue) {
-            currentState = ConnectionState.PROCESSING;
+            ServerStatistics.BLOCKED_CONNECTIONS++;
 
-            disconnect(Messages.Values.DISCONNECT_QUEUED
+            channelWrapper.close(Messages.Values.DISCONNECT_QUEUED
                     .replaceAll("%position%", sonar.FORMAT.format(IPSQueue.getPosition(inetAddress)))
                     .replaceAll("%size%", sonar.FORMAT.format(IPSQueue.QUEUE.size())));
         }
