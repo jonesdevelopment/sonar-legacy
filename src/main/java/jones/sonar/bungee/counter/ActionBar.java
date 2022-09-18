@@ -40,6 +40,8 @@ public final class ActionBar extends Thread implements Runnable {
 
     private final SonarBungee sonar;
 
+    private long lastSwitch = 0L;
+
     @Override
     public void run() {
         int index = 0;
@@ -61,10 +63,16 @@ public final class ActionBar extends Thread implements Runnable {
                     sonar.ipSecPeakCalculator.submit(ips);
                     sonar.cpsPeakCalculator.submit(cps);
 
+                    final long timeStamp = System.currentTimeMillis();
+
+                    if (Sensibility.isUnderAttack() || !Messages.Values.ENABLE_COUNTER_WAITING_FORMAT) {
+                        lastSwitch = timeStamp;
+                    }
+
                     // this is needed to make the action bar align in the middle
-                    final String GENERAL_FORMAT = (!Sensibility.isUnderAttack() && Messages.Values.ENABLE_COUNTER_WAITING_FORMAT
+                    final String GENERAL_FORMAT = timeStamp - lastSwitch > 2500L
                             ? Messages.Values.COUNTER_WAITING_FORMAT
-                            : Messages.Values.COUNTER_FORMAT);
+                            : Messages.Values.COUNTER_FORMAT;
 
                     int colorCodeCount = 0;
 
