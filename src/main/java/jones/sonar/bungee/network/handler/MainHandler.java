@@ -30,5 +30,7 @@ public final class MainHandler extends HandlerBoss {
         ctx.close();
         ServerStatistics.BLOCKED_CONNECTIONS++;
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+        System.out.println("main handler");
+        cause.printStackTrace();
     }
 }

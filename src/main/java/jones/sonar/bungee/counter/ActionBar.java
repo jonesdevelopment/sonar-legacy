@@ -30,6 +30,7 @@ import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.protocol.ProtocolConstants;
 
 import java.util.stream.Collectors;
 
@@ -63,8 +64,6 @@ public final class ActionBar extends Thread implements Runnable {
                             ? Messages.Values.COUNTER_WAITING_FORMAT
                             : Messages.Values.COUNTER_FORMAT);
 
-                    /*
-
                     int colorCodeCount = 0;
 
                     // counting every color code within the message
@@ -74,9 +73,7 @@ public final class ActionBar extends Thread implements Runnable {
 
                     // adding empty lines in front of the message to align the message in
                     // the center of the players' screen
-                    GENERAL_FORMAT = repeat(" ", Math.min(colorCodeCount, 24)) + GENERAL_FORMAT;
-
-                    */
+                    final String SPACES = repeat(" ", Math.min(colorCodeCount, 24));
 
                     final TextComponent counter = new TextComponent(GENERAL_FORMAT
                             .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
@@ -95,10 +92,20 @@ public final class ActionBar extends Thread implements Runnable {
                             .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
                             .replaceAll("%joins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
 
+                    final TextComponent legacyCounter = new TextComponent(counter);
+
+                    legacyCounter.setText(SPACES + counter.getText());
+
                     ActionBarManager.getPlayers()
                             .filter(player -> player.hasPermission("sonar.verbose"))
                             .collect(Collectors.toSet())
-                            .forEach(player -> player.sendMessage(ChatMessageType.ACTION_BAR, counter));
+                            .forEach(player -> {
+                                if (player.getPendingConnection().getVersion() <= ProtocolConstants.MINECRAFT_1_13) {
+                                    player.sendMessage(ChatMessageType.ACTION_BAR, legacyCounter);
+                                } else {
+                                    player.sendMessage(ChatMessageType.ACTION_BAR, counter);
+                                }
+                            });
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

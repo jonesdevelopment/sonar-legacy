@@ -76,6 +76,8 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
         ctx.close();
         ServerStatistics.BLOCKED_CONNECTIONS++;
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+        System.out.println("interceptor");
+        cause.printStackTrace();
     }
 
     @Override
