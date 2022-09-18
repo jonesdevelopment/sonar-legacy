@@ -31,7 +31,6 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter implements
         ctx.close();
         ServerStatistics.BLOCKED_CONNECTIONS++;
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
-        cause.printStackTrace();
     }
 
     @Override
