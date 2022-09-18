@@ -31,7 +31,7 @@ import java.util.Objects;
 @UtilityClass
 public final class LoginHandler implements Detections {
     public Detection check(final ConnectionData connectionData) {
-        final boolean underAttack = Sensibility.isUnderAttack();
+        final boolean underAttack = Sensibility.isUnderAttackJoins();
 
         if (connectionData.username.length() > Config.Values.MAX_NAME_LENGTH
                 || !connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {

@@ -26,7 +26,11 @@ public class Sensibility {
     public long sinceLastAttack = 0L;
 
     public boolean isUnderAttack() {
-        return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND
+        return isUnderAttackJoins()
                 || Counter.CONNECTIONS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND * 3L;
+    }
+
+    public boolean isUnderAttackJoins() {
+        return Counter.JOINS_PER_SECOND.get() > Config.Values.MINIMUM_JOINS_PER_SECOND;
     }
 }

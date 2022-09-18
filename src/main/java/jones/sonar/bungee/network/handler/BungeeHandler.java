@@ -44,5 +44,7 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter implements
         } else {
             super.channelRead(ctx, msg);
         }
+
+        ctx.pipeline().remove(this);
     }
 }

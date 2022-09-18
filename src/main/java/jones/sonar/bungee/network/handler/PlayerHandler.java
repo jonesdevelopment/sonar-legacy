@@ -26,6 +26,7 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.detection.LoginHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
+import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.bungee.util.json.LegacyGsonFormat;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
@@ -33,6 +34,7 @@ import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.DetectionResult;
+import jones.sonar.universal.queue.IPSQueue;
 import jones.sonar.universal.queue.PlayerQueue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
@@ -41,7 +43,6 @@ import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ProxyPingEvent;
-import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
@@ -101,6 +102,8 @@ public final class PlayerHandler extends InitialHandler {
 
         currentState = ConnectionState.PROCESSING;
 
+        final InetAddress inetAddress = inetAddress();
+
         switch (handshake.getRequestedProtocol()) {
 
             /*
@@ -121,12 +124,23 @@ public final class PlayerHandler extends InitialHandler {
             case 2: {
                 Counter.JOINS_PER_SECOND.increment();
 
+                currentState = ConnectionState.JOINING;
+
                 if (!ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
-                    close(new Kick(ComponentSerializer.toString(Messages.Values.DISCONNECT_UNSUPPORTED_VERSION)));
+                    close(new Kick(Messages.Values.DISCONNECT_UNSUPPORTED_VERSION));
                     return;
                 }
 
-                currentState = ConnectionState.JOINING;
+                if (Sensibility.isUnderAttack()) {
+                    IPSQueue.addToQueue(inetAddress);
+
+                    if (IPSQueue.getPosition(inetAddress) > 1) {
+                        close(new Kick(Messages.Values.DISCONNECT_QUEUED
+                                .replaceAll("%position%", sonar.FORMAT.format(IPSQueue.getPosition(inetAddress)))
+                                .replaceAll("%size%", sonar.FORMAT.format(IPSQueue.QUEUE.size()))));
+                        return;
+                    }
+                }
                 break;
             }
 
@@ -146,9 +160,7 @@ public final class PlayerHandler extends InitialHandler {
 
     public void close(final Object packet) {
         if (ctx.channel().isActive()) {
-            ctx.writeAndFlush(packet).addListeners(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, ChannelFutureListener.CLOSE);
-        } else {
-            ctx.close();
+            ctx.channel().writeAndFlush(packet).addListeners(ChannelFutureListener.FIRE_EXCEPTION_ON_FAILURE, ChannelFutureListener.CLOSE);
         }
     }
 

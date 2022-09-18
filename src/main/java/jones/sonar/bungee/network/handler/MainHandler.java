@@ -34,5 +34,6 @@ public final class MainHandler extends HandlerBoss {
         if (cause instanceof IOException) return;
 
         Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+        cause.printStackTrace();
     }
 }

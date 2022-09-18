@@ -16,18 +16,15 @@
 
 package jones.sonar.bungee.network;
 
-import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
-import jones.sonar.bungee.network.handler.BungeeHandler;
 import jones.sonar.bungee.network.handler.MainHandler;
 import jones.sonar.bungee.network.handler.PlayerHandler;
-import jones.sonar.bungee.network.handler.TimeoutHandler;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
@@ -36,6 +33,8 @@ import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.event.ClientConnectEvent;
+import net.md_5.bungee.connection.InitialHandler;
+import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
@@ -118,28 +117,46 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
                 return;
             }
 
-            ctx.pipeline().addFirst(HANDLER, new BungeeHandler());
+            final Channel channel = ctx.channel();
+            final ChannelPipeline pipeline = channel.pipeline();
+
+            final Channel parent = channel.parent();
+
+            // check for geyser players and don't register the sonar handler for them
+            final boolean isGeyser = parent != null && parent.getClass().getCanonicalName().startsWith("org.geysermc.geyser");
+
+            if (!isGeyser) {
+                ChannelRegistrar.registerSonarChannel(pipeline);
+            }
 
             if (throttler != null
-                    && throttler.throttle(ctx.channel().remoteAddress())) {
+                    && throttler.throttle(channel.remoteAddress())) {
                 ctx.close();
                 return;
             }
 
-            final ListenerInfo listener = ctx.channel().attr(PipelineUtils.LISTENER).get();
+            final ListenerInfo listener = channel.attr(PipelineUtils.LISTENER).get();
 
-            initBaseChannel(ctx.channel());
+            if (isGeyser) {
+                PipelineUtils.BASE.initChannel(channel);
+            } else {
+                ChannelRegistrar.registerDefaultChannel(channel.config(), pipeline);
+            }
 
-            ctx.pipeline().addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
-            ctx.pipeline().addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, true, protocol));
-            ctx.pipeline().addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, true, protocol));
-            ctx.pipeline().addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.LEGACY_KICKER, legacyKicker);
+            pipeline.addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
+            pipeline.addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, true, protocol));
+            pipeline.addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, true, protocol));
+            pipeline.addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.LEGACY_KICKER, legacyKicker);
 
-            ctx.pipeline().get(MainHandler.class).setHandler(new PlayerHandler(ctx, listener));
+            if (isGeyser) {
+                pipeline.get(HandlerBoss.class).setHandler(new InitialHandler(BungeeCord.getInstance(), listener));
+            } else {
+                pipeline.get(MainHandler.class).setHandler(new PlayerHandler(ctx, listener));
+            }
 
             if (Config.Values.ALLOW_PROXY_PROTOCOL) {
                 if (listener.isProxyProtocol()) {
-                    ctx.pipeline().addFirst(new HAProxyMessageDecoder());
+                    pipeline.addFirst(new HAProxyMessageDecoder());
                 }
             }
 
@@ -154,19 +171,5 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
                 ctx.pipeline().remove(this);
             }
         }
-    }
-
-    private void initBaseChannel(final Channel channel) throws Exception {
-        channel.config().setOption(ChannelOption.IP_TOS, 24);
-        channel.config().setOption(ChannelOption.TCP_NODELAY, true);
-        channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
-
-        channel.config().setAllocator(PooledByteBufAllocator.DEFAULT);
-        channel.config().setWriteBufferWaterMark(MARK);
-
-        channel.pipeline().addLast(PipelineUtils.FRAME_DECODER, new Varint21FrameDecoder());
-        channel.pipeline().addLast(PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
-        channel.pipeline().addLast(PipelineUtils.FRAME_PREPENDER, FRAME_PREPENDER);
-        channel.pipeline().addLast(PipelineUtils.BOSS_HANDLER, new MainHandler());
     }
 }
