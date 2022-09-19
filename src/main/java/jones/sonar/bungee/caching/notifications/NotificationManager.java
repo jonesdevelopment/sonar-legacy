@@ -67,7 +67,7 @@ public class NotificationManager {
                         && ips > Config.Values.MINIMUM_JOINS_PER_SECOND) {
 
                     // cache all variables
-                    final long cps = Counter.IPS_PER_SECOND.get(),
+                    final long cps = Counter.CONNECTIONS_PER_SECOND.get(),
                             joins = Counter.JOINS_PER_SECOND.get(),
                             pings = Counter.PINGS_PER_SECOND.get(),
                             encryptions = Counter.ENCRYPTIONS_PER_SECOND.get();
