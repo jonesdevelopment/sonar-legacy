@@ -40,7 +40,7 @@ public final class TimeoutHandler extends IdleStateHandler {
         assert evt.state() == IdleState.READER_IDLE;
 
         if (!closed) {
-            ctx.close();
+            ctx.channel().unsafe().closeForcibly();
 
             closed = true;
         }

@@ -34,6 +34,7 @@ public final class BungeeDecoder extends ByteToMessageDecoder {
 
         // the byteBuf is always 4 bytes or longer in a handshake packet
         if (byteBuf.readableBytes() < 4) {
+            byteBuf.skipBytes(byteBuf.readableBytes());
             throw SonarBungee.INSTANCE.EXCEPTION;
         }
 
@@ -46,8 +47,18 @@ public final class BungeeDecoder extends ByteToMessageDecoder {
         // the first byte is always greater than 0
         // the second byte is always 0
         if (bytes[0] <= 0 || bytes[1] != 0) {
+            byteBuf.skipBytes(byteBuf.readableBytes());
             throw SonarBungee.INSTANCE.EXCEPTION;
         }
+
+        /*
+        if (byteBuf.writerIndex() == 18
+                && byteBuf.readerIndex() == 0
+                && byteBuf.readableBytes() > 9) {
+            byteBuf.skipBytes(byteBuf.readableBytes());
+            return;
+        }
+        */
 
         byteBuf.markReaderIndex();
 

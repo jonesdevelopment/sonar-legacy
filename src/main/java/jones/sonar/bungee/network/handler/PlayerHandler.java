@@ -41,7 +41,6 @@ import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.connection.InitialHandler;
-import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
@@ -62,16 +61,6 @@ public final class PlayerHandler extends InitialHandler {
     private final SonarBungee sonar = SonarBungee.INSTANCE;
 
     private final ChannelHandlerContext ctx;
-
-    private ChannelWrapper channelWrapper;
-
-    private boolean queue = false;
-
-    @Override
-    public void connected(final ChannelWrapper channelWrapper) throws Exception {
-        this.channelWrapper = channelWrapper;
-        super.connected(channelWrapper);
-    }
 
     @Override
     public void exception(final Throwable cause) throws Exception {

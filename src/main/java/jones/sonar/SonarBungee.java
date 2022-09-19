@@ -105,7 +105,7 @@ public enum SonarBungee {
             // invalid license
             if (licenseResponse != null) {
                 Logger.INFO.log(" §e" + licenseResponse.errorMessage);
-                Logger.INFO.log(" §r §r §7Your hardware id: §f" + licenseResponse.license.hardwareID.encryptedInformation);
+                Logger.INFO.log(" §7Your hardware id: §f" + licenseResponse.license.hardwareID.encryptedInformation);
             }
 
             // general exception
