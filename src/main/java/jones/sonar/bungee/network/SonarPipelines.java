@@ -19,14 +19,12 @@ package jones.sonar.bungee.network;
 import io.netty.channel.ChannelPipeline;
 import jones.sonar.bungee.network.decoder.BungeeDecoder;
 import jones.sonar.bungee.network.handler.BungeeHandler;
-import jones.sonar.bungee.network.handler.BungeeInboundHandler;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class SonarPipelines implements SonarPipeline {
     public void register(final ChannelPipeline pipeline) {
         pipeline.addFirst(HANDLER, new BungeeHandler());
-        pipeline.addFirst(INBOUND, new BungeeInboundHandler());
         pipeline.addFirst(DECODER, new BungeeDecoder());
     }
 }

@@ -21,7 +21,7 @@ import net.md_5.bungee.protocol.Varint21LengthFieldPrepender;
 
 public interface SonarPipeline {
 
-    String HANDLER = "sonar-handler", DECODER = "sonar-decoder", INBOUND = "sonar-inbound";
+    String HANDLER = "sonar-handler", DECODER = "sonar-decoder";
 
     Varint21LengthFieldPrepender FRAME_PREPENDER = new Varint21LengthFieldPrepender();
 

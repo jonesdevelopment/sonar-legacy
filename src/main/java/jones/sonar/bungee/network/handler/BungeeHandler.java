@@ -19,9 +19,11 @@ package jones.sonar.bungee.network.handler;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import jones.sonar.SonarBungee;
+import jones.sonar.bungee.config.Config;
 import jones.sonar.universal.util.ExceptionHandler;
 
-public final class BungeeHandler extends ChannelInboundHandlerAdapter implements SonarHandler {
+public final class BungeeHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
@@ -31,11 +33,39 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter implements
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
         if (msg instanceof ByteBuf) {
-            intercept(ctx, (ByteBuf) msg);
+            final ByteBuf byteBuf = (ByteBuf) msg;
+
+            if (!ctx.channel().isActive() && byteBuf.refCnt() > 0) {
+                byteBuf.release(byteBuf.refCnt());
+                return;
+            }
+
+            if (!byteBuf.isReadable()) {
+                ctx.close();
+                return;
+            }
+
+            final int readableBytes = byteBuf.readableBytes();
+
+            byteBuf.markReaderIndex();
+
+            if (readableBytes > Config.Values.MAX_PACKET_BYTES
+                    || byteBuf.capacity() > Config.Values.MAX_PACKET_CAPACITY
+                    || byteBuf.writableBytes() > Config.Values.MAX_PACKET_CAPACITY
+                    || byteBuf.writerIndex() > Config.Values.MAX_PACKET_INDEX
+                    || byteBuf.readerIndex() > Config.Values.MAX_PACKET_BYTES
+                    || readableBytes <= 0) {
+                byteBuf.skipBytes(byteBuf.readableBytes());
+                throw SonarBungee.INSTANCE.EXCEPTION;
+            }
+
+            byteBuf.resetReaderIndex();
+
+            ctx.fireChannelRead(byteBuf);
+
+            ctx.pipeline().remove(this);
         } else {
             super.channelRead(ctx, msg);
         }
-
-        ctx.pipeline().remove(this);
     }
 }
