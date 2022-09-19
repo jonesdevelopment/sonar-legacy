@@ -120,7 +120,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             final boolean isGeyser = parent != null && parent.getClass().getCanonicalName().startsWith("org.geysermc.geyser");
 
             if (!isGeyser) {
-                SonarPipelines.registerSonarChannel(pipeline);
+                SonarPipelines.register(pipeline);
             }
 
             if (throttler != null && throttler.throttle(channel.remoteAddress())) {
@@ -136,21 +136,30 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
                 channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
             }
 
+            // initialize the channel with the pipeline base
+            // this is necessary for compatibility reasons
             PipelineUtils.BASE.initChannel(channel);
 
+            // replace the timeout handler to our custom, fixed one
             pipeline.replace(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
 
+            // load the default BungeeCord pipelines
             pipeline.addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
             pipeline.addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, true, protocol));
             pipeline.addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, true, protocol));
             pipeline.addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.LEGACY_KICKER, legacyKicker);
 
+            // we don't want geyser players to be falsely flagged
+            // this is why we need to load the original initial handler
             if (isGeyser) {
                 pipeline.get(HandlerBoss.class).setHandler(new InitialHandler(BungeeCord.getInstance(), listener));
             } else {
+
+                // normal players will be handled using our custom player handler
                 pipeline.get(HandlerBoss.class).setHandler(new PlayerHandler(ctx, listener));
             }
 
+            // the proxy protocol is necessary if you want to use tcp shield
             if (Config.Values.ALLOW_PROXY_PROTOCOL) {
                 if (listener.isProxyProtocol()) {
                     pipeline.addFirst(new HAProxyMessageDecoder());

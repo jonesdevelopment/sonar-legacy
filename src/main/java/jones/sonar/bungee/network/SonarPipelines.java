@@ -24,7 +24,7 @@ import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class SonarPipelines implements SonarPipeline {
-    public void registerSonarChannel(final ChannelPipeline pipeline) {
+    public void register(final ChannelPipeline pipeline) {
         pipeline.addFirst(HANDLER, new BungeeHandler());
         pipeline.addFirst(INBOUND, new BungeeInboundHandler());
         pipeline.addFirst(DECODER, new BungeeDecoder());
