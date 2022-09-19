@@ -25,7 +25,6 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.detection.LoginHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
-import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.bungee.util.json.LegacyGsonFormat;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
@@ -33,7 +32,6 @@ import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.DetectionResult;
-import jones.sonar.universal.queue.IPSQueue;
 import jones.sonar.universal.queue.PlayerQueue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
@@ -45,7 +43,6 @@ import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.protocol.PacketWrapper;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
@@ -133,12 +130,6 @@ public final class PlayerHandler extends InitialHandler {
 
             case 2: {
                 currentState = ConnectionState.JOINING;
-
-                if (Sensibility.isUnderAttackHandshakes() && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(handshake.getProtocolVersion())) {
-                    IPSQueue.addToQueue(inetAddress);
-
-                    queue = IPSQueue.getPosition(inetAddress) > 1;
-                }
                 break;
             }
 
@@ -154,14 +145,6 @@ public final class PlayerHandler extends InitialHandler {
         }
 
         super.handle(handshake);
-
-        if (queue) {
-            ServerStatistics.BLOCKED_CONNECTIONS++;
-
-            disconnect(Messages.Values.DISCONNECT_QUEUED
-                    .replaceAll("%position%", sonar.FORMAT.format(IPSQueue.getPosition(inetAddress)))
-                    .replaceAll("%size%", sonar.FORMAT.format(IPSQueue.QUEUE.size())));
-        }
     }
 
     @Override
