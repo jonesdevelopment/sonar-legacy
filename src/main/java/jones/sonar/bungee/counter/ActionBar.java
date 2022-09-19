@@ -86,21 +86,21 @@ public final class ActionBar extends Thread implements Runnable {
                     final String SPACES = repeat(" ", Math.min(colorCodeCount, 24));
 
                     final TextComponent counter = new TextComponent(GENERAL_FORMAT
-                            .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
-                            .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + sonar.FORMAT.format(pps))
                             .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.DATA.values().stream()
                                     .filter(connectionData -> connectionData.checked <= 1)
                                     .count()))
                             .replaceAll("%blocked%", sonar.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS))
                             .replaceAll("%whitelisted%", sonar.FORMAT.format(Whitelist.size()))
                             .replaceAll("%blacklisted%", sonar.FORMAT.format(Blacklist.size()))
-                            .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + sonar.FORMAT.format(ips))
                             .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
                             .replaceAll("%arrow%", getSpinningSymbol(index++))
-                            .replaceAll("%handshakes%", ColorUtil.getColorForCounter(handshakes) + sonar.FORMAT.format(handshakes))
-                            .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
                             .replaceAll("%queue%", sonar.FORMAT.format(PlayerQueue.QUEUE.size() + IPSQueue.QUEUE.size()))
                             .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
+                            .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
+                            .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + sonar.FORMAT.format(pps))
+                            .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + sonar.FORMAT.format(ips))
+                            .replaceAll("%handshakes%", ColorUtil.getColorForCounter(handshakes) + sonar.FORMAT.format(handshakes))
+                            .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
                             .replaceAll("%logins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
 
                     final TextComponent legacyCounter = new TextComponent(counter);
