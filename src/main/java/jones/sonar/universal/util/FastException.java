@@ -16,8 +16,5 @@
 
 package jones.sonar.universal.util;
 
-public final class FastException extends RuntimeException {
-    public FastException() {
-        super();
-    }
+public final class FastException extends Exception {
 }

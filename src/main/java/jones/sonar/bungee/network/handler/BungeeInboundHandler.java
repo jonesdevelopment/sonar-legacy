@@ -14,20 +14,16 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.network;
+package jones.sonar.bungee.network.handler;
 
-import io.netty.channel.WriteBufferWaterMark;
-import net.md_5.bungee.protocol.Varint21LengthFieldPrepender;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import jones.sonar.universal.util.ExceptionHandler;
 
-public interface SonarPipeline {
+public final class BungeeInboundHandler extends ChannelInboundHandlerAdapter {
 
-    String HANDLER = "sonar-handler", DECODER = "sonar-decoder", INBOUND = "sonar-inbound";
-
-    Varint21LengthFieldPrepender FRAME_PREPENDER = new Varint21LengthFieldPrepender();
-
-    int LOW_MARK = Integer.getInteger("net.md_5.bungee.low_mark", 2 << 18); // 0.5 mb
-    int HIGH_MARK = Integer.getInteger("net.md_5.bungee.high_mark", 2 << 20); // 2 mb
-
-    WriteBufferWaterMark MARK = new WriteBufferWaterMark(LOW_MARK, HIGH_MARK);
-
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+        ExceptionHandler.handle(ctx.channel(), cause);
+    }
 }

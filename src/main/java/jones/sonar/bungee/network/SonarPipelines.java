@@ -16,18 +16,17 @@
 
 package jones.sonar.bungee.network;
 
-import io.netty.channel.WriteBufferWaterMark;
-import net.md_5.bungee.protocol.Varint21LengthFieldPrepender;
+import io.netty.channel.ChannelPipeline;
+import jones.sonar.bungee.network.decoder.BungeeDecoder;
+import jones.sonar.bungee.network.handler.BungeeHandler;
+import jones.sonar.bungee.network.handler.BungeeInboundHandler;
+import lombok.experimental.UtilityClass;
 
-public interface SonarPipeline {
-
-    String HANDLER = "sonar-handler", DECODER = "sonar-decoder", INBOUND = "sonar-inbound";
-
-    Varint21LengthFieldPrepender FRAME_PREPENDER = new Varint21LengthFieldPrepender();
-
-    int LOW_MARK = Integer.getInteger("net.md_5.bungee.low_mark", 2 << 18); // 0.5 mb
-    int HIGH_MARK = Integer.getInteger("net.md_5.bungee.high_mark", 2 << 20); // 2 mb
-
-    WriteBufferWaterMark MARK = new WriteBufferWaterMark(LOW_MARK, HIGH_MARK);
-
+@UtilityClass
+public class SonarPipelines implements SonarPipeline {
+    public void registerSonarChannel(final ChannelPipeline pipeline) {
+        pipeline.addFirst(HANDLER, new BungeeHandler());
+        pipeline.addFirst(INBOUND, new BungeeInboundHandler());
+        pipeline.addFirst(DECODER, new BungeeDecoder());
+    }
 }

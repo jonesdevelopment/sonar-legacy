@@ -16,18 +16,16 @@
 
 package jones.sonar.bungee.network;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
-import jones.sonar.bungee.network.handler.MainHandler;
 import jones.sonar.bungee.network.handler.PlayerHandler;
+import jones.sonar.bungee.network.handler.TimeoutHandler;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
+import jones.sonar.universal.util.ExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ConnectionThrottle;
@@ -38,7 +36,6 @@ import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -73,12 +70,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-        ctx.close();
-        ServerStatistics.BLOCKED_CONNECTIONS++;
-
-        if (cause instanceof IOException) return;
-
-        Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+        ExceptionHandler.handle(ctx.channel(), cause);
     }
 
     @Override
@@ -111,14 +103,15 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
                 }
             }
 
+            final Channel channel = ctx.channel();
+
             if (Blacklist.isBlacklisted(inetAddress)) {
-                ctx.channel().unsafe().closeForcibly();
+                channel.unsafe().closeForcibly();
 
                 ServerStatistics.BLOCKED_CONNECTIONS++;
                 return;
             }
 
-            final Channel channel = ctx.channel();
             final ChannelPipeline pipeline = channel.pipeline();
 
             final Channel parent = channel.parent();
@@ -127,22 +120,25 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             final boolean isGeyser = parent != null && parent.getClass().getCanonicalName().startsWith("org.geysermc.geyser");
 
             if (!isGeyser) {
-                ChannelRegistrar.registerSonarChannel(pipeline);
+                SonarPipelines.registerSonarChannel(pipeline);
             }
 
-            if (throttler != null
-                    && throttler.throttle(channel.remoteAddress())) {
-                ctx.close();
+            if (throttler != null && throttler.throttle(channel.remoteAddress())) {
+                channel.unsafe().closeForcibly();
+
+                ServerStatistics.BLOCKED_CONNECTIONS++;
                 return;
             }
 
             final ListenerInfo listener = channel.attr(PipelineUtils.LISTENER).get();
 
-            if (isGeyser) {
-                PipelineUtils.BASE.initChannel(channel);
-            } else {
-                ChannelRegistrar.registerDefaultChannel(channel.config(), pipeline);
+            if (!isGeyser) {
+                channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
             }
+
+            PipelineUtils.BASE.initChannel(channel);
+
+            pipeline.replace(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
 
             pipeline.addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
             pipeline.addAfter(PipelineUtils.FRAME_DECODER, PipelineUtils.PACKET_DECODER, new MinecraftDecoder(Protocol.HANDSHAKE, true, protocol));
@@ -152,7 +148,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             if (isGeyser) {
                 pipeline.get(HandlerBoss.class).setHandler(new InitialHandler(BungeeCord.getInstance(), listener));
             } else {
-                pipeline.get(MainHandler.class).setHandler(new PlayerHandler(ctx, listener));
+                pipeline.get(HandlerBoss.class).setHandler(new PlayerHandler(ctx, listener));
             }
 
             if (Config.Values.ALLOW_PROXY_PROTOCOL) {
@@ -163,7 +159,8 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             if (Config.Values.CLIENT_CONNECT_EVENT) {
                 if (SonarBungee.INSTANCE.callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
-                    ctx.close();
+                    ctx.channel().unsafe().closeForcibly();
+
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                 }
             }

@@ -14,26 +14,27 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.network.handler;
+package jones.sonar.universal.util;
 
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.Channel;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.ServerStatistics;
-import net.md_5.bungee.netty.HandlerBoss;
+import lombok.experimental.UtilityClass;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
-public final class MainHandler extends HandlerBoss {
-
-    @Override
-    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-        ctx.channel().unsafe().closeForcibly();
+@UtilityClass
+public class ExceptionHandler {
+    public void handle(final Channel channel, final Throwable cause) {
+        channel.unsafe().closeForcibly();
 
         ServerStatistics.BLOCKED_CONNECTIONS++;
 
+        // IOException can be thrown by disconnecting from the server
+        // We need to exempt clients for that, so they won't get false blacklisted
         if (cause instanceof IOException) return;
 
-        Blacklist.addToBlacklist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+        Blacklist.addToBlacklist(((InetSocketAddress) channel.remoteAddress()).getAddress());
     }
 }
