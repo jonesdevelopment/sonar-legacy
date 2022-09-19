@@ -23,6 +23,6 @@ import net.md_5.bungee.api.plugin.Event;
 public final class SonarAttackDetectedEvent extends Event {
 
     @Getter
-    private final long connectionsPerSecond, ipAddressesPerSecond, joinsPerSecond, pingsPerSecond, encryptionsPerSecond;
+    private final long connectionsPerSecond, ipAddressesPerSecond, loginsPerSecond, pingsPerSecond, encryptionsPerSecond;
 
 }
