@@ -111,8 +111,6 @@ public final class PlayerHandler extends InitialHandler {
 
         currentState = ConnectionState.PROCESSING;
 
-        final InetAddress inetAddress = inetAddress();
-
         switch (handshake.getRequestedProtocol()) {
 
             /*
