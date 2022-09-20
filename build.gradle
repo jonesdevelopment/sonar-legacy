@@ -43,7 +43,8 @@ task generateDictionry {
     outputs.file("${buildDir}/../proguard/dictionary")
 
     doLast {
-        def chars = (1..120)
+        def random = new Random()
+        def chars = (random.nextInt(3)..80 + random.nextInt(40))
                 .findAll {
                     Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) && it != 36
                 }
