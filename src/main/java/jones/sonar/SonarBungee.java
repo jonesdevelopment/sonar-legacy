@@ -58,8 +58,6 @@ public enum SonarBungee {
     public final PeakCalculator cpsPeakCalculator = new PeakCalculator(),
             ipSecPeakCalculator = new PeakCalculator();
 
-    private final String LINE = "§7§m«-----------------------------------------»§r";
-
     public final SonarPlatform platform = SonarPlatform.BUNGEE;
 
     public String VERSION = "unknown";
@@ -98,7 +96,7 @@ public enum SonarBungee {
 
         // something did go wrong or the license is invalid
         if (!running) {
-            Logger.INFO.log(LINE);
+            Logger.INFO.log("§7§m«-----------------------------------------»§r");
             Logger.INFO.log(" ");
             Logger.INFO.log(" §cSonar couldn't start because of following error:");
             Logger.INFO.log(" ");
@@ -119,7 +117,7 @@ public enum SonarBungee {
             Logger.INFO.log(" ");
             Logger.INFO.log(" §7Support Discord:§f https://discord.jonesdev.xyz/");
             Logger.INFO.log(" ");
-            Logger.INFO.log(LINE);
+            Logger.INFO.log("§7§m«-----------------------------------------»§r");
         }
     }
 
@@ -139,7 +137,7 @@ public enum SonarBungee {
          * Start-up message
          */
 
-        Logger.INFO.log(LINE);
+        Logger.INFO.log("§7§m«-----------------------------------------»§r");
         Logger.INFO.log(" ");
 
         VERSION = plugin.getDescription().getVersion();
@@ -182,7 +180,7 @@ public enum SonarBungee {
             Logger.INFO.log(" §cError setting up the connection interceptor! [v " + JAVA_VERSION + "]");
             Logger.INFO.log(" §cMake sure you are using the correct version of the proxy and Java.");
             Logger.INFO.log(" ");
-            Logger.INFO.log(LINE);
+            Logger.INFO.log("§7§m«-----------------------------------------»§r");
             return;
         }
 
@@ -209,7 +207,7 @@ public enum SonarBungee {
 
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");
-        Logger.INFO.log(LINE);
+        Logger.INFO.log("§7§m«-----------------------------------------»§r");
     }
 
     public void onDisable(final SonarBungeePlugin plugin) {
