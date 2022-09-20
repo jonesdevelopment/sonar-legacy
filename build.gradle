@@ -58,6 +58,7 @@ task generateDictionry {
                 start << String.valueOf(c)
             }
         }
+        Collections.shuffle(start)
         def f = outputs.files.getSingleFile()
         f.getParentFile().mkdirs()
         f.withWriter("UTF-8") {
