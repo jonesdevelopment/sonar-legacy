@@ -22,13 +22,15 @@ import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 
+import java.util.Arrays;
+
 public final class VerifyCommand extends SubCommand {
 
     public VerifyCommand() {
         super("verify",
                 "Verification management",
                 "sonar.verify",
-                null);
+                Arrays.asList("size", "clear", "reset", "purge"));
     }
 
     @Override
