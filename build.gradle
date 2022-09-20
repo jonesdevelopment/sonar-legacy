@@ -43,13 +43,18 @@ task generateDictionry {
     outputs.file("${buildDir}/../proguard/dictionary")
 
     doLast {
-        def random = new Random()
-        // china
-        def begin = random.nextInt(200) + 34000
-        def end = begin + 2000 + random.nextInt(4000)
-        def chars = (begin..end)
-                .findAll { Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) }
-                .collect { String.valueOf(Character.toChars(it)) }
+        def chars = (1..120)
+                .findAll {
+                    Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) && it != 36
+                }
+                .collect {
+                    String.valueOf(Character.toChars(it))
+                }
+
+        // reverse pattern for more randomization
+        Collections.reverse(chars)
+
+        // add characters to an array
         int max = chars.size()
         def start = []
         for (int i = 0; i < max; i++) {
@@ -58,7 +63,11 @@ task generateDictionry {
                 start << String.valueOf(c)
             }
         }
+
+        // shuffle the array
         Collections.shuffle(start)
+
+        // write dictionary
         def f = outputs.files.getSingleFile()
         f.getParentFile().mkdirs()
         f.withWriter("UTF-8") {
