@@ -19,6 +19,7 @@ package jones.sonar.bungee.network.handler.packet;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import jones.sonar.SonarBungee;
+import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.network.handler.PlayerHandler;
 import jones.sonar.universal.data.player.PlayerData;
@@ -97,12 +98,21 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
                         // remove from whitelist, if whitelisted
                         Whitelist.removeFromWhitelist(inetAddress);
+
+                        // reset the amount of keep alive packets for automatic whitelisting
+                        playerData.keepAliveSent = 0L;
                         return;
                     }
                 }
 
-                else if (wrapper.packet instanceof KeepAlive && playerData.passes()) {
-                    Whitelist.addToWhitelist(inetAddress);
+                else if (wrapper.packet instanceof KeepAlive && playerData.passes() && !Whitelist.isWhitelisted(inetAddress)) {
+                    playerData.keepAliveSent++;
+
+                    // we only want to whitelist the player if they already sent
+                    // more than a specific amount of keep alive packets to the server
+                    if (playerData.keepAliveSent > Config.Values.MINIMUM_KEEP_ALIVE_TICK) {
+                        Whitelist.addToWhitelist(inetAddress);
+                    }
                 }
             }
         }

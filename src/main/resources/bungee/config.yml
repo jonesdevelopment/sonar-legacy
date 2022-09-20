@@ -12,6 +12,9 @@ general:
   # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
   maximum-packet-capacity: 4096
 
+  # Minimum online keep alive tick to automatically whitelist online players
+  minimum-tick-to-auto-whitelist: 3
+
   # Enable this if you are using the motd of a spigot instance (forced host)
   allow-forced-host-ping: false
 

@@ -24,7 +24,7 @@ public final class PlayerData {
 
     public String clientBrand = "/";
 
-    public long lastDetection = 0L;
+    public long lastDetection = 0L, keepAliveSent = 0L;
 
     public boolean sentClientSettings = false, sentClientBrand = false;
 
