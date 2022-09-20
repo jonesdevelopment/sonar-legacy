@@ -30,6 +30,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 @RequiredArgsConstructor
@@ -57,6 +58,8 @@ public final class PacketHandler extends ChannelDuplexHandler {
                 if (proxiedPlayer == null) break check;
 
                 final PlayerData playerData = PlayerDataManager.create(proxiedPlayer.getName());
+
+                final InetAddress inetAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress();
 
                 if (wrapper.packet instanceof ClientSettings) {
                     final ClientSettings clientSettings = (ClientSettings) wrapper.packet;
@@ -91,12 +94,15 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     if (!playerData.passes()) {
                         proxiedPlayer.disconnect(Messages.Values.DISCONNECT_BOT_DETECTION);
                         playerData.lastDetection = System.currentTimeMillis();
+
+                        // remove from whitelist, if whitelisted
+                        Whitelist.removeFromWhitelist(inetAddress);
                         return;
                     }
                 }
 
                 else if (wrapper.packet instanceof KeepAlive && playerData.passes()) {
-                    Whitelist.addToWhitelist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
+                    Whitelist.addToWhitelist(inetAddress);
                 }
             }
         }
