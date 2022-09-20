@@ -23,8 +23,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public final class ConsoleFilter {
     public void apply(final SonarBungee sonar) {
-        sonar.proxy.getLogger().setFilter(record -> record.getThrown() == null
-                && ((!record.getSourceClassName().equals("net.md_5.bungee.connection.InitialHandler")
+        sonar.proxy.getLogger().setFilter(record -> ((!record.getSourceClassName().equals("net.md_5.bungee.connection.InitialHandler")
                 && !(record.getSourceClassName().equals("net.md_5.bungee.netty.HandlerBoss")
                 && record.getMessage().contains(" - encountered exception: ")))
                 || Config.Values.LOG_CONNECTIONS));

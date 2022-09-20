@@ -86,9 +86,7 @@ public final class ActionBar extends Thread implements Runnable {
                     final String SPACES = repeat(" ", Math.min(colorCodeCount, 24));
 
                     final TextComponent counter = new TextComponent(GENERAL_FORMAT
-                            .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.DATA.values().stream()
-                                    .filter(connectionData -> connectionData.checked <= 1)
-                                    .count()))
+                            .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.getVerifying()))
                             .replaceAll("%blocked%", sonar.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS))
                             .replaceAll("%whitelisted%", sonar.FORMAT.format(Whitelist.size()))
                             .replaceAll("%blacklisted%", sonar.FORMAT.format(Blacklist.size()))

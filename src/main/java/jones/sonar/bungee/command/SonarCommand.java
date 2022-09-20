@@ -47,9 +47,13 @@ public final class SonarCommand extends Command implements TabExecutor {
         if (args.length == 0) {
             sender.sendMessage(Messages.Values.HEADER_BAR);
 
-            CommandManager.SUB_COMMANDS.forEach(command -> sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
-                    .replaceAll("%command%", command.name)
-                    .replaceAll("%description%", command.description)));
+            if (CommandManager.SUB_COMMANDS.stream().noneMatch(subCommand -> sender.hasPermission(subCommand.permission))) {
+                sender.sendMessage(Messages.Values.NO_PERMISSION_SUB_COMMAND_ANY);
+            } else {
+                CommandManager.SUB_COMMANDS.forEach(command -> sender.sendMessage(Messages.Values.HELP_COMMAND_LAYOUT
+                        .replaceAll("%command%", sender.hasPermission(command.permission) ? command.name : "§m" + command.name + "§r")
+                        .replaceAll("%description%", command.description)));
+            }
 
             sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + SonarBungee.INSTANCE.VERSION + " §f§oby §f§ojonesdev.xyz§r");
             sender.sendMessage(Messages.Values.FOOTER_BAR);

@@ -29,6 +29,12 @@ import java.util.stream.Collectors;
 public class ConnectionDataManager {
     public final Map<InetAddress, ConnectionData> DATA = new ConcurrentHashMap<>(500000);
 
+    public long getVerifying() {
+        return DATA.values().stream()
+                .filter(connectionData -> connectionData.checked <= 1)
+                .count();
+    }
+
     public ConnectionData get(final InetAddress inetAddress) {
         if (contains(inetAddress)) {
             return DATA.get(inetAddress);

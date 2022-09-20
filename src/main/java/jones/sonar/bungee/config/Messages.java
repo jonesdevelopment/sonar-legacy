@@ -95,7 +95,9 @@ public class Messages {
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
                 NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS,
-                RELOAD_CONFIRMATION_ATTACK, DISCONNECT_BOT_BEHAVIOUR, DISCONNECT_BOT_DETECTION;
+                RELOAD_CONFIRMATION_ATTACK, DISCONNECT_BOT_BEHAVIOUR, DISCONNECT_BOT_DETECTION,
+                NO_PERMISSION_SUB_COMMAND_ANY, VERIFICATION_PURGING, VERIFICATION_PURGE_COMPLETE,
+                VERIFICATION_SIZE, VERIFICATION_CLEAR, VERIFICATION_PURGE_NONE, VERIFICATION_EMPTY;
 
         public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY;
 
@@ -113,6 +115,7 @@ public class Messages {
 
                 NO_PERMISSION = format(config.getString("no-permission"));
                 NO_PERMISSION_SUB_COMMAND = format(config.getString("no-permission-sub"));
+                NO_PERMISSION_SUB_COMMAND_ANY = format(config.getString("no-permission-sub-any"));
                 UNKNOWN_SUB_COMMAND = format(config.getString("unknown-sub-command"));
                 ONLY_PLAYERS = format(config.getString("only-players"));
 
@@ -150,22 +153,31 @@ public class Messages {
                 BLACKLIST_ADD_IP = format(config.getString("commands.blacklist.add-ip"));
                 BLACKLIST_REMOVE = format(config.getString("commands.blacklist.remove"));
 
+                VERIFICATION_PURGING = format(config.getString("commands.verification.purging"));
+                VERIFICATION_PURGE_COMPLETE = format(config.getString("commands.verification.purge"));
+                VERIFICATION_PURGE_NONE = format(config.getString("commands.verification.purge-none"));
+                VERIFICATION_CLEAR = format(config.getString("commands.verification.clear"));
+                VERIFICATION_SIZE = format(config.getString("commands.verification.size"));
+                VERIFICATION_EMPTY = format(config.getString("commands.verification.empty"));
+
+                NOTIFY_ENABLED = format(config.getString("commands.notify.enabled"));
+                NOTIFY_DISABLED = format(config.getString("commands.notify.disabled"));
+                NOTIFY_ENABLED_OTHER = format(config.getString("commands.notify.enabled-other"));
+                NOTIFY_DISABLED_OTHER = format(config.getString("commands.notify.disabled-other"));
+
+                COUNTER_ENABLED = format(config.getString("commands.verbose.enabled"));
+                COUNTER_DISABLED = format(config.getString("commands.verbose.disabled"));
+                COUNTER_ENABLED_OTHER = format(config.getString("commands.verbose.enabled-other"));
+                COUNTER_DISABLED_OTHER = format(config.getString("commands.verbose.disabled-other"));
+
                 if (LIST_SYMBOL.length() > 2) LIST_SYMBOL = LIST_SYMBOL.substring(0, 2);
                 else if (LIST_SYMBOL.isEmpty()) LIST_SYMBOL = "▪";
 
                 // notifications
                 NOTIFY_DELAY = Math.max(config.getInt("notifications.chat.delay", 25000), 100);
                 NOTIFY_FORMAT = format(fromList(config.getStringList("notifications.chat.format")));
-                NOTIFY_ENABLED = format(config.getString("notifications.chat.enabled"));
-                NOTIFY_DISABLED = format(config.getString("notifications.chat.disabled"));
-                NOTIFY_ENABLED_OTHER = format(config.getString("notifications.chat.enabled-other"));
-                NOTIFY_DISABLED_OTHER = format(config.getString("notifications.chat.disabled-other"));
 
                 // counter
-                COUNTER_ENABLED = format(config.getString("notifications.action-bar.enabled"));
-                COUNTER_DISABLED = format(config.getString("notifications.action-bar.disabled"));
-                COUNTER_ENABLED_OTHER = format(config.getString("notifications.action-bar.enabled-other"));
-                COUNTER_DISABLED_OTHER = format(config.getString("notifications.action-bar.disabled-other"));
                 COUNTER_FORMAT = format(config.getString("notifications.action-bar.format"));
                 COUNTER_WAITING_FORMAT = format(config.getString("notifications.action-bar.waiting"));
                 ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("notifications.action-bar.enable-waiting-message");

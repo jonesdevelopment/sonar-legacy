@@ -2,6 +2,7 @@ prefix: '&e&lSonar &7» &f'
 
 no-permission: '%prefix%&cYou do not have the permission to execute this command.'
 no-permission-sub: '%prefix%&cYou do not have the permission to execute this sub-command. &7(%permission%)'
+no-permission-sub-any: '%prefix%&cYou do not have the permission to execute any sub-commands.'
 unknown-sub-command: '%prefix%&cUnknown sub-command. Try &7/sonar &cfor help.'
 only-players: '%prefix%&cYou can only execute this command as a player!'
 
@@ -11,11 +12,6 @@ footer-bar: '&7&m                                                              &
 
 notifications:
   action-bar:
-    enabled: '%prefix%&7You are &anow &7viewing the counter.'
-    disabled: '%prefix%&7You are &cno longer &7viewing the counter.'
-
-    enabled-other: '%prefix%%player% &7is &anow &7viewing the counter.'
-    disabled-other: '%prefix%%player% &7is &cno longer &7viewing the counter.'
 
     # You can use the following variables:
     #   %ips% - Current ips per second count (formatted)
@@ -25,6 +21,7 @@ notifications:
     #   %verify% - Number of verifying players (formatted)
     #   %queue% - Number of players in queue during attack (formatted)
     #   %handshakes% - Current handshakes per second count (formatted)
+    #   %encryptions% - Current encryptions per second count (formatted)
     #   %blocked% - Number of blocked connections (formatted)
     #   %blacklisted% - Number of blacklisted ip addresses (formatted)
     #   %whitelisted% - Number of whitelisted ip addresses (formatted)
@@ -42,12 +39,16 @@ notifications:
     enable-waiting-message: true
 
   chat:
-    enabled: '%prefix%&7You are &anow &7receiving chat notifications.'
-    disabled: '%prefix%&7You are &cno longer &7receiving chat notifications.'
 
-    enabled-other: '%prefix%%player% &7is &anow &7receiving chat notifications.'
-    disabled-other: '%prefix%%player% &7is &cno longer &7receiving chat notifications.'
-
+    # You can use the following variables:
+    #   %ips% - Current ips per second count (formatted)
+    #   %cps% - Current connections per second count (formatted)
+    #   %logins% - Current logins per second count (formatted)
+    #   %pings% - Current pings per second count (formatted)
+    #   %handshakes% - Current handshakes per second count (formatted)
+    #   %encryptions% - Current encryptions per second count (formatted)
+    #   %cpu% - Current global server cpu usage (every core)
+    #   %cpu-avg% - Current average server cpu usage (global / all cores)
     format:
       - '%header-bar%'
       - '&e&lSonar &7has detected an incoming &c&nattack&r&7.'
@@ -185,6 +186,26 @@ commands:
     add-player: '%prefix%%player% &7(%ip%) is &anow &7whitelisted.'
     add-ip: '%prefix%%ip% &7is &anow &7whitelisted.'
     remove: '%prefix%%ip% &7is &cno longer &7whitelisted.'
+
+  verification:
+    purging: '%prefix%&7Purging players that are currently being verified players...'
+    purge: '%prefix%&aSuccessfully purged cached players.'
+    purge-none: '%prefix%&cThere were no players in the verification cache.'
+    empty: '%prefix%&cThe verification cache is currently empty.'
+    clear: '%prefix%&7Successfully cleared &f%verifying% &7verifying player%s%.'
+    size: '%prefix%&7The verification cache currently contains &f%verifying% &7player%s%.'
+
+  verbose:
+    enabled: '%prefix%&7You are &anow &7viewing the counter.'
+    disabled: '%prefix%&7You are &cno longer &7viewing the counter.'
+    enabled-other: '%prefix%%player% &7is &anow &7viewing the counter.'
+    disabled-other: '%prefix%%player% &7is &cno longer &7viewing the counter.'
+
+  notify:
+    enabled: '%prefix%&7You are &anow &7receiving chat notifications.'
+    disabled: '%prefix%&7You are &cno longer &7receiving chat notifications.'
+    enabled-other: '%prefix%%player% &7is &anow &7receiving chat notifications.'
+    disabled-other: '%prefix%%player% &7is &cno longer &7receiving chat notifications.'
 
   reload:
     wait: '%prefix%&cPlease wait a bit before reloading Sonar again.'
