@@ -58,7 +58,6 @@ task generateDictionry {
                 start << String.valueOf(c)
             }
         }
-        println(start.size())
         def f = outputs.files.getSingleFile()
         f.getParentFile().mkdirs()
         f.withWriter("UTF-8") {
@@ -69,8 +68,6 @@ task generateDictionry {
 }
 
 task myProguardTask(type: proguard.gradle.ProGuardTask) {
-
-    println("Performing obfuscation...")
 
     // run proguard
     configuration 'proguard/config'
