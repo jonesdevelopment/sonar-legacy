@@ -21,6 +21,8 @@ import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.data.player.PlayerData;
+import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.Detections;
 import jones.sonar.universal.queue.PlayerQueue;
@@ -30,9 +32,7 @@ import java.util.Objects;
 
 @UtilityClass
 public final class LoginHandler implements Detections {
-    public Detection check(final ConnectionData connectionData) {
-        connectionData.sentClientSettings = false;
-
+    public Detection check(final ConnectionData connectionData) throws Exception {
         final boolean underAttack = Sensibility.isUnderAttackJoins();
 
         if (connectionData.username.length() > Config.Values.MAX_NAME_LENGTH
@@ -154,6 +154,16 @@ public final class LoginHandler implements Detections {
         }
 
         connectionData.allowedNames.add(connectionData.username);
+
+        final PlayerData playerData = PlayerDataManager.create(connectionData.username);
+
+        // handle the login to reset all variables within the player data object
+        playerData.handleLogin();
+
+        // don't let bots reconnect
+        if (timeStamp - playerData.lastDetection < Config.Values.REJOIN_DELAY * 2L) {
+            return SUSPICIOUS;
+        }
 
         return ALLOW;
     }

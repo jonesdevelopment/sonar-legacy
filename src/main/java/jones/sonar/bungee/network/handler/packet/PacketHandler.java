@@ -90,6 +90,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     // hasn't sent a client settings packet yet
                     if (!playerData.passes()) {
                         proxiedPlayer.disconnect(Messages.Values.DISCONNECT_BOT_DETECTION);
+                        playerData.lastDetection = System.currentTimeMillis();
                         return;
                     }
                 }
