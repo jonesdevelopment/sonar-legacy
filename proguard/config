@@ -1,4 +1,4 @@
--libraryjars '/home/jones/IdeaProjects/waterfall-1.19-504.jar'
+#-libraryjars '/home/jones/IdeaProjects/waterfall-1.19-504.jar'
 
 -skipnonpubliclibraryclasses
 -dontshrink

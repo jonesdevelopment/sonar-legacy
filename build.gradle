@@ -50,6 +50,7 @@ task myProguardTask(type: proguard.gradle.ProGuardTask) {
     outjars "${buildDir}/libs/${rootProject.name}_proguard.jar"
 
     libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    libraryjars "/home/jones/IdeaProjects/waterfall-1.19-504.jar"
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8
