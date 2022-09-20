@@ -162,6 +162,7 @@ public final class LoginHandler implements Detections {
 
         // don't let bots reconnect
         if (timeStamp - playerData.lastDetection < Config.Values.REJOIN_DELAY * 2L) {
+            connectionData.botLevel++;
             return SUSPICIOUS;
         }
 

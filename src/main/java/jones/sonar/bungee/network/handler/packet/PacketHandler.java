@@ -24,13 +24,13 @@ import jones.sonar.bungee.network.handler.PlayerHandler;
 import jones.sonar.universal.data.player.PlayerData;
 import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.util.ExceptionHandler;
+import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.PacketWrapper;
-import net.md_5.bungee.protocol.packet.Chat;
-import net.md_5.bungee.protocol.packet.ClientChat;
-import net.md_5.bungee.protocol.packet.ClientSettings;
-import net.md_5.bungee.protocol.packet.PluginMessage;
+import net.md_5.bungee.protocol.packet.*;
+
+import java.net.InetSocketAddress;
 
 @RequiredArgsConstructor
 public final class PacketHandler extends ChannelDuplexHandler {
@@ -93,6 +93,10 @@ public final class PacketHandler extends ChannelDuplexHandler {
                         playerData.lastDetection = System.currentTimeMillis();
                         return;
                     }
+                }
+
+                else if (wrapper.packet instanceof KeepAlive && playerData.passes()) {
+                    Whitelist.addToWhitelist(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress());
                 }
             }
         }
