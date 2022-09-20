@@ -45,7 +45,7 @@ task generateDictionry {
     doLast {
         def random = new Random()
         // china
-        def begin = random.nextInt(100) + 34000
+        def begin = random.nextInt(200) + 34000
         def end = begin + 2000 + random.nextInt(4000)
         def chars = (begin..end)
                 .findAll { Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) }
