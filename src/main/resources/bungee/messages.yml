@@ -94,27 +94,33 @@ disconnect:
   suspicious-behaviour:
     - ' '
     - '&cYour connection is currently being analyzed.'
-    - '&7Please &f&nre-connect&r &7in 2 - 5 seconds to verify your connection.'
+    - '&7Please &f&nre-connect&r &7in a few seconds to verify your connection.'
+    - ' '
     - '&eSpam re-connecting will get you &6temporarily blocked &efrom the server.'
+    - ' '
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
   bot-detection:
     - ' '
-    - '&cYour connection seems suspicious or unstable.'
-    - '&7Please &f&nre-connect&r &7to verify your connection.'
+    - '&cYour connection needs to be analyzed.'
+    - '&7Please &f&nre-connect&r &7in a few seconds to verify your connection.'
+    - ' '
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
   invalid-name:
     - ' '
-    - '&cYour username contains illegal characters or blocked words.'
+    - '&cYour username contains illegal or disallowed characters.'
+    - ' '
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
   already-connected:
     - ' '
-    - '&7Seems like you are already connected to the server.'
+    - '&7Seems like you''re already connected to the server.'
+    - '&7Restarting Minecraft or re-connecting usually fixes this issue.'
+    - ' '
     - '&cIf this error keeps occurring, please contact an administrator!'
     - ' '
 
@@ -122,6 +128,7 @@ disconnect:
     - ' '
     - '&cSorry! &7There are too many players logging it at the same time.'
     - '&7Please &fre-connect &7in order to be verified by the anti-bot protection.'
+    - ' '
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
@@ -130,6 +137,7 @@ disconnect:
   too-many-accounts-per-ip:
     - ' '
     - '&cYou can only have &7%max% players &cwith your ip address online.'
+    - ' '
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
@@ -140,6 +148,7 @@ disconnect:
     - ' '
     - '&7Your are position &f#%position% &7out of &f#%size% &7in the queue.'
     - '&7Please allow up to a few minutes in order for the server to process your data.'
+    - ' '
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 

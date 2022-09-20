@@ -181,6 +181,7 @@ public class Messages {
 
                 // disconnect messages
                 DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect"))
+                        .replaceAll("%milliseconds%", SonarBungee.INSTANCE.FORMAT.format(Config.Values.REJOIN_DELAY))
                         .replaceAll("%seconds%", String.format("%.2f", Config.Values.REJOIN_DELAY / 1000D)
                                 .replaceAll("\\.00", "")));
                 DISCONNECT_FIRST_JOIN = format(fromList(config.getStringList("disconnect.reconnect-check.first-join")));
