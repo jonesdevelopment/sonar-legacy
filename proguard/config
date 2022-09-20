@@ -1,13 +1,11 @@
-#-libraryjars '/home/jones/IdeaProjects/waterfall-1.19-504.jar'
-
 -skipnonpubliclibraryclasses
 -dontshrink
 -dontoptimize
+-obfuscation 'dictionary'
+-classobfuscation 'dictionary'
+-packageobfuscation 'dictionary'
 -flattenpackagehierarchy 'jones.sonar'
 #-repackageclasses 'jones.sonar'
--packageobfuscation 'alphabet.txt'
-#-obfuscationdictionary 'alphabet.txt'
-#-classobfuscationdictionary 'alphabet.txt'
 -keepattributes Signature,Deprecated,*Annotation*,Synthetic
 -renamesourcefileattribute ''
 -overloadaggressively
@@ -15,13 +13,9 @@
 -dontwarn
 -ignorewarnings
 
--keep class jones.sonar.bungee.* {
-}
-
--keep class jones.sonar.velocity.* {
-}
-
--keep class jones.sonar.api.** {
+-keep class jones.sonar.bungee.*,
+        jones.sonar.velocity.*,
+        jones.sonar.api.** {
     <methods>;
 }
 
@@ -30,34 +24,15 @@
     <fields>;
 }
 
-# Keep - Applications. Keep all application classes, along with their 'main' methods.
--keepclasseswithmembers public class * {
-    public static void main(java.lang.String[]);
-}
-
-# Also keep - Enumerations. Keep the special static methods that are required in
-# enumeration classes.
 -keepclassmembers enum  * {
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
 
-# Also keep - Database drivers. Keep all implementations of java.sql.Driver.
--keep class * extends java.sql.Driver
-
-# Also keep - Swing UI L&F. Keep all extensions of javax.swing.plaf.ComponentUI,
-# along with the special 'createUI' method.
--keep class * extends javax.swing.plaf.ComponentUI {
-    public static javax.swing.plaf.ComponentUI createUI(javax.swing.JComponent);
-}
-
-# Keep - Native method names. Keep all native class/method names.
 -keepclasseswithmembers,includedescriptorclasses,allowshrinking class * {
     native <methods>;
 }
 
-# Remove - System method calls. Remove all invocations of System
-# methods without side effects whose return values are not used.
 -assumenosideeffects public class java.lang.System {
     public static long currentTimeMillis();
     static java.lang.Class getCallerClass();
@@ -70,8 +45,6 @@
     public static java.lang.String getProperty(java.lang.String,java.lang.String);
 }
 
-# Remove - Math method calls. Remove all invocations of Math
-# methods without side effects whose return values are not used.
 -assumenosideeffects public class java.lang.Math {
     public static double sin(double);
     public static double cos(double);
@@ -119,8 +92,6 @@
     public static double log1p(double);
 }
 
-# Remove - Number method calls. Remove all invocations of Number
-# methods without side effects whose return values are not used.
 -assumenosideeffects public class java.lang.* extends java.lang.Number {
     public static java.lang.String toString(byte);
     public static java.lang.Byte valueOf(byte);
@@ -229,8 +200,6 @@
     public java.lang.String toString();
 }
 
-# Remove - String method calls. Remove all invocations of String
-# methods without side effects whose return values are not used.
 -assumenosideeffects public class java.lang.String {
     public static java.lang.String copyValueOf(char[]);
     public static java.lang.String copyValueOf(char[],int,int);
@@ -286,8 +255,6 @@
     public java.lang.String trim();
 }
 
-# Remove - StringBuffer method calls. Remove all invocations of StringBuffer
-# methods without side effects whose return values are not used.
 -assumenosideeffects public class java.lang.StringBuffer {
     public java.lang.String toString();
     public char charAt(int);
@@ -302,8 +269,6 @@
     public java.lang.String substring(int,int);
 }
 
-# Remove - StringBuilder method calls. Remove all invocations of StringBuilder
-# methods without side effects whose return values are not used.
 -assumenosideeffects public class java.lang.StringBuilder {
     public java.lang.String toString();
     public char charAt(int);

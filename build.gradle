@@ -39,6 +39,35 @@ dependencies {
 
 def outputJar = "${buildDir}/libs/${rootProject.name}.jar"
 
+task generateDictionry {
+    outputs.file("${buildDir}/../proguard/dictionary")
+
+    doLast {
+        def random = new Random()
+        // china
+        def begin = random.nextInt(100) + 34000
+        def end = begin + 2000 + random.nextInt(4000)
+        def chars = (begin..end)
+                .findAll { Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) }
+                .collect { String.valueOf(Character.toChars(it)) }
+        int max = chars.size()
+        def start = []
+        for (int i = 0; i < max; i++) {
+            char c = chars.get(i).charAt(0)
+            if (Character.isJavaIdentifierStart(c)) {
+                start << String.valueOf(c)
+            }
+        }
+        println(start.size())
+        def f = outputs.files.getSingleFile()
+        f.getParentFile().mkdirs()
+        f.withWriter("UTF-8") {
+            it.write(start.join(System.lineSeparator()))
+            it.write()
+        }
+    }
+}
+
 task myProguardTask(type: proguard.gradle.ProGuardTask) {
 
     println("Performing obfuscation...")
@@ -46,9 +75,11 @@ task myProguardTask(type: proguard.gradle.ProGuardTask) {
     // run proguard
     configuration 'proguard/config'
 
+    // specify input and output files
     injars "${outputJar}"
     outjars "${buildDir}/libs/${rootProject.name}_proguard.jar"
 
+    // add the library jars
     libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
     libraryjars "/home/jones/IdeaProjects/waterfall-1.19-504.jar"
 }
