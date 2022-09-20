@@ -18,12 +18,15 @@ package jones.sonar.bungee.network.handler;
 
 import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.caching.ServerDataProvider;
 import jones.sonar.bungee.caching.ServerPingCache;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.detection.LoginHandler;
+import jones.sonar.bungee.network.SonarPipeline;
+import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
 import jones.sonar.bungee.util.json.LegacyGsonFormat;
 import jones.sonar.universal.counter.Counter;
@@ -41,17 +44,20 @@ import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.connection.InitialHandler;
+import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 
-public final class PlayerHandler extends InitialHandler {
+public final class PlayerHandler extends InitialHandler implements SonarPipeline {
 
     public PlayerHandler(final ChannelHandlerContext ctx, final ListenerInfo listener) {
         super(BungeeCord.getInstance(), listener);
 
         this.ctx = ctx;
+
+        pipeline = ctx.channel().pipeline();
     }
 
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
@@ -61,6 +67,8 @@ public final class PlayerHandler extends InitialHandler {
     private final SonarBungee sonar = SonarBungee.INSTANCE;
 
     private final ChannelHandlerContext ctx;
+
+    private final ChannelPipeline pipeline;
 
     @Override
     public void exception(final Throwable cause) throws Exception {
@@ -131,6 +139,8 @@ public final class PlayerHandler extends InitialHandler {
             }
         }
 
+        pipeline.addBefore(PipelineUtils.BOSS_HANDLER, PACKET_INTERCEPTOR, new PacketHandler(this));
+
         super.handle(handshake);
     }
 
@@ -192,6 +202,16 @@ public final class PlayerHandler extends InitialHandler {
 
         currentState = ConnectionState.PROCESSING;
 
+        /*
+        final long timeStamp = System.currentTimeMillis();
+        final long delay = timeStamp - ping.getTime();
+
+        // check if the ping packet is extremely delayed
+        if (delay > 10000L && delay < timeStamp) {
+            return;
+        }
+        */
+
         unsafe().sendPacket(ping);
 
         ctx.channel().unsafe().closeForcibly();
@@ -207,7 +227,7 @@ public final class PlayerHandler extends InitialHandler {
 
         currentState = ConnectionState.PROCESSING;
 
-        final ConnectionData data = ConnectionDataManager.createOrReturn(inetAddress());
+        final ConnectionData data = ConnectionDataManager.create(inetAddress());
 
         data.username = loginRequest.getData();
 

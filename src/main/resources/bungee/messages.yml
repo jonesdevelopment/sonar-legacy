@@ -94,8 +94,15 @@ disconnect:
   suspicious-behaviour:
     - ' '
     - '&cYour connection is currently being analyzed.'
-    - '&7Please &f&nre-connect&r &7in 2 - 5 seconds to verify yourself.'
-    - '&eSpam re-connecting will get you temporarily blocked from the server.'
+    - '&7Please &f&nre-connect&r &7in 2 - 5 seconds to verify your connection.'
+    - '&eSpam re-connecting will get you &6temporarily blocked &efrom the server.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
+  bot-detection:
+    - ' '
+    - '&cYour connection seems suspicious or unstable.'
+    - '&7Please &f&nre-connect&r &7to verify your connection.'
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 

@@ -27,6 +27,8 @@ import java.net.InetSocketAddress;
 @UtilityClass
 public class ExceptionHandler {
     public void handle(final Channel channel, final Throwable cause) {
+
+        // forcibly close connections without using a future (delayed)
         channel.unsafe().closeForcibly();
 
         ServerStatistics.BLOCKED_CONNECTIONS++;
@@ -35,6 +37,7 @@ public class ExceptionHandler {
         // We need to exempt clients for that, so they won't get false blacklisted
         if (cause instanceof IOException) return;
 
+        // blacklist the ip address
         Blacklist.addToBlacklist(((InetSocketAddress) channel.remoteAddress()).getAddress());
     }
 }

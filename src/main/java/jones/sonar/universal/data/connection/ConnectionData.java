@@ -37,6 +37,8 @@ public final class ConnectionData {
     public final Set<String> verifiedNames = new HashSet<>(50),
             allowedNames = new HashSet<>(50);
 
+    public boolean sentClientSettings = false;
+
     public long lastJoin = 0L;
 
     public int checked = 0, clientSettingsPackets = 0,

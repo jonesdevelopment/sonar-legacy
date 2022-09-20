@@ -44,7 +44,7 @@ task generateDictionry {
 
     doLast {
         def random = new Random()
-        def chars = (random.nextInt(3)..80 + random.nextInt(40))
+        def chars = (random.nextInt(24)..80 + random.nextInt(120))
                 .findAll {
                     Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) && it != 36
                 }

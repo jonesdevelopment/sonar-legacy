@@ -14,12 +14,21 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.network;
+package jones.sonar.universal.data.player;
 
-public interface SonarPipeline {
+import lombok.RequiredArgsConstructor;
 
-    String HANDLER = "sonar-handler", DECODER = "sonar-decoder";
+@RequiredArgsConstructor
+public final class PlayerData {
+    public final String username;
 
-    String PACKET_INTERCEPTOR = "sonar-packet-interceptor";
+    public String clientBrand = "/";
 
+    public boolean sentClientSettings = false, sentClientBrand = false;
+
+    public boolean passes() throws Exception {
+        return clientBrand.length() > 3
+                && sentClientBrand
+                && sentClientSettings;
+    }
 }

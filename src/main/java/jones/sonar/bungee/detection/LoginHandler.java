@@ -31,6 +31,8 @@ import java.util.Objects;
 @UtilityClass
 public final class LoginHandler implements Detections {
     public Detection check(final ConnectionData connectionData) {
+        connectionData.sentClientSettings = false;
+
         final boolean underAttack = Sensibility.isUnderAttackJoins();
 
         if (connectionData.username.length() > Config.Values.MAX_NAME_LENGTH

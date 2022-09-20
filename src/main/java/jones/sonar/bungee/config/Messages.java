@@ -95,7 +95,7 @@ public class Messages {
                 WHITELIST_CLEAR, BLACKLIST_CLEAR, RELOAD_WAIT, COUNTER_ENABLED_OTHER,
                 COUNTER_DISABLED_OTHER, NOTIFY_ENABLED, NOTIFY_DISABLED, NOTIFY_ENABLED_OTHER,
                 NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS,
-                RELOAD_CONFIRMATION_ATTACK, DISCONNECT_BOT_BEHAVIOUR;
+                RELOAD_CONFIRMATION_ATTACK, DISCONNECT_BOT_BEHAVIOUR, DISCONNECT_BOT_DETECTION;
 
         public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY;
 
@@ -192,6 +192,7 @@ public class Messages {
                 DISCONNECT_QUEUED = format(fromList(config.getStringList("disconnect.currently-in-queue")));
                 DISCONNECT_ATTACK = format(fromList(config.getStringList("disconnect.verification-during-attack")));
                 DISCONNECT_BOT_BEHAVIOUR = format(fromList(config.getStringList("disconnect.suspicious-behaviour")));
+                DISCONNECT_BOT_DETECTION = format(fromList(config.getStringList("disconnect.bot-detection")));
                 return true;
             } catch (final Exception exception) {
                 return false;

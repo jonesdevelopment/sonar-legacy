@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 
 @UtilityClass
 public class ConnectionDataManager {
-    public final Map<InetAddress, ConnectionData> DATA = new ConcurrentHashMap<>(100000);
+    public final Map<InetAddress, ConnectionData> DATA = new ConcurrentHashMap<>(500000);
 
     public ConnectionData get(final InetAddress inetAddress) {
         if (contains(inetAddress)) {
@@ -66,7 +66,7 @@ public class ConnectionDataManager {
         return false;
     }
 
-    public ConnectionData createOrReturn(final InetAddress inetAddress) {
+    public ConnectionData create(final InetAddress inetAddress) {
         if (contains(inetAddress)) {
             return get(inetAddress);
         }
@@ -74,11 +74,5 @@ public class ConnectionDataManager {
         DATA.put(inetAddress, new ConnectionData(inetAddress));
 
         return DATA.get(inetAddress);
-    }
-
-    public void create(final InetAddress inetAddress) {
-        if (contains(inetAddress)) return;
-
-        DATA.put(inetAddress, new ConnectionData(inetAddress));
     }
 }
