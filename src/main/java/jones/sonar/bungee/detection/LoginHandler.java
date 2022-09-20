@@ -26,6 +26,7 @@ import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.Detections;
 import jones.sonar.universal.queue.PlayerQueue;
+import jones.sonar.universal.whitelist.Whitelist;
 import lombok.experimental.UtilityClass;
 
 import java.util.Objects;
@@ -112,7 +113,7 @@ public final class LoginHandler implements Detections {
             return FIRST_JOIN_KICK;
         }
 
-        if (underAttack) {
+        if (underAttack && !Whitelist.isWhitelisted(connectionData.inetAddress)) {
             if (connectionData.checked == 2) {
                 connectionData.checked = 3;
                 connectionData.underAttackChecks++;
