@@ -105,6 +105,7 @@ public final class SonarCommand extends Command implements TabExecutor {
 
         CommandManager.SUB_COMMANDS.stream()
                 .filter(subCommand -> args[0].equalsIgnoreCase(subCommand.name))
+                .filter(subCommand -> sender.hasPermission(subCommand.permission))
                 .map(subCommand -> subCommand.commands)
                 .filter(Objects::nonNull)
                 .forEach(strings::addAll);
