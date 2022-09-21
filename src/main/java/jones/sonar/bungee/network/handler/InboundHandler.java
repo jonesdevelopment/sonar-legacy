@@ -14,12 +14,16 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.network;
+package jones.sonar.bungee.network.handler;
 
-public interface SonarPipeline {
+import io.netty.channel.ChannelHandlerContext;
+import jones.sonar.universal.util.ExceptionHandler;
+import net.md_5.bungee.netty.HandlerBoss;
 
-    String HANDLER = "sonar-handler", DECODER = "sonar-decoder";
+public final class InboundHandler extends HandlerBoss {
 
-    String PACKET_INTERCEPTOR = "sonar-packet-interceptor", LAST_PACKET_INTERCEPTOR = "sonar-packet-exception";
-
+    @Override
+    public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) {
+        ExceptionHandler.handle(ctx.channel(), cause);
+    }
 }

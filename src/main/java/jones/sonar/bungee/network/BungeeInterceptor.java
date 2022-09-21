@@ -20,6 +20,7 @@ import io.netty.channel.*;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
+import jones.sonar.bungee.network.handler.InboundHandler;
 import jones.sonar.bungee.network.handler.PlayerHandler;
 import jones.sonar.bungee.network.handler.TimeoutHandler;
 import jones.sonar.universal.blacklist.Blacklist;
@@ -132,6 +133,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             final ListenerInfo listener = channel.attr(PipelineUtils.LISTENER).get();
 
+            // add the tcp fast open option to non-geyser channels
             if (!isGeyser) {
                 channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
             }
@@ -140,8 +142,15 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             // this is necessary for compatibility reasons
             PipelineUtils.BASE.initChannel(channel);
 
-            // replace the timeout handler to our custom, fixed one
-            pipeline.replace(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
+            // don't modify the channels for geyser connections
+            if (!isGeyser) {
+
+                // replace the timeout handler to our custom, fixed one
+                pipeline.replace(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
+
+                // replace the inbound boss handler to our custom, fixed one (handle exceptions)
+                pipeline.replace(PipelineUtils.BOSS_HANDLER, PipelineUtils.BOSS_HANDLER, new InboundHandler());
+            }
 
             // load the default BungeeCord pipelines
             pipeline.addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
@@ -156,7 +165,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             } else {
 
                 // normal players will be handled using our custom player handler
-                pipeline.get(HandlerBoss.class).setHandler(new PlayerHandler(ctx, listener));
+                pipeline.get(InboundHandler.class).setHandler(new PlayerHandler(ctx, listener));
             }
 
             // the proxy protocol is necessary if you want to use tcp shield
