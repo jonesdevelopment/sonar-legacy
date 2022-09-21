@@ -52,18 +52,22 @@ public final class VerifyCommand extends SubCommand {
                     final long difference = Math.max(verifying - ConnectionDataManager.getVerifying(), 0);
 
                     execution.send(Messages.Values.VERIFICATION_CLEAR
-                            .replaceAll("%verifying%", SonarBungee.INSTANCE.FORMAT.format(difference)));
+                            .replaceAll("%verifying%", SonarBungee.INSTANCE.FORMAT.format(difference))
+                            .replaceAll("%s%", difference == 1 ? "" : "s"));
                     return;
                 }
 
                 case "size": {
-                    if (ConnectionDataManager.getVerifying() == 0) {
+                    final long verifying = ConnectionDataManager.getVerifying();
+
+                    if (verifying == 0) {
                         execution.send(Messages.Values.VERIFICATION_EMPTY);
                         return;
                     }
 
                     execution.send(Messages.Values.VERIFICATION_SIZE
-                            .replaceAll("%verifying%", SonarBungee.INSTANCE.FORMAT.format(ConnectionDataManager.getVerifying())));
+                            .replaceAll("%verifying%", SonarBungee.INSTANCE.FORMAT.format(verifying))
+                            .replaceAll("%s%", verifying == 1 ? "" : "s"));
                     return;
                 }
 
