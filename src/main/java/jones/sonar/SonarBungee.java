@@ -119,6 +119,9 @@ public enum SonarBungee {
             Logger.INFO.log(" ");
             Logger.INFO.log("§7§m«-----------------------------------------»§r");
         }
+
+        // another check if the license got spoofed
+        running = licenseResponse != null;
     }
 
     public void onEnable(final SonarBungeePlugin plugin) {
