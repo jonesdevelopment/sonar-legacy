@@ -25,7 +25,6 @@ import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
-import jones.sonar.universal.queue.IPSQueue;
 import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;
@@ -92,7 +91,7 @@ public final class ActionBar extends Thread implements Runnable {
                             .replaceAll("%blacklisted%", sonar.FORMAT.format(Blacklist.size()))
                             .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
                             .replaceAll("%arrow%", getSpinningSymbol(index++))
-                            .replaceAll("%queue%", sonar.FORMAT.format(PlayerQueue.QUEUE.size() + IPSQueue.QUEUE.size()))
+                            .replaceAll("%queue%", sonar.FORMAT.format(PlayerQueue.QUEUE.size()))
                             .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
                             .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
                             .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + sonar.FORMAT.format(pps))

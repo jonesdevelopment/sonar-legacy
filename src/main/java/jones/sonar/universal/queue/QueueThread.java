@@ -19,7 +19,6 @@ package jones.sonar.universal.queue;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 
-import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -44,31 +43,15 @@ public final class QueueThread extends Thread implements Runnable {
                             if (position < Config.Values.QUEUE_POLL_RATE && currentIndex.get() <= Config.Values.MAXIMUM_QUEUE_POLL_RATE) {
                                 currentIndex.incrementAndGet();
 
-                                PlayerQueue.remove(name);
-                            }
-                        });
+                                PlayerQueue.QUEUE.replace(name, PlayerQueue.getPosition(name) - 1L);
 
-                        PlayerQueue.QUEUE.forEach((name, position) -> PlayerQueue.QUEUE.replace(name, position - currentIndex.get()));
-                    }
-
-                    if (!IPSQueue.QUEUE.isEmpty()) {
-                        final Map<InetAddress, Long> cleaned = new HashMap<>(IPSQueue.QUEUE);
-
-                        final AtomicInteger currentIndex = new AtomicInteger(0);
-
-                        cleaned.forEach((inetAddress, position) -> {
-                            if (position < Config.Values.QUEUE_POLL_RATE && currentIndex.get() <= Config.Values.MAXIMUM_QUEUE_POLL_RATE) {
-                                currentIndex.incrementAndGet();
-
-                                IPSQueue.QUEUE.replace(inetAddress, IPSQueue.getPosition(inetAddress) - 1L);
-
-                                if (IPSQueue.getPosition(inetAddress) < 1) {
-                                    IPSQueue.remove(inetAddress);
+                                if (PlayerQueue.getPosition(name) < 1) {
+                                    PlayerQueue.remove(name);
                                 }
                             }
                         });
 
-                        IPSQueue.QUEUE.forEach((inetAddress, position) -> IPSQueue.QUEUE.replace(inetAddress, position - currentIndex.get()));
+                        PlayerQueue.QUEUE.forEach((name, position) -> PlayerQueue.QUEUE.replace(name, position - currentIndex.get()));
                     }
 
                     ConnectionDataManager.removeAllUnused();
