@@ -14,7 +14,7 @@
 
 -keep class jones.sonar.bungee.*,
         jones.sonar.velocity.*,
-        jones.sonar.api.event.*,
+        jones.sonar.api.event.**,
         jones.sonar.api.SonarAPI {
     <methods>;
 }
