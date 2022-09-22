@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 import java.net.InetAddress;
 
 @Getter
-@APIClass
+@APIClass(since = "1.3.1")
 @RequiredArgsConstructor
 public final class BotLevel {
     private final long onlineUsers;

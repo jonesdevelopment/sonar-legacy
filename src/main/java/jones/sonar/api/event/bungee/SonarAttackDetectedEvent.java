@@ -21,7 +21,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.plugin.Event;
 
-@APIClass
+@APIClass(since = "1.3.1")
 @RequiredArgsConstructor
 public final class SonarAttackDetectedEvent extends Event {
 

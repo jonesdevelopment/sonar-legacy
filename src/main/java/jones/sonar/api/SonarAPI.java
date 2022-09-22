@@ -16,6 +16,7 @@
 
 package jones.sonar.api;
 
+import com.google.gson.annotations.SerializedName;
 import jones.sonar.api.data.BotLevel;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
@@ -28,8 +29,10 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 
-@APIClass
+@APIClass(since = "1.3.1")
 public interface SonarAPI {
+
+    @SerializedName("BotLevel")
     default BotLevel getPlayerBotLevel(final InetAddress inetAddress) {
         final ConnectionData data = ConnectionDataManager.get(inetAddress);
 
@@ -40,10 +43,12 @@ public interface SonarAPI {
         return null;
     }
 
+    @SerializedName("BotLevel")
     default BotLevel getPlayerBotLevel(final SocketAddress inetAddress) {
         return getPlayerBotLevel(((InetSocketAddress) inetAddress).getAddress());
     }
 
+    @SerializedName("BotLevel")
     default BotLevel getPlayerBotLevel(final ProxiedPlayer proxiedPlayer) {
         return getPlayerBotLevel(((InetSocketAddress) proxiedPlayer.getPendingConnection().getSocketAddress()).getAddress());
     }
