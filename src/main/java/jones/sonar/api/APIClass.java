@@ -14,16 +14,14 @@
  *  limitations under the License.
  */
 
-package jones.sonar.api.event.bungee;
+package jones.sonar.api;
 
-import jones.sonar.api.APIClass;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.plugin.Event;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@Getter
-@APIClass
-@RequiredArgsConstructor
-public final class SonarWhitelistClearEvent extends Event {
-    private final long whitelistSize;
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface APIClass {
 }

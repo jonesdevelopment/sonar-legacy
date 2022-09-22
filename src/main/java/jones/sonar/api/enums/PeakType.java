@@ -16,6 +16,9 @@
 
 package jones.sonar.api.enums;
 
+import jones.sonar.api.APIClass;
+
+@APIClass
 public enum PeakType {
     IP_ADDRESSES_PER_SECOND,
     CONNECTIONS_PER_SECOND

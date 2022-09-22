@@ -14,16 +14,19 @@
  *  limitations under the License.
  */
 
-package jones.sonar.api.event.bungee;
+package jones.sonar.api.data;
 
 import jones.sonar.api.APIClass;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.md_5.bungee.api.plugin.Event;
+
+import java.net.InetAddress;
 
 @Getter
 @APIClass
 @RequiredArgsConstructor
-public final class SonarWhitelistClearEvent extends Event {
-    private final long whitelistSize;
+public final class BotLevel {
+    private final long onlineUsers;
+    private final long level;
+    private final InetAddress inetAddress;
 }

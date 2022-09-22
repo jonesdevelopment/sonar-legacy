@@ -16,6 +16,7 @@
 
 package jones.sonar.api;
 
+import jones.sonar.api.data.BotLevel;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
@@ -27,22 +28,23 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 
+@APIClass
 public interface SonarAPI {
-    default long getPlayerBotLevel(final InetAddress inetAddress) {
+    default BotLevel getPlayerBotLevel(final InetAddress inetAddress) {
         final ConnectionData data = ConnectionDataManager.get(inetAddress);
 
         if (data != null) {
-            return data.botLevel;
+            return new BotLevel(data.getAccountsOnlineWithSameIP(), data.botLevel, data.inetAddress);
         }
 
-        return 0L;
+        return null;
     }
 
-    default long getPlayerBotLevel(final SocketAddress inetAddress) {
+    default BotLevel getPlayerBotLevel(final SocketAddress inetAddress) {
         return getPlayerBotLevel(((InetSocketAddress) inetAddress).getAddress());
     }
 
-    default long getPlayerBotLevel(final ProxiedPlayer proxiedPlayer) {
+    default BotLevel getPlayerBotLevel(final ProxiedPlayer proxiedPlayer) {
         return getPlayerBotLevel(((InetSocketAddress) proxiedPlayer.getPendingConnection().getSocketAddress()).getAddress());
     }
 
