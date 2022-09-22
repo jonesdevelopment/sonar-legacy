@@ -16,8 +16,8 @@
 
 package jones.sonar.universal.data.connection;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.universal.counter.CounterMap;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.RequiredArgsConstructor;
 
 import java.net.InetAddress;

@@ -16,7 +16,7 @@
 
 package jones.sonar.bungee.counter;
 
-import jones.sonar.SonarBungee;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

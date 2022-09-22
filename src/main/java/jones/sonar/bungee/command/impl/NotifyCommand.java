@@ -16,11 +16,11 @@
 
 package jones.sonar.bungee.command.impl;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.caching.notifications.NotificationManager;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class NotifyCommand extends SubCommand {

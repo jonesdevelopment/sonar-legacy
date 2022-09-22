@@ -16,8 +16,8 @@
 
 package jones.sonar.bungee.filter;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass

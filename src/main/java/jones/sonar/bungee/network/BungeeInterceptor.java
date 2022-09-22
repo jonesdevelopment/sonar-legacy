@@ -18,7 +18,6 @@ package jones.sonar.bungee.network;
 
 import io.netty.channel.*;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.network.handler.InboundHandler;
 import jones.sonar.bungee.network.handler.PlayerHandler;
@@ -26,6 +25,7 @@ import jones.sonar.bungee.network.handler.TimeoutHandler;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.ExceptionHandler;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.BungeeCord;

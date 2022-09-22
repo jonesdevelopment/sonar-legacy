@@ -14,25 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee;
+package jones.sonar.universal.platform.velocity;
 
-import jones.sonar.universal.platform.bungee.SonarBungee;
-import net.md_5.bungee.api.plugin.Plugin;
-
-public final class SonarBungeePlugin extends Plugin {
-
-    @Override
-    public void onLoad() {
-        SonarBungee.INSTANCE.onLoad(this);
-    }
-
-    @Override
-    public void onEnable() {
-        SonarBungee.INSTANCE.onEnable(this);
-    }
-
-    @Override
-    public void onDisable() {
-        SonarBungee.INSTANCE.onDisable(this);
-    }
+public interface SonarVelocityPlatform {
 }

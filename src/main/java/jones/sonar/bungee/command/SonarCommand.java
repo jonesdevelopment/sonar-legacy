@@ -16,9 +16,9 @@
 
 package jones.sonar.bungee.command;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Messages;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
@@ -55,7 +55,7 @@ public final class SonarCommand extends Command implements TabExecutor {
                         .replaceAll("%description%", command.description)));
             }
 
-            sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + SonarBungee.INSTANCE.VERSION + " §f§oby §f§ojonesdev.xyz§r");
+            sender.sendMessage(Messages.Values.PREFIX + "§f§oSonar §f§oversion §f§o" + SonarBungee.INSTANCE.getVersion() + " §f§oby §f§ojonesdev.xyz§r");
             sender.sendMessage(Messages.Values.FOOTER_BAR);
             return;
         }

@@ -16,11 +16,11 @@
 
 package jones.sonar.universal.license;
 
-import jones.sonar.SonarBungee;
-import jones.sonar.universal.SonarPlatform;
 import jones.sonar.universal.license.hwid.HardwareID;
 import jones.sonar.universal.license.response.LicenseResponse;
 import jones.sonar.universal.license.response.WebResponse;
+import jones.sonar.universal.platform.SonarPlatform;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.GeneralException;
 import lombok.experimental.UtilityClass;
 

@@ -16,7 +16,6 @@
 
 package jones.sonar.bungee.caching.notifications;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.api.event.bungee.SonarAttackDetectedEvent;
 import jones.sonar.api.event.bungee.SonarWebhookSentEvent;
 import jones.sonar.bungee.config.Config;
@@ -24,6 +23,7 @@ import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.counter.Counter;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.PerformanceMonitor;
 import jones.sonar.universal.webhook.WebhookSender;
 import lombok.experimental.UtilityClass;

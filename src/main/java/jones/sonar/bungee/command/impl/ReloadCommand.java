@@ -16,11 +16,11 @@
 
 package jones.sonar.bungee.command.impl;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 public final class ReloadCommand extends SubCommand {
@@ -64,12 +64,12 @@ public final class ReloadCommand extends SubCommand {
         lastReload = timeStamp;
 
         execution.send(Messages.Values.RELOADING
-                .replaceAll("%version%", SonarBungee.INSTANCE.VERSION));
+                .replaceAll("%version%", SonarBungee.INSTANCE.getVersion()));
 
         final long timeTaken = SonarBungee.INSTANCE.reload();
 
         execution.send(Messages.Values.RELOADED
                 .replaceAll("%seconds%", String.format("%.3f", timeTaken / 1000D))
-                .replaceAll("%version%", SonarBungee.INSTANCE.VERSION));
+                .replaceAll("%version%", SonarBungee.INSTANCE.getVersion()));
     }
 }

@@ -14,10 +14,20 @@
  *  limitations under the License.
  */
 
-package jones.sonar.universal;
+package jones.sonar.universal.util;
 
-public enum SonarPlatform {
-    BUNGEE,
-    VELOCITY,
-    UNKNOWN
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class AssertionHelper {
+    public void check(final boolean condition, final String exception) {
+        if (!condition) {
+            throw new AssertionError(exception);
+        }
+    }
+
+    @Deprecated
+    public void check(final boolean condition) {
+        check(condition, "Error while parsing condition");
+    }
 }

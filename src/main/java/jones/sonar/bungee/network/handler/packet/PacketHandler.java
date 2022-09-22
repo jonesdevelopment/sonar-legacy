@@ -18,12 +18,12 @@ package jones.sonar.bungee.network.handler.packet;
 
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.network.handler.PlayerHandler;
 import jones.sonar.universal.data.player.PlayerData;
 import jones.sonar.universal.data.player.manager.PlayerDataManager;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.ExceptionHandler;
 import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;

@@ -14,20 +14,22 @@
  *  limitations under the License.
  */
 
-package jones.sonar;
+package jones.sonar.universal.platform.bungee;
 
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import jones.sonar.velocity.SonarVelocityPlugin;
+import jones.sonar.universal.license.LicenseLoader;
+import jones.sonar.universal.license.response.LicenseResponse;
+import jones.sonar.universal.platform.SonarPlatform;
 
-public enum SonarVelocity {
+public interface SonarBungeePlatform {
+    default String getVersion() {
+        return SonarBungee.INSTANCE.getPlugin().getDescription().getVersion();
+    }
 
-    INSTANCE;
+    default void disable() {
+        SonarBungee.INSTANCE.getPlugin().onDisable();
+    }
 
-    private SonarVelocityPlugin plugin;
-
-    public void onInitialize(final SonarVelocityPlugin plugin, final ProxyInitializeEvent event) {
-        assert plugin != null : "Error initializing Sonar!";
-
-        this.plugin = plugin;
+    default LicenseResponse checkLicense() throws Exception {
+        return LicenseLoader.loadFromFile(SonarPlatform.BUNGEE);
     }
 }

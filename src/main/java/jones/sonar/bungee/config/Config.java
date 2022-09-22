@@ -16,12 +16,12 @@
 
 package jones.sonar.bungee.config;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.config.yaml.Configuration;
 import jones.sonar.universal.config.yaml.ConfigurationProvider;
 import jones.sonar.universal.config.yaml.YamlConfiguration;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;

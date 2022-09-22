@@ -16,7 +16,6 @@
 
 package jones.sonar.bungee.counter;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.ColorUtil;
@@ -25,6 +24,7 @@ import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.IPSQueue;
 import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.whitelist.Whitelist;

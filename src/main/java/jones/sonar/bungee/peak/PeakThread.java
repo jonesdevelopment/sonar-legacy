@@ -16,7 +16,6 @@
 
 package jones.sonar.bungee.peak;
 
-import jones.sonar.SonarBungee;
 import jones.sonar.api.enums.PeakType;
 import jones.sonar.api.event.bungee.SonarPeakChangedEvent;
 import jones.sonar.api.event.bungee.SonarPeakResetEvent;
@@ -25,6 +24,7 @@ import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.counter.ActionBarManager;
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 
 public final class PeakThread extends Thread implements Runnable {
 

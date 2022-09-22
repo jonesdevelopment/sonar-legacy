@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar;
+package jones.sonar.universal.platform.bungee;
 
 import jones.sonar.api.event.bungee.SonarReloadEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
@@ -29,12 +29,12 @@ import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
-import jones.sonar.universal.SonarPlatform;
-import jones.sonar.universal.license.LicenseLoader;
 import jones.sonar.universal.license.response.LicenseResponse;
 import jones.sonar.universal.license.response.WebResponse;
 import jones.sonar.universal.peak.PeakCalculator;
+import jones.sonar.universal.platform.SonarPlatform;
 import jones.sonar.universal.queue.QueueThread;
+import jones.sonar.universal.util.AssertionHelper;
 import jones.sonar.universal.util.FastException;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
@@ -42,7 +42,7 @@ import net.md_5.bungee.api.plugin.Event;
 
 import java.text.DecimalFormat;
 
-public enum SonarBungee {
+public enum SonarBungee implements SonarBungeePlatform {
 
     INSTANCE;
 
@@ -60,14 +60,12 @@ public enum SonarBungee {
 
     public final SonarPlatform platform = SonarPlatform.BUNGEE;
 
-    public String VERSION = "unknown";
-
     public boolean running = false;
 
     public int JAVA_VERSION = 0;
 
     public void onLoad(final SonarBungeePlugin plugin) {
-        assert plugin != null : "Error loading Sonar!";
+        AssertionHelper.check(plugin != null, "Error loading Sonar!");
 
         this.plugin = plugin;
 
@@ -82,7 +80,7 @@ public enum SonarBungee {
         try {
 
             // try to load the license
-            licenseResponse = LicenseLoader.loadFromFile(platform);
+            licenseResponse = checkLicense();
 
             running = licenseResponse.response == WebResponse.SUCCESS;
         } catch (Exception exception) {
@@ -125,12 +123,12 @@ public enum SonarBungee {
     }
 
     public void onEnable(final SonarBungeePlugin plugin) {
-        assert plugin != null : "Error starting Sonar!";
+        AssertionHelper.check(plugin != null, "Error starting Sonar!");
 
         // we don't want to continue loading Sonar if the license is invalid
         // or the plugin hasn't started correctly
         if (!running) {
-            plugin.onDisable();
+            disable();
             return;
         }
 
@@ -143,9 +141,7 @@ public enum SonarBungee {
         Logger.INFO.log("§7§m«-----------------------------------------»§r");
         Logger.INFO.log(" ");
 
-        VERSION = plugin.getDescription().getVersion();
-
-        Logger.INFO.log(" §7Starting §eSonar §7version §f" + VERSION + "§7...");
+        Logger.INFO.log(" §7Starting §eSonar §7version §f" + getVersion() + "§7...");
 
         /*
          * Load all configurations
@@ -214,7 +210,7 @@ public enum SonarBungee {
     }
 
     public void onDisable(final SonarBungeePlugin plugin) {
-        assert plugin != null : "Error stopping Sonar!";
+        AssertionHelper.check(plugin != null, "Error stopping Sonar!");
 
         // we need to set this to false in order for all threads
         // to stop correctly since we're doing while(running) and

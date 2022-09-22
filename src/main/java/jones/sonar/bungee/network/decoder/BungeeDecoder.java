@@ -19,7 +19,7 @@ package jones.sonar.bungee.network.decoder;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import jones.sonar.SonarBungee;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 
 import java.util.List;
 
