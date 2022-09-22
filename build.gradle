@@ -1,3 +1,5 @@
+import java.security.SecureRandom
+
 buildscript {
     repositories {
         mavenCentral()
@@ -43,8 +45,8 @@ task generateDictionry {
     outputs.file("${buildDir}/../proguard/dictionary")
 
     doLast {
-        def random = new Random()
-        def chars = (random.nextInt(24)..80 + random.nextInt(120))
+        def random = new SecureRandom()
+        def chars = (random.nextInt(5)..40 + random.nextInt(40) + random.nextInt(20))
                 .findAll {
                     Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) && it != 36
                 }
@@ -52,8 +54,8 @@ task generateDictionry {
                     String.valueOf(Character.toChars(it))
                 }
 
-        // reverse pattern for more randomization
-        Collections.reverse(chars)
+        // shuffle the character array
+        Collections.shuffle(chars)
 
         // add characters to an array
         int max = chars.size()
@@ -66,7 +68,9 @@ task generateDictionry {
         }
 
         // shuffle the array
-        Collections.shuffle(start)
+        for (int i = 0; i < 1 + random.nextInt(5); i++) {
+            Collections.shuffle(start)
+        }
 
         // write dictionary
         def f = outputs.files.getSingleFile()

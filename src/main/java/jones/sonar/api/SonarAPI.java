@@ -20,6 +20,7 @@ import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.whitelist.Whitelist;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -41,6 +42,10 @@ public interface SonarAPI {
         return getPlayerBotLevel(((InetSocketAddress) inetAddress).getAddress());
     }
 
+    default long getPlayerBotLevel(final ProxiedPlayer proxiedPlayer) {
+        return getPlayerBotLevel(((InetSocketAddress) proxiedPlayer.getPendingConnection().getSocketAddress()).getAddress());
+    }
+
     default boolean isBlacklisted(final InetAddress inetAddress) {
         return Blacklist.isBlacklisted(inetAddress);
     }
@@ -55,6 +60,10 @@ public interface SonarAPI {
 
     default boolean isWhitelisted(final SocketAddress inetAddress) {
         return isWhitelisted(((InetSocketAddress) inetAddress).getAddress());
+    }
+
+    default boolean isWhitelisted(final ProxiedPlayer proxiedPlayer) {
+        return isWhitelisted(((InetSocketAddress) proxiedPlayer.getPendingConnection().getSocketAddress()).getAddress());
     }
 
     default void addToBlacklist(final InetAddress inetAddress) {

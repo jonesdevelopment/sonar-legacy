@@ -1,8 +1,8 @@
 -skipnonpubliclibraryclasses
 -dontshrink
 -dontoptimize
--obfuscation 'dictionary'
--classobfuscation 'dictionary'
+#-obfuscation 'dictionary'
+#-classobfuscation 'dictionary'
 -packageobfuscation 'dictionary'
 -flattenpackagehierarchy 'jones.sonar'
 #-repackageclasses 'jones.sonar'
