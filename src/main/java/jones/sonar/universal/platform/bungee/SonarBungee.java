@@ -222,6 +222,8 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     public long reload() {
+        AssertionHelper.check(plugin != null, "Error reloading Sonar!");
+
         final long startTimeStamp = System.currentTimeMillis();
 
         // re-create the data folder if it got deleted somehow
