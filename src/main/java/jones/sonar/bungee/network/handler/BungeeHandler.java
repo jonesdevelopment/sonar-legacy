@@ -53,7 +53,7 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter {
                     || byteBuf.writerIndex() > Config.Values.MAX_PACKET_INDEX
                     || byteBuf.readerIndex() > Config.Values.MAX_PACKET_BYTES
                     || byteBuf.readableBytes() <= 0) {
-                byteBuf.skipBytes(byteBuf.readableBytes());
+                byteBuf.clear();
                 throw SonarBungee.INSTANCE.EXCEPTION;
             }
 

@@ -12,6 +12,11 @@ general:
   # If you have any issues with this, please set this to a higher value. (2048, 4096, ...)
   maximum-packet-capacity: 4096
 
+  # Maximum packet bytes length
+  # This has been tested with all kinds of Minecraft versions
+  # If you have any issues with this, please set this to a higher value. (128, 256, ...)
+  maximum-packet-length: 72
+
   # Minimum online keep alive tick to automatically whitelist online players
   minimum-tick-to-auto-whitelist: 3
 
