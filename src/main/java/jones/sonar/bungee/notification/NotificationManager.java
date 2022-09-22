@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.caching.notifications;
+package jones.sonar.bungee.notification;
 
 import jones.sonar.api.event.bungee.SonarAttackDetectedEvent;
 import jones.sonar.api.event.bungee.SonarWebhookSentEvent;

@@ -14,7 +14,7 @@
  *  limitations under the License.
  */
 
-package jones.sonar.bungee.counter;
+package jones.sonar.bungee.notification.counter;
 
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
