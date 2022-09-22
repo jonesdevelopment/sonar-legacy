@@ -106,7 +106,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             final Channel channel = ctx.channel();
 
-            if (Blacklist.isBlacklisted(inetAddress)) {
+            if (Blacklist.isBlacklisted(inetAddress) || (throttler != null && throttler.throttle(channel.remoteAddress()))) {
                 channel.unsafe().closeForcibly();
 
                 ServerStatistics.BLOCKED_CONNECTIONS++;
@@ -122,13 +122,6 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             if (!isGeyser) {
                 SonarPipelines.register(pipeline);
-            }
-
-            if (throttler != null && throttler.throttle(channel.remoteAddress())) {
-                channel.unsafe().closeForcibly();
-
-                ServerStatistics.BLOCKED_CONNECTIONS++;
-                return;
             }
 
             final ListenerInfo listener = channel.attr(PipelineUtils.LISTENER).get();
@@ -177,7 +170,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             if (Config.Values.CLIENT_CONNECT_EVENT) {
                 if (SonarBungee.INSTANCE.callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
-                    ctx.channel().unsafe().closeForcibly();
+                    channel.unsafe().closeForcibly();
 
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                 }
