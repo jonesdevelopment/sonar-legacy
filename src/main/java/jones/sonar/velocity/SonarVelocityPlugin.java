@@ -22,7 +22,8 @@ import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.ProxyServer;
-import jones.sonar.universal.platform.velocity.SonarVelocity;
+import jones.sonar.universal.platform.SonarBridge;
+import jones.sonar.universal.platform.SonarPlatform;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -50,6 +51,6 @@ public final class SonarVelocityPlugin {
 
     @Subscribe
     public void onProxyInitialization(final ProxyInitializeEvent event) {
-        SonarVelocity.INSTANCE.onInitialize(this, event);
+        SonarBridge.onEnable(SonarPlatform.VELOCITY, this, event);
     }
 }

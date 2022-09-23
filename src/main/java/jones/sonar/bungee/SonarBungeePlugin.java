@@ -16,23 +16,29 @@
 
 package jones.sonar.bungee;
 
-import jones.sonar.universal.platform.bungee.SonarBungee;
+import com.google.gson.annotations.SerializedName;
+import jones.sonar.universal.platform.SonarBridge;
+import jones.sonar.universal.platform.SonarPlatform;
 import net.md_5.bungee.api.plugin.Plugin;
 
 public final class SonarBungeePlugin extends Plugin {
 
     @Override
+    @SerializedName("load")
     public void onLoad() {
-        SonarBungee.INSTANCE.onLoad(this);
+        SonarBridge.onLoad(SonarPlatform.BUNGEE, this);
     }
 
     @Override
+    @SerializedName("enable")
     public void onEnable() {
-        SonarBungee.INSTANCE.onEnable(this);
+        SonarBridge.onEnable(SonarPlatform.BUNGEE, this);
     }
 
     @Override
+    @SerializedName("disable")
     public void onDisable() {
-        SonarBungee.INSTANCE.onDisable(this);
+        SonarBridge.onDisable(SonarPlatform.BUNGEE, this);
     }
+
 }
