@@ -17,6 +17,7 @@
 package jones.sonar.universal.platform;
 
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
+import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.platform.velocity.SonarVelocity;
@@ -50,11 +51,27 @@ public class SonarBridge {
         }
     }
 
-    public void onDisable(final SonarPlatform platform, final SonarBungeePlugin bungeePlugin) {
-        if (platform == SonarPlatform.BUNGEE) {
-            SonarBungee.INSTANCE.onDisable(bungeePlugin);
-        } else {
-            throw new GeneralException("Velocity and other platforms do not have a onDisable() event");
+    public void onDisable(final SonarPlatform platform, final Object... objects) {
+        switch (platform) {
+            default:
+            case UNKNOWN: {
+                throw new GeneralException("Invalid platform");
+            }
+
+            case VELOCITY: {
+
+                // objects[0] = SonarVelocityPlugin
+                // objects[1] = ProxyShutdownEvent
+                SonarVelocity.INSTANCE.onShutDown((SonarVelocityPlugin) objects[0], (ProxyShutdownEvent) objects[1]);
+                break;
+            }
+
+            case BUNGEE: {
+
+                // objects[0] = SonarBungeePlugin
+                SonarBungee.INSTANCE.onDisable((SonarBungeePlugin) objects[0]);
+                break;
+            }
         }
     }
 
@@ -62,7 +79,7 @@ public class SonarBridge {
         if (platform == SonarPlatform.BUNGEE) {
             SonarBungee.INSTANCE.onLoad(bungeePlugin);
         } else {
-            throw new GeneralException("Velocity and other platforms do not have a onLoad() event");
+            throw new GeneralException("Velocity and other platforms do not support the load() event");
         }
     }
 }
