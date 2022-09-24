@@ -36,6 +36,7 @@ public final class TimeoutHandler extends IdleStateHandler {
         //
     }
 
+    @Override
     protected void channelIdle(final ChannelHandlerContext ctx, final IdleStateEvent evt) throws Exception {
         assert evt.state() == IdleState.READER_IDLE;
 
