@@ -17,7 +17,6 @@
 package jones.sonar.bungee.network.handler;
 
 import com.google.gson.Gson;
-import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import jones.sonar.bungee.caching.ServerDataProvider;
@@ -26,6 +25,7 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.detection.LoginHandler;
 import jones.sonar.bungee.network.SonarPipeline;
+import jones.sonar.bungee.network.SonarPipelines;
 import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
 import jones.sonar.bungee.util.json.LegacyGsonFormat;
@@ -37,7 +37,6 @@ import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.DetectionResult;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.PlayerQueue;
-import jones.sonar.universal.util.ExceptionHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.ConnectionThrottle;
@@ -153,13 +152,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         }
 
         pipeline.addBefore(PipelineUtils.BOSS_HANDLER, PACKET_INTERCEPTOR, new PacketHandler(this));
-        pipeline.addLast(LAST_PACKET_INTERCEPTOR, new ChannelDuplexHandler() {
-
-            @Override
-            public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
-                ExceptionHandler.handle(ctx.channel(), cause);
-            }
-        });
+        pipeline.addLast(LAST_PACKET_INTERCEPTOR, SonarPipelines.EXCEPTION_HANDLER);
 
         super.handle(handshake);
     }
