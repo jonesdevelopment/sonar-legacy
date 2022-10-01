@@ -39,6 +39,7 @@ import jones.sonar.universal.platform.SonarPlatform;
 import jones.sonar.universal.queue.QueueThread;
 import jones.sonar.universal.util.AssertionHelper;
 import jones.sonar.universal.util.FastException;
+import jones.sonar.universal.util.PerformanceMonitor;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Event;
@@ -227,6 +228,9 @@ public enum SonarBungee implements SonarBungeePlatform {
         } else {
             FirewallManager.uninstall();
         }
+
+        // remove all firewall stuff if the jar gets shut down
+        PerformanceMonitor.RUNTIME.addShutdownHook(new Thread(FirewallManager::uninstall));
     }
 
     public void onDisable(final SonarBungeePlugin plugin) {
