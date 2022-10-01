@@ -16,6 +16,7 @@
 
 package jones.sonar.universal.platform.bungee;
 
+import io.netty.util.ResourceLeakDetector;
 import jones.sonar.api.event.bungee.SonarReloadEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
 import jones.sonar.bungee.caching.CacheThread;
@@ -195,6 +196,9 @@ public enum SonarBungee implements SonarBungeePlatform {
             Logger.INFO.log("§7§m«-----------------------------------------»§r");
             return;
         }
+
+        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
+        ResourceLeakDetector.setEnabled(false);
 
         /*
          * Starting threads
