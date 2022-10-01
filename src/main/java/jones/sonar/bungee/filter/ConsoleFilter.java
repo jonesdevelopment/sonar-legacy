@@ -26,6 +26,7 @@ public final class ConsoleFilter {
         sonar.proxy.getLogger().setFilter(record -> ((!record.getSourceClassName().equals("net.md_5.bungee.connection.InitialHandler")
                 && !(record.getSourceClassName().equals("net.md_5.bungee.netty.HandlerBoss")
                 && record.getMessage().contains(" - encountered exception: ")))
-                || Config.Values.LOG_CONNECTIONS));
+                || Config.Values.LOG_CONNECTIONS)
+                && !record.getMessage().equals("No client connected for pending server!"));
     }
 }
