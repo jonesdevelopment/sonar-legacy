@@ -4,7 +4,7 @@ firewall:
   # Warning: The firewall needs the current user to be root!
   enabled: false
 
-  # The name of the list stored using ipSet
+  # The name of the list stored using ipset
   # (https://linux.die.net/man/8/ipset)
   blacklist-name: 'blacklist'
 
@@ -20,3 +20,15 @@ firewall:
   # The number of maximum connections per second
   # coming from a single ip address
   max-cps-per-ip: 8
+
+  # Enable this if you want Sonar to broadcast the blacklist
+  # message to all players with '/ab verbose' enabled
+  broadcast-blacklisting: false
+
+  # Message that is being sent to all players with '/ab verbose'
+  # You can use the following variables:
+  #   %es% - Whether the plural form of ip address should be used
+  #   %seconds% - Blacklist delay in seconds (formatted)
+  #   %milliseconds% - Blacklist delay in milliseconds (formatted)
+  #   %ips% - Number of ip addresses that have been blacklisted (formatted)
+  broadcast-message: '%prefix%&f%ips% &7ip address%es% have been blacklisted via. the firewall.'

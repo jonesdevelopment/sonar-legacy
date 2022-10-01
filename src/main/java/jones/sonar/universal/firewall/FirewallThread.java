@@ -17,6 +17,7 @@
 package jones.sonar.universal.firewall;
 
 import jones.sonar.bungee.config.Firewall;
+import jones.sonar.bungee.notification.counter.ActionBarManager;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 
@@ -46,6 +47,14 @@ public final class FirewallThread extends Thread implements Runnable {
                                 });
 
                         Blacklist.BLACKLISTED.removeAll(toRemove);
+
+                        if (Firewall.Values.BROADCAST && !toRemove.isEmpty()) {
+                            final String alert = Firewall.Values.BROADCAST_MESSAGE
+                                    .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(toRemove.size()))
+                                    .replaceAll("%es%", toRemove.size() == 1 ? "" : "es");
+
+                            ActionBarManager.getPlayers().forEach(player -> player.sendMessage(alert));
+                        }
                     }
                 } catch (Exception exception) {
                     exception.printStackTrace();

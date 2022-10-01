@@ -16,6 +16,7 @@
 
 package jones.sonar.bungee.config;
 
+import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.config.yaml.Configuration;
 import jones.sonar.universal.config.yaml.ConfigurationProvider;
 import jones.sonar.universal.config.yaml.YamlConfiguration;
@@ -55,8 +56,8 @@ public class Firewall {
 
     @UtilityClass
     public class Values {
-        public boolean ENABLE_FIREWALL;
-        public String BLACKLIST_SET_NAME;
+        public boolean ENABLE_FIREWALL, BROADCAST;
+        public String BLACKLIST_SET_NAME, BROADCAST_MESSAGE;
         public int BLACKLIST_TIMEOUT, BLACKLIST_DELAY, MAX_CPS_PER_IP;
 
         public boolean load() {
@@ -67,6 +68,11 @@ public class Firewall {
                 BLACKLIST_TIMEOUT = Math.max(config.getInt("firewall.blacklist-timeout", 120000), 3000);
                 BLACKLIST_DELAY = Math.max(config.getInt("firewall.blacklist-delay", 10000), 1000);
                 MAX_CPS_PER_IP = Math.max(Math.min(config.getInt("firewall.max-cps-per-ip", 8), 999), 5);
+                BROADCAST = config.getBoolean("firewall.broadcast-blacklisting", false);
+                BROADCAST_MESSAGE = ColorUtil.format(config.getString("firewall.broadcast-message"))
+                        .replaceAll("%prefix%", Messages.Values.PREFIX)
+                        .replaceAll("%seconds%", SonarBungee.INSTANCE.FORMAT.format(BLACKLIST_DELAY / 1000D))
+                        .replaceAll("%milliseconds%", SonarBungee.INSTANCE.FORMAT.format(BLACKLIST_DELAY));
                 return true;
             } catch (final Exception exception) {
                 return false;
