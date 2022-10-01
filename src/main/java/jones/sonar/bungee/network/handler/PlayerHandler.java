@@ -17,6 +17,7 @@
 package jones.sonar.bungee.network.handler;
 
 import com.google.gson.Gson;
+import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import jones.sonar.bungee.caching.ServerDataProvider;
@@ -36,14 +37,17 @@ import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.DetectionResult;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.PlayerQueue;
+import jones.sonar.universal.util.ExceptionHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.event.ProxyPingEvent;
+import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.PacketWrapper;
@@ -149,8 +153,23 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         }
 
         pipeline.addBefore(PipelineUtils.BOSS_HANDLER, PACKET_INTERCEPTOR, new PacketHandler(this));
+        pipeline.addLast(LAST_PACKET_INTERCEPTOR, new ChannelDuplexHandler() {
+
+            @Override
+            public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
+                ExceptionHandler.handle(ctx.channel(), cause);
+            }
+        });
 
         super.handle(handshake);
+    }
+
+    public void disconnect_(final String reason) {
+        if (reason != null && ctx.channel().isActive()) {
+            ctx.channel().writeAndFlush(new Kick(ComponentSerializer.toString(new TextComponent(reason))));
+        }
+
+        ctx.channel().unsafe().closeForcibly();
     }
 
     @Override
@@ -250,31 +269,31 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 }
 
                 case 1: {
-                    disconnect(Messages.Values.DISCONNECT_FIRST_JOIN);
+                    disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
                     return;
                 }
 
                 case 2: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
-                    disconnect(Messages.Values.DISCONNECT_INVALID_NAME);
+                    disconnect_(Messages.Values.DISCONNECT_INVALID_NAME);
                     return;
                 }
 
                 case 3: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
-                    disconnect(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                    disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
                     return;
                 }
 
                 case 4: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
-                    disconnect(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
+                    disconnect_(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
                     return;
                 }
 
                 case 5: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
-                    disconnect(Messages.Values.DISCONNECT_QUEUED
+                    disconnect_(Messages.Values.DISCONNECT_QUEUED
                             .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
                             .replaceAll("%size%", sonar.FORMAT.format(PlayerQueue.QUEUE.size())));
                     return;
@@ -282,20 +301,20 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
                 case 6: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
-                    disconnect(Messages.Values.DISCONNECT_ATTACK);
+                    disconnect_(Messages.Values.DISCONNECT_ATTACK);
                     return;
                 }
 
                 case 7: {
                     ServerStatistics.BLOCKED_CONNECTIONS++;
-                    disconnect(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+                    disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
                     return;
                 }
             }
         }
 
         if (sonar.proxy.getPlayer(data.username) != null) {
-            disconnect(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
+            disconnect_(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
             return;
         }
 

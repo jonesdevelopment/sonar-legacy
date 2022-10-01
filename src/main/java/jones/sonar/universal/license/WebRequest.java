@@ -42,7 +42,7 @@ public final class WebRequest {
                     + fromBase64(HARDWARE_ID_URL)
                     + license.hardwareID.encryptedInformation
                     + fromBase64(MCMID_URL).replace("?", "&")
-                    + BuiltByBitID.getId()).openConnection();
+                    + BuiltByBitID.getId()).openConnection();       // 351538
 
             urlConnection.setConnectTimeout(10000);
             urlConnection.setReadTimeout(3500);
