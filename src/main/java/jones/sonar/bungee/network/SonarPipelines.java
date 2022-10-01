@@ -39,8 +39,10 @@ public class SonarPipelines implements SonarPipeline {
         }
     }
 
+    private final ChannelHandler SONAR_HANDLER = new BungeeHandler();
+
     public void register(final ChannelPipeline pipeline) {
-        pipeline.addFirst(HANDLER, new BungeeHandler());
+        pipeline.addFirst(HANDLER, SONAR_HANDLER);
         pipeline.addFirst(DECODER, new BungeeDecoder());
     }
 }

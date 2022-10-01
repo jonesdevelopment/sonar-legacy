@@ -17,12 +17,14 @@
 package jones.sonar.bungee.network.handler;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.ExceptionHandler;
 
+@ChannelHandler.Sharable
 public final class BungeeHandler extends ChannelInboundHandlerAdapter {
 
     @Override
