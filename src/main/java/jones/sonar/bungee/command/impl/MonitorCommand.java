@@ -39,7 +39,7 @@ public final class MonitorCommand extends SubCommand {
                 final ProxiedPlayer target = SonarBungee.INSTANCE.proxy.getPlayer(execution.arguments[1]);
 
                 if (target.getPendingConnection().getVersion() <= 47) {
-                    target.sendMessage(Messages.Values.MONITOR_UNSUPPORTED_OTHER
+                    execution.send(Messages.Values.MONITOR_UNSUPPORTED_OTHER
                             .replaceAll("%player%", target.getName()));
                     return;
                 }
