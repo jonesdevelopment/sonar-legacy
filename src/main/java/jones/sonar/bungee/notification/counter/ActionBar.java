@@ -32,8 +32,6 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.protocol.ProtocolConstants;
 
-import java.util.stream.Collectors;
-
 @RequiredArgsConstructor
 public final class ActionBar extends Thread implements Runnable {
 
@@ -104,16 +102,13 @@ public final class ActionBar extends Thread implements Runnable {
 
                     legacyCounter.setText(SPACES + counter.getText());
 
-                    ActionBarManager.getPlayers()
-                            .filter(player -> player.hasPermission("sonar.verbose"))
-                            .collect(Collectors.toSet())
-                            .forEach(player -> {
-                                if (player.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_13) {
-                                    player.sendMessage(ChatMessageType.ACTION_BAR, legacyCounter);
-                                } else {
-                                    player.sendMessage(ChatMessageType.ACTION_BAR, counter);
-                                }
-                            });
+                    ActionBarManager.getPlayers().forEach(player -> {
+                        if (player.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_13) {
+                            player.sendMessage(ChatMessageType.ACTION_BAR, legacyCounter);
+                        } else {
+                            player.sendMessage(ChatMessageType.ACTION_BAR, counter);
+                        }
+                    });
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

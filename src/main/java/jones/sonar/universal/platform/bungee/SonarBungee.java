@@ -222,8 +222,6 @@ public enum SonarBungee implements SonarBungeePlatform {
         Logger.INFO.log("§7§m«-----------------------------------------»§r");
 
         if (Firewall.Values.ENABLE_FIREWALL) {
-            Logger.INFO.log(" §7Setting up Sonar firewall...");
-
             FirewallManager.install();
         } else {
             FirewallManager.uninstall();

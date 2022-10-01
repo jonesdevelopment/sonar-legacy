@@ -32,7 +32,8 @@ public class ActionBarManager {
     public Stream<ProxiedPlayer> getPlayers() {
         return VERBOSE_ENABLED.stream()
                 .map(SonarBungee.INSTANCE.proxy::getPlayer)
-                .filter(Objects::nonNull);
+                .filter(Objects::nonNull)
+                .filter(player -> player.hasPermission("sonar.verbose"));
     }
 
     public boolean toggle(final ProxiedPlayer player) {
