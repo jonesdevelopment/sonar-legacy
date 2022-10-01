@@ -24,15 +24,19 @@ import java.net.InetAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @UtilityClass
 public class ConnectionDataManager {
     public final Map<InetAddress, ConnectionData> DATA = new ConcurrentHashMap<>(500000);
 
     public long getVerifying() {
+        return getVerifyingData().count();
+    }
+
+    public Stream<ConnectionData> getVerifyingData() {
         return DATA.values().stream()
-                .filter(connectionData -> connectionData.checked <= 1)
-                .count();
+                .filter(connectionData -> connectionData.checked <= 1);
     }
 
     public ConnectionData get(final InetAddress inetAddress) {

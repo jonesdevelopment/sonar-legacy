@@ -46,8 +46,7 @@ public final class VerifyCommand extends SubCommand {
 
                     final long verifying = ConnectionDataManager.getVerifying();
 
-                    // reset all stages of all verifying players
-                    ConnectionDataManager.resetCheckStage(0);
+                    ConnectionDataManager.getVerifyingData().forEach(ConnectionDataManager::remove);
 
                     final long difference = Math.max(verifying - ConnectionDataManager.getVerifying(), 0);
 
