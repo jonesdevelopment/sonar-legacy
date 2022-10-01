@@ -62,6 +62,7 @@ general:
 
 checks:
   reconnect-check:
+
     enabled: true
 
     # The first-join check is really powerful and probably defeats most bot attacks
@@ -72,10 +73,8 @@ checks:
     # rejoin the server (Recommended values: 500 - 5000)
     rejoin-delay: 2000
 
-    # Maximum amount of rejoins per second before being blacklisted
-    maximum-rejoins-per-second: 8
-
   invalid-name:
+
     enabled: true
 
     # Maximum length of a name
@@ -110,6 +109,7 @@ notifications:
     # Enable this if you want to use Discord Webhook notifications
     enabled: false
 
+    # The url of the Discord Webhook
     url: ''
 
     # The delay between each Webhook alert in milliseconds
@@ -118,7 +118,7 @@ notifications:
     # The title of the Discord Webhook alert
     title: 'Sonar Anti Bot Alert'
 
-    # You can use the normal Discord formatting here (Markdown)
+    # You can use the normal Discord formatting here
     format:
       - '> :warning: **Sonar has detected an incoming attack on your Minecraft server** :warning:'
       - '> '

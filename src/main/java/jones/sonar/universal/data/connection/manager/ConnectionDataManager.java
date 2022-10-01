@@ -62,16 +62,12 @@ public class ConnectionDataManager {
                 .forEach(DATA::remove);
     }
 
-    public boolean remove(final ConnectionData connectionData) {
-        return remove(connectionData.inetAddress);
+    public void remove(final ConnectionData connectionData) {
+        DATA.remove(connectionData.inetAddress);
     }
 
-    public boolean remove(final InetAddress inetAddress) {
-        if (contains(inetAddress)) {
-            DATA.remove(inetAddress);
-            return true;
-        }
-        return false;
+    public void remove(final InetAddress inetAddress) {
+        DATA.remove(inetAddress);
     }
 
     public ConnectionData create(final InetAddress inetAddress) {

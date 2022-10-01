@@ -16,7 +16,6 @@
 
 package jones.sonar.universal.data.connection;
 
-import jones.sonar.universal.counter.CounterMap;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.RequiredArgsConstructor;
 
@@ -28,8 +27,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public final class ConnectionData {
     public final InetAddress inetAddress;
-
-    public final CounterMap CONNECTIONS_PER_SECOND = new CounterMap(1000).build();
 
     public String username = "", verifiedName = "";
 

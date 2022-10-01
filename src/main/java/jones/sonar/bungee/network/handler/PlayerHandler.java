@@ -38,6 +38,7 @@ import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.PlayerQueue;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
+import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.Callback;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ListenerInfo;
@@ -52,12 +53,13 @@ import java.net.InetAddress;
 
 public final class PlayerHandler extends InitialHandler implements SonarPipeline {
 
-    public PlayerHandler(final ChannelHandlerContext ctx, final ListenerInfo listener) {
+    public PlayerHandler(final ChannelHandlerContext ctx, final ListenerInfo listener, final ConnectionThrottle throttler) {
         super(BungeeCord.getInstance(), listener);
 
         this.ctx = ctx;
 
         pipeline = ctx.channel().pipeline();
+        this.throttler = throttler;
     }
 
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
@@ -65,6 +67,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     private final BungeeCord bungee = BungeeCord.getInstance();
 
     private final SonarBungee sonar = SonarBungee.INSTANCE;
+
+    private final ConnectionThrottle throttler;
 
     private final ChannelHandlerContext ctx;
 
@@ -107,6 +111,11 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         }
 
         currentState = ConnectionState.PROCESSING;
+
+        if (throttler != null && throttler.throttle(getSocketAddress())) {
+            ctx.channel().unsafe().closeForcibly();
+            return;
+        }
 
         switch (handshake.getRequestedProtocol()) {
 
@@ -236,6 +245,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.key) {
                 default: {
+                    ConnectionDataManager.remove(data);
                     throw sonar.EXCEPTION;
                 }
 

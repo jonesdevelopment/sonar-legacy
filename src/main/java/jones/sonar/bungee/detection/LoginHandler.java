@@ -20,7 +20,6 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.data.connection.ConnectionData;
-import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.data.player.PlayerData;
 import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.detection.Detection;
@@ -40,24 +39,11 @@ public final class LoginHandler implements Detections {
                 || !connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
             if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
-                ConnectionDataManager.remove(connectionData);
                 return BLACKLIST;
             }
 
             connectionData.checked = 0;
-            connectionData.botLevel++;
             return INVALID_NAME;
-        }
-
-        connectionData.CONNECTIONS_PER_SECOND.increment();
-
-        if (connectionData.CONNECTIONS_PER_SECOND.get() > Config.Values.MAX_REJOINS_PER_SECOND) {
-            ConnectionDataManager.remove(connectionData);
-            return BLACKLIST;
-        }
-
-        else if (connectionData.CONNECTIONS_PER_SECOND.get() > 4) {
-            connectionData.botLevel++;
         }
 
         final long timeStamp = System.currentTimeMillis();
@@ -75,7 +61,6 @@ public final class LoginHandler implements Detections {
             if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
                 if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                         || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
-                    ConnectionDataManager.remove(connectionData);
                     return BLACKLIST;
                 }
 
@@ -90,7 +75,6 @@ public final class LoginHandler implements Detections {
 
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)
                     && !connectionData.allowedNames.contains(connectionData.username)) {
-                ConnectionDataManager.remove(connectionData);
                 return BLACKLIST;
             }
         }
@@ -149,7 +133,7 @@ public final class LoginHandler implements Detections {
                 return SUSPICIOUS;
             }
 
-            if (connectionData.CONNECTIONS_PER_SECOND.get() < 2 && connectionData.failedReconnect < 3) {
+            if (connectionData.failedReconnect < 3) {
                 connectionData.botLevel--;
             }
         }

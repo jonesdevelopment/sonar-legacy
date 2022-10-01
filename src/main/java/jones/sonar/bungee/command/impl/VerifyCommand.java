@@ -82,6 +82,9 @@ public final class VerifyCommand extends SubCommand {
                         // force another reconnect when verifying during an attack
                         ConnectionDataManager.resetCheckStage(1);
 
+                        // garbage collect
+                        System.gc();
+
                         execution.send(Messages.Values.VERIFICATION_PURGE_COMPLETE);
                     } else {
                         execution.send(Messages.Values.VERIFICATION_PURGE_NONE);

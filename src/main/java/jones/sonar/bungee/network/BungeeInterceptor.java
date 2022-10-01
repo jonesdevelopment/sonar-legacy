@@ -106,7 +106,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             final Channel channel = ctx.channel();
 
-            if (Blacklist.isBlacklisted(inetAddress) || (throttler != null && throttler.throttle(channel.remoteAddress()))) {
+            if (Blacklist.isBlacklisted(inetAddress)) {
                 channel.unsafe().closeForcibly();
 
                 ServerStatistics.BLOCKED_CONNECTIONS++;
@@ -158,7 +158,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             } else {
 
                 // normal players will be handled using our custom player handler
-                pipeline.get(InboundHandler.class).setHandler(new PlayerHandler(ctx, listener));
+                pipeline.get(InboundHandler.class).setHandler(new PlayerHandler(ctx, listener, throttler));
             }
 
             // the proxy protocol is necessary if you want to use tcp shield
