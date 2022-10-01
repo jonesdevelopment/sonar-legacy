@@ -31,40 +31,44 @@ public class FirewallManager {
         }
 
         if (execute("ipset") != -1) {
+            execute("ipset flush " + Firewall.Values.BLACKLIST_SET_NAME);
             execute("ipset destroy " + Firewall.Values.BLACKLIST_SET_NAME);
         }
     }
 
     public void install() throws GeneralException {
         if (OperatingSystem.OS_NAME.toLowerCase().contains("wind")) {
-            Logger.ERROR.log(" The firewall can't run on Windows systems!", "[Sonar-Firewall]");
+            Logger.ERROR.log("The firewall can't run on Windows systems!", "[Sonar-Firewall]");
             return;
         }
 
         if (execute("iptables") == -1) {
-            Logger.INFO.log(" IPTables not found; trying to install...", "[Sonar-Firewall]");
+            Logger.INFO.log("IPTables not found; trying to install...", "[Sonar-Firewall]");
 
             if (execute("sudo apt install iptables -y") == -1) {
-                Logger.ERROR.log(" Error while setting up iptables (No permission?)", "[Sonar-Firewall]");
+                Logger.ERROR.log("Error while setting up iptables (No permission?)", "[Sonar-Firewall]");
                 return;
             }
         }
 
         if (execute("ipset") == -1) {
-            Logger.INFO.log(" IPSet not found; trying to install...", "[Sonar-Firewall]");
+            Logger.INFO.log("IPSet not found; trying to install...", "[Sonar-Firewall]");
 
             if (execute("sudo apt install ipset -y") == -1) {
-                Logger.ERROR.log(" Error while setting up ipset (No permission?)", "[Sonar-Firewall]");
+                Logger.ERROR.log("Error while setting up ipset (No permission?)", "[Sonar-Firewall]");
                 return;
             }
         }
 
+        uninstall();
+
         execute("ipset create " + Firewall.Values.BLACKLIST_SET_NAME + " hash:ip timeout " + Firewall.Values.BLACKLIST_TIMEOUT);
-        execute("ipset flush " + Firewall.Values.BLACKLIST_SET_NAME);
+
         execute("iptables -I INPUT -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
     }
 
-    private int execute(final String command) {
+    @SuppressWarnings("all")
+    protected int execute(final String command) {
         try {
             final Process process = PerformanceMonitor.RUNTIME.exec(command);
 

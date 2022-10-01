@@ -31,6 +31,7 @@ import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.firewall.FirewallManager;
+import jones.sonar.universal.firewall.FirewallThread;
 import jones.sonar.universal.license.response.LicenseResponse;
 import jones.sonar.universal.license.response.WebResponse;
 import jones.sonar.universal.peak.PeakCalculator;
@@ -170,14 +171,6 @@ public enum SonarBungee implements SonarBungeePlatform {
             Logger.INFO.log(" ");
         }
 
-        if (Firewall.Values.ENABLE_FIREWALL) {
-            Logger.INFO.log(" §7Setting up Sonar firewall...");
-
-            FirewallManager.install();
-        } else {
-            FirewallManager.uninstall();
-        }
-
         Logger.INFO.log(" §7Setting up commands and features...");
 
         proxy.getPluginManager().registerCommand(plugin, new SonarCommand());
@@ -204,7 +197,7 @@ public enum SonarBungee implements SonarBungeePlatform {
          * Starting threads
          */
 
-        Logger.INFO.log(" §7Starting worker threads... (4)");
+        Logger.INFO.log(" §7Starting worker threads... (5)");
         Logger.INFO.log(" ");
 
         new QueueThread().start();
@@ -215,6 +208,8 @@ public enum SonarBungee implements SonarBungeePlatform {
 
         new PeakThread().start();
 
+        new FirewallThread().start();
+
         ConsoleFilter.apply(this);
 
         /*
@@ -224,10 +219,21 @@ public enum SonarBungee implements SonarBungeePlatform {
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");
         Logger.INFO.log("§7§m«-----------------------------------------»§r");
+
+        if (Firewall.Values.ENABLE_FIREWALL) {
+            Logger.INFO.log(" §7Setting up Sonar firewall...");
+
+            FirewallManager.install();
+        } else {
+            FirewallManager.uninstall();
+        }
     }
 
     public void onDisable(final SonarBungeePlugin plugin) {
         AssertionHelper.check(plugin != null, "Error stopping Sonar!");
+
+        // remove all firewall stuff
+        FirewallManager.uninstall();
 
         // we need to set this to false in order for all threads
         // to stop correctly since we're doing while(running) and
