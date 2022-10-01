@@ -14,20 +14,13 @@
  *  limitations under the License.
  */
 
-package jones.sonar.universal.license.response;
+package jones.sonar.universal.util;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 
-@RequiredArgsConstructor
-public enum WebResponse {
-    INVALID(401),
-    NOT_EXISTING(404),
-    SUCCESS(200),
-    NONE(-1),
-    PERM_REDIRECT(301),
-    TEMP_REDIRECT(301);
-
-    @Getter
-    private final int expectedResponseCode;
+@UtilityClass
+public class BuiltByBitID {
+    public String getId() {
+        return "%%__USER__%%";
+    }
 }

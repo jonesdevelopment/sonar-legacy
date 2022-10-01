@@ -71,8 +71,10 @@ public class ConnectionDataManager {
     }
 
     public ConnectionData create(final InetAddress inetAddress) {
-        if (contains(inetAddress)) {
-            return get(inetAddress);
+        final ConnectionData got = get(inetAddress);
+
+        if (got != null) {
+            return got;
         }
 
         DATA.put(inetAddress, new ConnectionData(inetAddress));

@@ -121,6 +121,7 @@ public enum SonarBungee implements SonarBungeePlatform {
             Logger.INFO.log(" §7Support Discord:§f https://discord.jonesdev.xyz/");
             Logger.INFO.log(" ");
             Logger.INFO.log("§7§m«-----------------------------------------»§r");
+            return;
         }
 
         // another check if the license got spoofed
