@@ -61,6 +61,33 @@ notifications:
     # The delay between each chat notification in milliseconds
     delay: 60000
 
+  boss-bar:
+
+    # The delay between each boss bar update in milliseconds
+    delay: 1000
+
+    # You can use the following variables:
+    #   %cpu-graph% - Average cpu percentage graph
+    #   %memory-graph% - Average memory (mb) graph
+    #   %up-down% - Virtualization of graph going up or down (arrow)
+    format: '   &7CPU &8(&7%cpu-graph%&8)&r &3%list% &7MEM &8(&7%memory-graph%&8)&r  &r%up-down%'
+
+    # You can change the symbol of the graph here
+    fill-symbol: '|'
+    fill-symbol-count: 25
+
+    filled-color-safe: '&a'
+    filled-color-unsafe: '&e'
+    filled-color-bad: '&c'
+
+    # The color that should be used if a graph is not filled
+    unfilled-color: '&7'
+
+    # The little symbol at the end stands for the cpu and memory usage
+    going-up-symbol: '&f⬆'
+    going-down-symbol: '&f⬇'
+    static-symbol: '&f⬍'
+
   peak:
 
     # Disable this if you don't want to receive peak notifications
@@ -200,6 +227,14 @@ commands:
     disabled: '%prefix%&7You are &cno longer &7viewing the counter.'
     enabled-other: '%prefix%%player% &7is &anow &7viewing the counter.'
     disabled-other: '%prefix%%player% &7is &cno longer &7viewing the counter.'
+
+  monitor:
+    enabled: '%prefix%&7You are &anow &7viewing the performance monitor.'
+    disabled: '%prefix%&7You are &cno longer &7viewing the performance monitor.'
+    enabled-other: '%prefix%%player% &7is &anow &7viewing the performance monitor.'
+    disabled-other: '%prefix%%player% &7is &cno longer &7viewing the performance monitor.'
+    unsupported: '%prefix%&cSorry! The performance monitor only works on 1.9+ clients.'
+    unsupported-other: '%prefix%&c%player% is on a version of Minecraft that does not support boss bars.'
 
   notify:
     enabled: '%prefix%&7You are &anow &7receiving chat notifications.'

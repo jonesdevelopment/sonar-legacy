@@ -70,11 +70,11 @@ public class Messages {
     }
 
     public String format(final String message) {
-        return ColorUtil.format(message)
+        return ColorUtil.format(message
                 .replaceAll("%prefix%", Values.PREFIX)
                 .replaceAll("%list%", Values.LIST_SYMBOL)
                 .replaceAll("%footer-bar%", Values.FOOTER_BAR)
-                .replaceAll("%header-bar%", Values.HEADER_BAR);
+                .replaceAll("%header-bar%", Values.HEADER_BAR));
     }
 
     @UtilityClass
@@ -97,9 +97,13 @@ public class Messages {
                 NOTIFY_DISABLED_OTHER, NOTIFY_FORMAT, PEAK_FORMAT_CPS, PEAK_FORMAT_IPS,
                 RELOAD_CONFIRMATION_ATTACK, DISCONNECT_BOT_BEHAVIOUR, DISCONNECT_BOT_DETECTION,
                 NO_PERMISSION_SUB_COMMAND_ANY, VERIFICATION_PURGING, VERIFICATION_PURGE_COMPLETE,
-                VERIFICATION_SIZE, VERIFICATION_CLEAR, VERIFICATION_PURGE_NONE, VERIFICATION_EMPTY;
+                VERIFICATION_SIZE, VERIFICATION_CLEAR, VERIFICATION_PURGE_NONE, VERIFICATION_EMPTY,
+                MONITOR_ENABLED, MONITOR_DISABLED, MONITOR_ENABLED_OTHER, MONITOR_DISABLED_OTHER,
+                MONITOR_FORMAT, MONITOR_GRAPH_FILLED_SAFE, MONITOR_GRAPH_FILLED_UNSAFE, MONITOR_GRAPH_FILLED_BAD,
+                MONITOR_GRAPH_UNFILLED, MONITOR_GRAPH_FILL_SYMBOL, MONITOR_GRAPH_UP, MONITOR_GRAPH_DOWN,
+                MONITOR_GRAPH_STATIC, MONITOR_UNSUPPORTED, MONITOR_UNSUPPORTED_OTHER;
 
-        public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY;
+        public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY, GRAPH_SYMBOL_COUNT, MONITOR_REFRESH_DELAY;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK;
 
@@ -160,6 +164,13 @@ public class Messages {
                 VERIFICATION_SIZE = format(config.getString("commands.verification.size"));
                 VERIFICATION_EMPTY = format(config.getString("commands.verification.empty"));
 
+                MONITOR_ENABLED = format(config.getString("commands.monitor.enabled"));
+                MONITOR_DISABLED = format(config.getString("commands.monitor.disabled"));
+                MONITOR_ENABLED_OTHER = format(config.getString("commands.monitor.enabled-other"));
+                MONITOR_DISABLED_OTHER = format(config.getString("commands.monitor.disabled-other"));
+                MONITOR_UNSUPPORTED = format(config.getString("commands.monitor.unsupported"));
+                MONITOR_UNSUPPORTED_OTHER = format(config.getString("commands.monitor.unsupported-other"));
+
                 NOTIFY_ENABLED = format(config.getString("commands.notify.enabled"));
                 NOTIFY_DISABLED = format(config.getString("commands.notify.disabled"));
                 NOTIFY_ENABLED_OTHER = format(config.getString("commands.notify.enabled-other"));
@@ -183,6 +194,25 @@ public class Messages {
                 ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("notifications.action-bar.enable-waiting-message");
                 FILTER_SYMBOL_ON = format(config.getString("notifications.action-bar.filter-enabled-symbol"));
                 FILTER_SYMBOL_OFF = format(config.getString("notifications.action-bar.filter-disabled-symbol"));
+
+                // monitor
+                MONITOR_FORMAT = format(config.getString("notifications.boss-bar.format"));
+                MONITOR_GRAPH_FILL_SYMBOL = config.getString("notifications.boss-bar.fill-symbol", "|");
+                GRAPH_SYMBOL_COUNT = config.getInt("notifications.boss-bar.fill-symbol-count");
+                MONITOR_GRAPH_STATIC = ColorUtil.format(config.getString("notifications.boss-bar.static-symbol"));
+                MONITOR_GRAPH_UP = ColorUtil.format(config.getString("notifications.boss-bar.going-up-symbol"));
+                MONITOR_GRAPH_DOWN = ColorUtil.format(config.getString("notifications.boss-bar.going-down-symbol"));
+                MONITOR_REFRESH_DELAY = Math.max(config.getInt("notifications.boss-bar.delay", 1000), 800);
+                MONITOR_GRAPH_UNFILLED = ColorUtil.format(config.getString("notifications.boss-bar.unfilled-color", "&7"));
+                MONITOR_GRAPH_FILLED_BAD = ColorUtil.format(config.getString("notifications.boss-bar.filled-color-bad", "&c"));
+                MONITOR_GRAPH_FILLED_SAFE = ColorUtil.format(config.getString("notifications.boss-bar.filled-color-safe", "&a"));
+                MONITOR_GRAPH_FILLED_UNSAFE = ColorUtil.format(config.getString("notifications.boss-bar.filled-color-unsafe", "&e"));
+
+                if (MONITOR_GRAPH_FILL_SYMBOL.length() > 1) {
+                    MONITOR_GRAPH_FILL_SYMBOL = MONITOR_GRAPH_FILL_SYMBOL.substring(0, 1);
+                } else if (MONITOR_GRAPH_FILL_SYMBOL.isEmpty()) {
+                    MONITOR_GRAPH_FILL_SYMBOL = "|";
+                }
 
                 // peak
                 ENABLE_PEAK = config.getBoolean("notifications.peak.enabled", true);

@@ -25,6 +25,7 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Firewall;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.filter.ConsoleFilter;
+import jones.sonar.bungee.monitor.MonitorThread;
 import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.notification.counter.ActionBar;
 import jones.sonar.bungee.peak.PeakThread;
@@ -198,7 +199,7 @@ public enum SonarBungee implements SonarBungeePlatform {
          * Starting threads
          */
 
-        Logger.INFO.log(" §7Starting worker threads... (5)");
+        Logger.INFO.log(" §7Starting worker threads... (6)");
         Logger.INFO.log(" ");
 
         new QueueThread().start();
@@ -210,6 +211,8 @@ public enum SonarBungee implements SonarBungeePlatform {
         new PeakThread().start();
 
         new FirewallThread().start();
+
+        new MonitorThread().start();
 
         ConsoleFilter.apply(this);
 

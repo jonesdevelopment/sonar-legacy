@@ -35,6 +35,7 @@ public class CommandManager {
                 new ReloadCommand(),
                 new BlacklistCommand(),
                 new WhitelistCommand(),
+                new MonitorCommand(),
                 new VerifyCommand(),
                 new VerboseCommand(),
                 new NotifyCommand());
