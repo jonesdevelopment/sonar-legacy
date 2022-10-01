@@ -31,7 +31,7 @@ public class SonarPipelines implements SonarPipeline {
     public final ChannelHandler EXCEPTION_HANDLER = new PacketExceptionHandler();
 
     @ChannelHandler.Sharable
-    public class PacketExceptionHandler extends ChannelDuplexHandler {
+    private class PacketExceptionHandler extends ChannelDuplexHandler {
 
         @Override
         public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
