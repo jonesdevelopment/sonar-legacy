@@ -18,10 +18,13 @@ package jones.sonar.universal.firewall;
 
 import jones.sonar.bungee.config.Firewall;
 import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.universal.platform.SonarPlatform;
+import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.GeneralException;
 import jones.sonar.universal.util.OperatingSystem;
 import jones.sonar.universal.util.PerformanceMonitor;
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.api.config.ListenerInfo;
 
 @UtilityClass
 public class FirewallManager {
@@ -36,7 +39,7 @@ public class FirewallManager {
         }
     }
 
-    public void install() throws GeneralException {
+    public void install(final SonarPlatform platform) throws GeneralException {
         if (OperatingSystem.OS_NAME.toLowerCase().contains("wind")) {
             Logger.ERROR.log("The firewall can't run on Windows systems!", "[Sonar-Firewall]");
             return;
@@ -64,7 +67,25 @@ public class FirewallManager {
 
         execute("ipset create " + Firewall.Values.BLACKLIST_SET_NAME + " hash:ip timeout " + Firewall.Values.BLACKLIST_TIMEOUT);
 
-        execute("iptables -I INPUT -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+        execute("iptables -I INPUT -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -p TCP --destination-port " + getPort(platform) + " -j DROP");
+    }
+
+    private int getPort(final SonarPlatform platform) {
+        switch (platform) {
+            default: {
+                return 25565;
+            }
+
+            case BUNGEE: {
+                int port = 25565;
+
+                for (final ListenerInfo listener : SonarBungee.INSTANCE.proxy.getConfig().getListeners()) {
+                    port = listener.getHost().getPort();
+                }
+
+                return port;
+            }
+        }
     }
 
     @SuppressWarnings("all")

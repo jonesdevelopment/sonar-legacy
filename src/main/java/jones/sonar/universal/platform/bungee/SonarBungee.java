@@ -222,7 +222,7 @@ public enum SonarBungee implements SonarBungeePlatform {
         Logger.INFO.log("§7§m«-----------------------------------------»§r");
 
         if (Firewall.Values.ENABLE_FIREWALL) {
-            FirewallManager.install();
+            FirewallManager.install(platform);
         } else {
             FirewallManager.uninstall();
         }
@@ -268,7 +268,7 @@ public enum SonarBungee implements SonarBungeePlatform {
 
         // Firewall
         if (Firewall.Values.ENABLE_FIREWALL) {
-            FirewallManager.install();
+            FirewallManager.install(platform);
         } else {
             FirewallManager.uninstall();
         }
