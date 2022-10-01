@@ -1,0 +1,22 @@
+firewall:
+
+  # Enable this if you want to use the firewall
+  # Warning: The firewall needs the current user to be root!
+  enabled: false
+
+  # The name of the list stored using ipSet
+  # (https://linux.die.net/man/8/ipset)
+  blacklist-name: 'blacklist'
+
+  # The number of milliseconds an ip address should be
+  # blacklisted before being automatically remove from the blacklist
+  blacklist-timeout: 120000
+
+  # Since Sonar is caching all blacklisted ip addresses to
+  # firewall-ban them all at the same time, you will need to
+  # specify a delay (in milliseconds) between those ban-waves
+  blacklist-delay: 10000
+
+  # The number of maximum connections per second
+  # coming from a single ip address
+  max-cps-per-ip: 8

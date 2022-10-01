@@ -22,6 +22,7 @@ import jones.sonar.bungee.caching.CacheThread;
 import jones.sonar.bungee.command.SonarCommand;
 import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Config;
+import jones.sonar.bungee.config.Firewall;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.filter.ConsoleFilter;
 import jones.sonar.bungee.network.BungeeInterceptor;
@@ -29,6 +30,7 @@ import jones.sonar.bungee.notification.counter.ActionBar;
 import jones.sonar.bungee.peak.PeakThread;
 import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.universal.firewall.FirewallManager;
 import jones.sonar.universal.license.response.LicenseResponse;
 import jones.sonar.universal.license.response.WebResponse;
 import jones.sonar.universal.peak.PeakCalculator;
@@ -150,15 +152,30 @@ public enum SonarBungee implements SonarBungeePlatform {
         Config.initialize();
 
         if (!Config.Values.load()) {
-            Logger.INFO.log(" §cError loading configuration! §7(config.yml)");
+            Logger.INFO.log(" §cError loading configuration! §7(" + Config.fileName + ")");
             Logger.INFO.log(" ");
         }
 
         Messages.initialize();
 
         if (!Messages.Values.load()) {
-            Logger.INFO.log(" §cError loading message configuration! §7(messages.yml)");
+            Logger.INFO.log(" §cError loading message configuration! §7(" + Messages.fileName + ")");
             Logger.INFO.log(" ");
+        }
+
+        Firewall.initialize();
+
+        if (!Firewall.Values.load()) {
+            Logger.INFO.log(" §cError loading firewall configuration! §7(" + Firewall.fileName + ".yml)");
+            Logger.INFO.log(" ");
+        }
+
+        if (Firewall.Values.ENABLE_FIREWALL) {
+            Logger.INFO.log(" §7Setting up Sonar firewall...");
+
+            FirewallManager.install();
+        } else {
+            FirewallManager.uninstall();
         }
 
         Logger.INFO.log(" §7Setting up commands and features...");
@@ -236,6 +253,17 @@ public enum SonarBungee implements SonarBungeePlatform {
         // initialize and load all messages
         Messages.initialize();
         Messages.Values.load();
+
+        // initialize and load all firewall settings
+        Firewall.initialize();
+        Firewall.Values.load();
+
+        // Firewall
+        if (Firewall.Values.ENABLE_FIREWALL) {
+            FirewallManager.install();
+        } else {
+            FirewallManager.uninstall();
+        }
 
         // call the SonarReloadEvent (API)
         final long endTimeStamp = System.currentTimeMillis();

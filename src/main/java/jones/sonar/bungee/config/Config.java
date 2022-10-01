@@ -36,7 +36,7 @@ public class Config {
 
     public Configuration config;
 
-    private final String fileName = "config.yml";
+    public final String fileName = "config.yml";
 
     public void initialize() {
         try {

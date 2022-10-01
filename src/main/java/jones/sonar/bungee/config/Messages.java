@@ -34,7 +34,7 @@ public class Messages {
 
     public Configuration config;
 
-    private final String fileName = "messages.yml";
+    public final String fileName = "messages.yml";
 
     public void initialize() {
         try {

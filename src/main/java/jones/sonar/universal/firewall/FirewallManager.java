@@ -16,14 +16,61 @@
 
 package jones.sonar.universal.firewall;
 
+import jones.sonar.bungee.config.Firewall;
+import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.util.GeneralException;
+import jones.sonar.universal.util.OperatingSystem;
+import jones.sonar.universal.util.PerformanceMonitor;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
 public class FirewallManager {
-    public void remove() throws GeneralException {
+    public void uninstall() throws GeneralException {
+        if (execute("iptables") != -1) {
+            execute("iptables -D INPUT -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+        }
+
+        if (execute("ipset") != -1) {
+            execute("ipset destroy " + Firewall.Values.BLACKLIST_SET_NAME);
+        }
     }
 
     public void install() throws GeneralException {
+        if (OperatingSystem.OS_NAME.toLowerCase().contains("wind")) {
+            Logger.ERROR.log(" The firewall can't run on Windows systems!", "[Sonar-Firewall]");
+            return;
+        }
+
+        if (execute("iptables") == -1) {
+            Logger.INFO.log(" IPTables not found; trying to install...", "[Sonar-Firewall]");
+
+            if (execute("sudo apt install iptables -y") == -1) {
+                Logger.ERROR.log(" Error while setting up iptables (No permission?)", "[Sonar-Firewall]");
+                return;
+            }
+        }
+
+        if (execute("ipset") == -1) {
+            Logger.INFO.log(" IPSet not found; trying to install...", "[Sonar-Firewall]");
+
+            if (execute("sudo apt install ipset -y") == -1) {
+                Logger.ERROR.log(" Error while setting up ipset (No permission?)", "[Sonar-Firewall]");
+                return;
+            }
+        }
+
+        execute("ipset create " + Firewall.Values.BLACKLIST_SET_NAME + " hash:ip timeout " + Firewall.Values.BLACKLIST_TIMEOUT);
+        execute("ipset flush " + Firewall.Values.BLACKLIST_SET_NAME);
+        execute("iptables -I INPUT -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+    }
+
+    private int execute(final String command) {
+        try {
+            final Process process = PerformanceMonitor.RUNTIME.exec(command);
+
+            return process.exitValue();
+        } catch (Exception exception) {
+            return -2;
+        }
     }
 }
