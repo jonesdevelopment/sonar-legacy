@@ -120,6 +120,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             return;
         }
 
+        final InetAddress inetAddress = inetAddress();
+
         switch (handshake.getRequestedProtocol()) {
 
             /*
@@ -127,6 +129,10 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
              */
 
             case 1: {
+                if (Config.Values.PING_BEFORE_JOIN) {
+                    ServerPingCache.HAS_PINGED.add(inetAddress);
+                }
+
                 currentState = ConnectionState.PINGING;
                 break;
             }
@@ -246,9 +252,16 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             throw sonar.EXCEPTION;
         }
 
+        final InetAddress inetAddress = inetAddress();
+
+        if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.contains(inetAddress)) {
+            disconnect(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
+            return;
+        }
+
         currentState = ConnectionState.PROCESSING;
 
-        final ConnectionData data = ConnectionDataManager.create(inetAddress());
+        final ConnectionData data = ConnectionDataManager.create(inetAddress);
 
         data.username = loginRequest.getData();
 

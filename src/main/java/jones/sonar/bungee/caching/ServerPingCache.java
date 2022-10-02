@@ -22,8 +22,14 @@ import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ListenerInfo;
 
+import java.net.InetAddress;
+import java.util.HashSet;
+import java.util.Set;
+
 @UtilityClass
 public class ServerPingCache {
+
+    public final Set<InetAddress> HAS_PINGED = new HashSet<>();
 
     public ServerPing cachedServerPing = null;
 

@@ -69,7 +69,8 @@ public class Config {
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
-                LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION;
+                LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION,
+                PING_BEFORE_JOIN;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -115,9 +116,10 @@ public class Config {
                 WEBHOOK_COLOR_B = Math.min(Math.max(config.getInt("notifications.webhook.color.b", 0), 0), 255);
 
                 // checks
-                ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect-check.enabled", true);
-                ENABLE_FIRST_JOIN = config.getBoolean("checks.reconnect-check.first-join", true);
-                REJOIN_DELAY = config.getInt("checks.reconnect-check.rejoin-delay", 1000);
+                ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect.enabled", true);
+                ENABLE_FIRST_JOIN = config.getBoolean("checks.reconnect.first-join", true);
+                REJOIN_DELAY = config.getInt("checks.reconnect.rejoin-delay", 1000);
+                PING_BEFORE_JOIN = config.getBoolean("checks.reconnect.ping-before-join");
 
                 ENABLE_INVALID_NAME_CHECK = config.getBoolean("checks.invalid-name.enabled", true);
                 MAX_NAME_LENGTH = Math.max(config.getInt("checks.invalid-name.max-length", 16), 1);

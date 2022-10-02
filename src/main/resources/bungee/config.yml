@@ -71,7 +71,7 @@ general:
   fake-server-client-brand: '(Sonar) %proxy% <- %backend%'
 
 checks:
-  reconnect-check:
+  reconnect:
 
     enabled: true
 
@@ -82,6 +82,11 @@ checks:
     # Delay in milliseconds a player need to wait before being able to successfully
     # rejoin the server (Recommended values: 500 - 5000)
     rejoin-delay: 2000
+
+    # Enable this if you want to eliminate most Minecraft bot services
+    # Players will need to ping the server in their server list before they are
+    # able to join
+    ping-before-join: true
 
   invalid-name:
 

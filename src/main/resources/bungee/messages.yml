@@ -129,6 +129,14 @@ disconnect:
       - '&7Please &f&nre-connect&r &7to verify yourself.'
       - ' '
 
+  ping-before-join:
+    - ' '
+    - '&cSorry! You need to refresh your server list in order join.'
+    - '&7You will not be allowed to join unless you refresh your server list.'
+    - ' '
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
   suspicious-behaviour:
     - ' '
     - '&cYour connection is currently being analyzed.'
