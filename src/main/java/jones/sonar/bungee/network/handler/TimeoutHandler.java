@@ -25,8 +25,6 @@ import java.util.concurrent.TimeUnit;
 
 public final class TimeoutHandler extends IdleStateHandler {
 
-    private boolean closed;
-
     public TimeoutHandler(final long timeout) {
         super(timeout, 0L, 0L, TimeUnit.MILLISECONDS);
     }
@@ -37,13 +35,11 @@ public final class TimeoutHandler extends IdleStateHandler {
     }
 
     @Override
-    protected void channelIdle(final ChannelHandlerContext ctx, final IdleStateEvent evt) throws Exception {
-        assert evt.state() == IdleState.READER_IDLE;
+    protected void channelIdle(final ChannelHandlerContext ctx, final IdleStateEvent event) throws Exception {
+        assert event.state() == IdleState.READER_IDLE;
 
-        if (!closed) {
+        if (ctx.channel().isActive()) {
             ctx.channel().unsafe().closeForcibly();
-
-            closed = true;
         }
     }
 }
