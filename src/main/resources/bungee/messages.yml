@@ -94,19 +94,19 @@ notifications:
     enabled: true
 
     # The delay between each peak notification in milliseconds
-    delay: 2000
+    delay: 3000
 
     # The delay between each peak reset in milliseconds
-    reset-delay: 30000
+    reset-delay: 45000
 
-    format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7➡ &f%new%'
-    format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7➡ &f%new%'
+    format-new-cps: '%prefix%&7Connections per second peak: %old% &7➡ %new%'
+    format-new-ips: '%prefix%&7Ip addresses per second peak: %old% &7➡ %new%'
 
   automatic:
 
     # The time (in milliseconds) between each automatic blacklist clear
-    # 300000 milliseconds = 5 minutes
-    blacklist-clear-delay: 300000
+    # 360000 milliseconds = 6 minutes
+    blacklist-clear-delay: 360000
 
     # The message that will be sent to every player with 'ab verbose' enabled
     # when the blacklisted gets cleared automatically
