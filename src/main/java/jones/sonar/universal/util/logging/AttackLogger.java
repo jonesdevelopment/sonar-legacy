@@ -39,6 +39,9 @@ public class AttackLogger {
 
                 Logger.INFO.log("Logging incoming attack " + dateTime + "...");
 
+                // don't cause errors if the folder got deleted
+                SonarBungee.INSTANCE.createDataFolder();
+
                 final File logsFolder = new File(SonarBungee.INSTANCE.getPlugin().getDataFolder(), "logs");
 
                 final File logsFile = new File(logsFolder, "attack." + dateTime
