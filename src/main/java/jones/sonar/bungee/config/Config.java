@@ -75,7 +75,7 @@ public class Config {
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
 
         public String NAME_VALIDATION_REGEX, SERVER_BRAND, WEBHOOK_URL,
-                WEBHOOK_FORMAT, WEBHOOK_TITLE;
+                WEBHOOK_FORMAT, WEBHOOK_TITLE, FAKE_SERVER_CLIENT_BRAND;
 
         public List<String> CUSTOM_REGEXES = new ArrayList<>();
 
@@ -101,6 +101,7 @@ public class Config {
                 LOG_CONNECTIONS = config.getBoolean("general.log-connections", false);
                 MINIMUM_KEEP_ALIVE_TICK = Math.max(config.getInt("general.minimum-tick-to-auto-whitelist", 3), 0);
                 MAXIMUM_PACKET_LENGTH = Math.max(config.getInt("general.maximum-packet-length"), 48);
+                FAKE_SERVER_CLIENT_BRAND = config.getString("general.fake-server-client-brand", "%proxy% -> %backend%");
 
                 // webhook
                 WEBHOOK_ENABLED = config.getBoolean("notifications.webhook.enabled", false);

@@ -16,8 +16,11 @@
 
 package jones.sonar.bungee.network.handler.packet;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.network.handler.PlayerHandler;
@@ -28,7 +31,9 @@ import jones.sonar.universal.util.ExceptionHandler;
 import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
+import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
@@ -42,6 +47,33 @@ public final class PacketHandler extends ChannelDuplexHandler {
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
         ExceptionHandler.handle(ctx.channel(), cause);
+    }
+
+    @Override
+    public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
+        if (msg instanceof PluginMessage) {
+            final PluginMessage pluginMessage = (PluginMessage) msg;
+
+            if (pluginMessage.getTag().equalsIgnoreCase("mc|brand")
+                    || pluginMessage.getTag().equalsIgnoreCase("minecraft:brand")) {
+
+                // don't send a client brand packet if the client's version is below 1.13
+                // since clients below 1.13 do not use the (server) client brand anywhere
+                if (playerHandler.getVersion() < ProtocolConstants.MINECRAFT_1_13) {
+                    return;
+                }
+
+                final ByteBuf brand = ByteBufAllocator.DEFAULT.heapBuffer();
+
+                DefinedPacket.writeString(Config.Values.FAKE_SERVER_CLIENT_BRAND, brand);
+
+                pluginMessage.setData(DefinedPacket.toArray(brand));
+
+                brand.release();
+            }
+        }
+
+        super.write(ctx, msg, promise);
     }
 
     @Override

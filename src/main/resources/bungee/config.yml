@@ -60,6 +60,9 @@ general:
   # Server brand/version that is going to be displayed in the server list
   fake-server-brand: 'Sonar'
 
+  # Server brand/version that is going to be displayed in the server list
+  fake-server-client-brand: '%proxy% -> %backend%'
+
 checks:
   reconnect-check:
 
