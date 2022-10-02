@@ -59,6 +59,8 @@ public final class CacheThread extends Thread implements Runnable {
                         }
                     }
 
+                    ServerPingCache.removeAllUnused();
+
                     // automatically clear the blacklist
                     final long timeStamp = System.currentTimeMillis();
 
@@ -77,8 +79,6 @@ public final class CacheThread extends Thread implements Runnable {
                             final long verifying = ConnectionDataManager.getVerifying();
 
                             if (verifying > Config.Values.MINIMUM_JOINS_PER_SECOND) {
-                                ConnectionDataManager.removeAllUnused();
-
                                 ConnectionDataManager.getVerifyingData().forEach(ConnectionDataManager::remove);
                             }
                         }
