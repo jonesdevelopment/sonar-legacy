@@ -86,7 +86,7 @@ checks:
     # Enable this if you want to eliminate most Minecraft bot services
     # Players will need to ping the server in their server list before they are
     # able to join
-    ping-before-join: true
+    ping-before-join: false
 
   invalid-name:
 
