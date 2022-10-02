@@ -101,9 +101,10 @@ public class Messages {
                 MONITOR_ENABLED, MONITOR_DISABLED, MONITOR_ENABLED_OTHER, MONITOR_DISABLED_OTHER,
                 MONITOR_FORMAT, MONITOR_GRAPH_FILLED_SAFE, MONITOR_GRAPH_FILLED_UNSAFE, MONITOR_GRAPH_FILLED_BAD,
                 MONITOR_GRAPH_UNFILLED, MONITOR_GRAPH_FILL_SYMBOL, MONITOR_GRAPH_UP, MONITOR_GRAPH_DOWN,
-                MONITOR_GRAPH_STATIC, MONITOR_UNSUPPORTED, MONITOR_UNSUPPORTED_OTHER;
+                MONITOR_GRAPH_STATIC, MONITOR_UNSUPPORTED, MONITOR_UNSUPPORTED_OTHER, BLACKLIST_AUTO_CLEAR;
 
-        public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY, GRAPH_SYMBOL_COUNT, MONITOR_REFRESH_DELAY;
+        public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY, GRAPH_SYMBOL_COUNT, MONITOR_REFRESH_DELAY,
+                BLACKLIST_CLEAR_TIME;
 
         public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK;
 
@@ -122,6 +123,10 @@ public class Messages {
                 NO_PERMISSION_SUB_COMMAND_ANY = format(config.getString("no-permission-sub-any"));
                 UNKNOWN_SUB_COMMAND = format(config.getString("unknown-sub-command"));
                 ONLY_PLAYERS = format(config.getString("only-players"));
+
+                // automatic
+                BLACKLIST_CLEAR_TIME = Math.max(config.getInt("notifications.automatic.blacklist-clear-delay"), 10000);
+                BLACKLIST_AUTO_CLEAR = format(config.getString("notifications.automatic.blacklist-clear"));
 
                 // commands
                 HELP_COMMAND_LAYOUT = format(config.getString("commands.help.layout"));

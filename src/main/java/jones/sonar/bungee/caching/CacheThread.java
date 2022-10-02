@@ -16,7 +16,11 @@
 
 package jones.sonar.bungee.caching;
 
+import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.notification.NotificationManager;
+import jones.sonar.bungee.notification.counter.ActionBarManager;
+import jones.sonar.bungee.util.Sensibility;
+import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 
 public final class CacheThread extends Thread implements Runnable {
@@ -24,6 +28,8 @@ public final class CacheThread extends Thread implements Runnable {
     public CacheThread() {
         super("sonar#cache");
     }
+
+    private long lastBlacklistClear = 0L;
 
     @Override
     public void run() {
@@ -36,6 +42,29 @@ public final class CacheThread extends Thread implements Runnable {
 
                     // check for any attacks
                     NotificationManager.checkForAttack();
+
+                    // automatically clear the blacklist
+                    final long timeStamp = System.currentTimeMillis();
+
+                    if (lastBlacklistClear == 0L) {
+                        lastBlacklistClear = timeStamp;
+                    }
+
+                    final long blacklisted = Blacklist.size();
+
+                    if (timeStamp - lastBlacklistClear > Messages.Values.BLACKLIST_CLEAR_TIME && !Sensibility.isUnderAttack() && blacklisted > 0) {
+                        Blacklist.BLACKLISTED.clear();
+
+                        final String alert = Messages.Values.BLACKLIST_AUTO_CLEAR
+                                .replaceAll("%es%", blacklisted == 1 ? "" : "es")
+                                .replaceAll("%have/has%", blacklisted == 1 ? "has" : "have")
+                                .replaceAll("%has/have%", blacklisted == 1 ? "has" : "have")
+                                .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted));
+
+                        ActionBarManager.getPlayers().forEach(player -> player.sendMessage(alert));
+
+                        lastBlacklistClear = timeStamp;
+                    }
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

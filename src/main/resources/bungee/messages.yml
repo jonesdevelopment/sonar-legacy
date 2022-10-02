@@ -102,6 +102,15 @@ notifications:
     format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7-> &f%new%'
     format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7-> &f%new%'
 
+  automatic:
+
+    # The time (in milliseconds) between each automatic blacklist clear
+    blacklist-clear-delay: 90000
+
+    # The message that will be sent to every player with 'ab verbose' enabled
+    # when the blacklisted gets cleared automatically
+    blacklist-clear: '%prefix%%ips% &7ip address%es% %have/has% been automatically removed from the blacklist.'
+
 disconnect:
   reconnect-check:
 
