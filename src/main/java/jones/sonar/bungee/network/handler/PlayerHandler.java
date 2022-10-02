@@ -256,6 +256,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.contains(inetAddress)) {
             disconnect(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
+            ServerStatistics.BLOCKED_CONNECTIONS++;
             return;
         }
 
