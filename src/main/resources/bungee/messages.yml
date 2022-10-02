@@ -99,8 +99,8 @@ notifications:
     # The delay between each peak reset in milliseconds
     reset-delay: 30000
 
-    format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7-> &f%new%'
-    format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7-> &f%new%'
+    format-new-cps: '%prefix%&7Connections per second peak: &f%old% &7➡ &f%new%'
+    format-new-ips: '%prefix%&7Ip addresses per second peak: &f%old% &7➡ &f%new%'
 
   automatic:
 
@@ -120,9 +120,7 @@ disconnect:
     #   %seconds% - Time the player needs to wait before reconnecting (in seconds)
     too-fast-reconnect:
       - ' '
-      - '&cPlease wait %seconds% seconds before reconnecting!'
-      - ' '
-      - '&eSpam re-connecting will get you &6temporarily blocked &efrom the server.'
+      - '&cPlease wait %seconds% seconds before reconnecting.'
       - ' '
 
     first-join:
