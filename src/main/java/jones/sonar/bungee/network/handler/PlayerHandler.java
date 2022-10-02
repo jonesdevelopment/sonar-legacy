@@ -333,4 +333,9 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     private InetAddress inetAddress() {
         return getAddress().getAddress();
     }
+
+    @Override
+    public String toString() {
+        return "(§f" + getSocketAddress() + (getName() != null ? "|" + getName() : "") + "§7) <-> InitialHandler";
+    }
 }
