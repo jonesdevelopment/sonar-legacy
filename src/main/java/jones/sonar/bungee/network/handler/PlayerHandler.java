@@ -336,6 +336,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     @Override
     public String toString() {
-        return "(§f" + getSocketAddress() + (getName() != null ? "|" + getName() : "") + "§7) <-> InitialHandler";
+        return "§7(§f" + getSocketAddress() + (getName() != null ? "|" + getName() : "") + "§7) <-> InitialHandler";
     }
 }
