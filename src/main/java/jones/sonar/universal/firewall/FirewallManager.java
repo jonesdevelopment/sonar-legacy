@@ -75,15 +75,35 @@ public class FirewallManager {
 
         uninstall(platform);
 
-        execute("ipset create " + Firewall.Values.BLACKLIST_SET_NAME + " hash:ip timeout " + (Firewall.Values.BLACKLIST_TIMEOUT / 1000L));
-
         final int port = getPort(platform);
 
-        // drop all blacklisted ips from ipset
-        execute("iptables -A INPUT -p tcp --syn --dport " + port + " -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+        new Thread(() -> {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
 
-        // drop all connections which exceed the connections-per-ip limit
-        execute("iptables -A INPUT -p tcp --syn --dport " + port + " -m connlimit --connlimit-above " + Firewall.Values.MAX_CPS_PER_IP + " -j DROP");
+            execute("ipset create " + Firewall.Values.BLACKLIST_SET_NAME + " hash:ip timeout " + (Firewall.Values.BLACKLIST_TIMEOUT / 1000L));
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
+
+            // drop all connections which exceed the connections-per-ip limit
+            execute("iptables -A INPUT -p tcp --syn --dport " + port + " -m connlimit --connlimit-above " + Firewall.Values.MAX_CPS_PER_IP + " -j DROP");
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException exception) {
+                exception.printStackTrace();
+            }
+
+            // drop all blacklisted ips from ipset
+            execute("iptables -I INPUT -p tcp --syn --dport " + port + " -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+        }, "sonar#install_thread").start();
 
         Logger.INFO.log("The firewall is listening on port " + port + ".", "[Sonar-Firewall]");
     }
