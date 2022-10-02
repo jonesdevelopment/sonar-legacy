@@ -225,7 +225,7 @@ commands:
     remove: '%prefix%%ip% &7is &cno longer &7whitelisted.'
 
   verification:
-    purging: '%prefix%&7Purging players that are currently being verified players...'
+    purging: '%prefix%&7Purging players that are currently being verified...'
     purge: '%prefix%&aSuccessfully purged cached players.'
     purge-none: '%prefix%&cThere were no players in the verification cache.'
     empty: '%prefix%&cThe verification cache is currently empty.'
