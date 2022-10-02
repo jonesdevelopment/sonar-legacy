@@ -60,8 +60,11 @@ general:
   # Server brand/version that is going to be displayed in the server list
   fake-server-brand: 'Sonar'
 
-  # Server brand/version that is going to be displayed in the server list
-  fake-server-client-brand: '%proxy% -> %backend%'
+  # Server brand that is going to be displayed in the F3 menu
+  # You can use the following variables:
+  #   %proxy% - Brand/version of the proxy server
+  #   %backend% - Brand/version of the backend server brand
+  fake-server-client-brand: '(Sonar) %proxy% <- %backend%'
 
 checks:
   reconnect-check:

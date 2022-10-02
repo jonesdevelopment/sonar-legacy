@@ -63,9 +63,21 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     return;
                 }
 
+                String backend;
+
+                final String data = new String(pluginMessage.getData());
+
+                try {
+                    backend = data.split(" <- ")[1];
+                } catch (Exception exception) {
+                    backend = "unknown";
+                }
+
                 final ByteBuf brand = ByteBufAllocator.DEFAULT.heapBuffer();
 
-                DefinedPacket.writeString(Config.Values.FAKE_SERVER_CLIENT_BRAND, brand);
+                DefinedPacket.writeString(Config.Values.FAKE_SERVER_CLIENT_BRAND
+                        .replaceAll("%proxy%", SonarBungee.INSTANCE.proxy.getName())
+                        .replaceAll("%backend%", backend), brand);
 
                 pluginMessage.setData(DefinedPacket.toArray(brand));
 
