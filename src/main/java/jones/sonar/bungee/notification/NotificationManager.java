@@ -84,7 +84,7 @@ public class NotificationManager {
                             .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
                             .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad());
 
-                    if (timeStamp - Sensibility.sinceLastAttack > 3000L) {
+                    if (timeStamp - Sensibility.sinceLastAttack > 5000L) {
                         try {
                             AttackLogger.logIncomingAttack(SonarPlatform.BUNGEE);
                         } catch (Exception exception) {
