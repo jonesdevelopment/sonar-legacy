@@ -16,6 +16,7 @@
 
 package jones.sonar.bungee.caching;
 
+import jones.sonar.api.event.bungee.SonarBlacklistClearEvent;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.notification.NotificationManager;
 import jones.sonar.bungee.notification.counter.ActionBarManager;
@@ -54,6 +55,8 @@ public final class CacheThread extends Thread implements Runnable {
 
                     if (timeStamp - lastBlacklistClear > Messages.Values.BLACKLIST_CLEAR_TIME && !Sensibility.isUnderAttack() && blacklisted > 0) {
                         Blacklist.BLACKLISTED.clear();
+
+                        SonarBungee.INSTANCE.callEvent(new SonarBlacklistClearEvent(blacklisted));
 
                         final String alert = Messages.Values.BLACKLIST_AUTO_CLEAR
                                 .replaceAll("%es%", blacklisted == 1 ? "" : "es")

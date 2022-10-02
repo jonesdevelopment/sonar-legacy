@@ -12,6 +12,10 @@ firewall:
   # blacklisted before being automatically remove from the blacklist
   blacklist-timeout: 120000
 
+  # The number of maximum ip addresses which can be
+  # blacklisted through the firewall at the same time
+  blacklist-cache-limit: 5000
+
   # Since Sonar is caching all blacklisted ip addresses to
   # firewall-ban them all at the same time, you will need to
   # specify a delay (in milliseconds) between those ban-waves
@@ -31,4 +35,4 @@ firewall:
   #   %seconds% - Blacklist delay in seconds (formatted)
   #   %milliseconds% - Blacklist delay in milliseconds (formatted)
   #   %ips% - Number of ip addresses that have been blacklisted (formatted)
-  broadcast-message: '%prefix%&f%ips% &7ip address%es% have been blacklisted via. the firewall.'
+  broadcast-message: '%prefix%&f%ips% &7ip address%es% %have/has% been blacklisted via. the firewall.'

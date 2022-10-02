@@ -233,18 +233,18 @@ public enum SonarBungee implements SonarBungeePlatform {
         if (Firewall.Values.ENABLE_FIREWALL) {
             FirewallManager.install(platform);
         } else {
-            FirewallManager.uninstall();
+            FirewallManager.uninstall(platform);
         }
 
         // remove all firewall stuff if the jar gets shut down
-        PerformanceMonitor.RUNTIME.addShutdownHook(new Thread(FirewallManager::uninstall));
+        PerformanceMonitor.RUNTIME.addShutdownHook(new Thread(() -> FirewallManager.uninstall(platform)));
     }
 
     public void onDisable(final SonarBungeePlugin plugin) {
         AssertionHelper.check(plugin != null, "Error stopping Sonar!");
 
         // remove all firewall stuff
-        FirewallManager.uninstall();
+        FirewallManager.uninstall(platform);
 
         // we need to set this to false in order for all threads
         // to stop correctly since we're doing while(running) and
@@ -279,7 +279,7 @@ public enum SonarBungee implements SonarBungeePlatform {
         if (Firewall.Values.ENABLE_FIREWALL) {
             FirewallManager.install(platform);
         } else {
-            FirewallManager.uninstall();
+            FirewallManager.uninstall(platform);
         }
 
         // call the SonarReloadEvent (API)

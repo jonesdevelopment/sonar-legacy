@@ -37,10 +37,10 @@ public final class FirewallThread extends Thread implements Runnable {
                         final Set<InetAddress> toRemove = new HashSet<>();
 
                         Blacklist.BLACKLISTED.stream()
-                                .limit(10000)
+                                .limit(Firewall.Values.BLACKLIST_CACHE_LIMIT)
                                 .collect(Collectors.toSet())
                                 .forEach(inetAddress -> {
-                                    FirewallManager.execute("ipset -A "
+                                    FirewallManager.execute("ipset add "
                                             + Firewall.Values.BLACKLIST_SET_NAME + " "
                                             + String.valueOf(inetAddress).replace("/", ""));
                                     toRemove.add(inetAddress);
@@ -49,9 +49,13 @@ public final class FirewallThread extends Thread implements Runnable {
                         Blacklist.BLACKLISTED.removeAll(toRemove);
 
                         if (Firewall.Values.BROADCAST && !toRemove.isEmpty()) {
+                            final int firewalled = toRemove.size();
+
                             final String alert = Firewall.Values.BROADCAST_MESSAGE
-                                    .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(toRemove.size()))
-                                    .replaceAll("%es%", toRemove.size() == 1 ? "" : "es");
+                                    .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(firewalled))
+                                    .replaceAll("%es%", firewalled == 1 ? "" : "es")
+                                    .replaceAll("%have/has%", firewalled == 1 ? "has" : "have")
+                                    .replaceAll("%has/have%", firewalled == 1 ? "has" : "have");
 
                             ActionBarManager.getPlayers().forEach(player -> player.sendMessage(alert));
                         }

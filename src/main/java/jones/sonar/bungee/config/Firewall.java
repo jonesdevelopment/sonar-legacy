@@ -58,7 +58,7 @@ public class Firewall {
     public class Values {
         public boolean ENABLE_FIREWALL, BROADCAST;
         public String BLACKLIST_SET_NAME, BROADCAST_MESSAGE;
-        public int BLACKLIST_TIMEOUT, BLACKLIST_DELAY, MAX_CPS_PER_IP;
+        public int BLACKLIST_TIMEOUT, BLACKLIST_DELAY, MAX_CPS_PER_IP, BLACKLIST_CACHE_LIMIT;
 
         public boolean load() {
             try {
@@ -73,6 +73,7 @@ public class Firewall {
                         .replaceAll("%prefix%", Messages.Values.PREFIX)
                         .replaceAll("%seconds%", SonarBungee.INSTANCE.FORMAT.format(BLACKLIST_DELAY / 1000D))
                         .replaceAll("%milliseconds%", SonarBungee.INSTANCE.FORMAT.format(BLACKLIST_DELAY));
+                BLACKLIST_CACHE_LIMIT = Math.max(Math.min(config.getInt("firewall.blacklist-cache-limit", 5000), 100000), 100);
                 return true;
             } catch (final Exception exception) {
                 return false;

@@ -28,14 +28,24 @@ import net.md_5.bungee.api.config.ListenerInfo;
 
 @UtilityClass
 public class FirewallManager {
-    public void uninstall() throws GeneralException {
+    public void uninstall(final SonarPlatform platform) throws GeneralException {
         if (execute("iptables") != -1) {
-            execute("iptables -D INPUT -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+            final int port = getPort(platform);
+
+            execute("iptables -D INPUT -p tcp --syn --dport " + port + " -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+            execute("iptables -D INPUT -p tcp --syn --dport " + port + " -m connlimit --connlimit-above " + Firewall.Values.MAX_CPS_PER_IP + " -j DROP");
         }
 
+        clear();
+
+        if (execute("ipset") != -1) {
+            execute("ipset destroy " + Firewall.Values.BLACKLIST_SET_NAME);
+        }
+    }
+
+    public void clear() throws GeneralException {
         if (execute("ipset") != -1) {
             execute("ipset flush " + Firewall.Values.BLACKLIST_SET_NAME);
-            execute("ipset destroy " + Firewall.Values.BLACKLIST_SET_NAME);
         }
     }
 
@@ -63,11 +73,19 @@ public class FirewallManager {
             }
         }
 
-        uninstall();
+        uninstall(platform);
 
-        execute("ipset create " + Firewall.Values.BLACKLIST_SET_NAME + " hash:ip timeout " + Firewall.Values.BLACKLIST_TIMEOUT);
+        execute("ipset create " + Firewall.Values.BLACKLIST_SET_NAME + " hash:ip timeout " + (Firewall.Values.BLACKLIST_TIMEOUT / 1000L));
 
-        execute("iptables -I INPUT -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -p TCP --destination-port " + getPort(platform) + " -j DROP");
+        final int port = getPort(platform);
+
+        // drop all blacklisted ips from ipset
+        execute("iptables -A INPUT -p tcp --syn --dport " + port + " -m set --match-set " + Firewall.Values.BLACKLIST_SET_NAME + " src -j DROP");
+
+        // drop all connections which exceed the connections-per-ip limit
+        execute("iptables -A INPUT -p tcp --syn --dport " + port + " -m connlimit --connlimit-above " + Firewall.Values.MAX_CPS_PER_IP + " -j DROP");
+
+        Logger.INFO.log("The firewall is listening on port " + port + ".", "[Sonar-Firewall]");
     }
 
     private int getPort(final SonarPlatform platform) {

@@ -19,10 +19,12 @@ package jones.sonar.bungee.command.impl;
 import jones.sonar.api.event.bungee.SonarBlacklistClearEvent;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
+import jones.sonar.bungee.config.Firewall;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.firewall.FirewallManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
@@ -66,6 +68,10 @@ public final class BlacklistCommand extends SubCommand {
                     }
 
                     final long blacklisted = Blacklist.size();
+
+                    if (Firewall.Values.ENABLE_FIREWALL) {
+                        FirewallManager.clear();
+                    }
 
                     if (blacklisted > 0) {
 
