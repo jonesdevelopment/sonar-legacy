@@ -17,12 +17,17 @@
 package jones.sonar.bungee.caching;
 
 import jones.sonar.api.event.bungee.SonarBlacklistClearEvent;
+import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.notification.NotificationManager;
 import jones.sonar.bungee.notification.counter.ActionBarManager;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.blacklist.Blacklist;
+import jones.sonar.universal.data.connection.ConnectionData;
+import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
+
+import java.util.Optional;
 
 public final class CacheThread extends Thread implements Runnable {
 
@@ -43,6 +48,16 @@ public final class CacheThread extends Thread implements Runnable {
 
                     // check for any attacks
                     NotificationManager.checkForAttack();
+
+                    if (Config.Values.AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION) {
+                        final long verifying = ConnectionDataManager.getVerifying();
+
+                        if (verifying > Config.Values.MINIMUM_JOINS_PER_SECOND) {
+                            final Optional<ConnectionData> first = ConnectionDataManager.getVerifyingData().findFirst();
+
+                            first.ifPresent(connectionData -> ConnectionDataManager.remove(connectionData.inetAddress));
+                        }
+                    }
 
                     // automatically clear the blacklist
                     final long timeStamp = System.currentTimeMillis();

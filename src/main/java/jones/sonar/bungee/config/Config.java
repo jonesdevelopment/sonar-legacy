@@ -69,7 +69,7 @@ public class Config {
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
-                LOG_CONNECTIONS;
+                LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -102,6 +102,7 @@ public class Config {
                 MINIMUM_KEEP_ALIVE_TICK = Math.max(config.getInt("general.minimum-tick-to-auto-whitelist", 3), 0);
                 MAXIMUM_PACKET_LENGTH = Math.max(config.getInt("general.maximum-packet-length"), 48);
                 FAKE_SERVER_CLIENT_BRAND = config.getString("general.fake-server-client-brand", "%proxy% -> %backend%");
+                AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION = config.getBoolean("general.automatically-remove-bots-from-verifying", true);
 
                 // webhook
                 WEBHOOK_ENABLED = config.getBoolean("notifications.webhook.enabled", false);

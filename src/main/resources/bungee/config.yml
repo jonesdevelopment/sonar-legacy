@@ -32,6 +32,10 @@ general:
   # You need to enable proxy protocol in the BungeeCord configuration too
   use-proxy-protocol: false
 
+  # Disable this if you don't want players/bots that are in the verification cache
+  # to be cleared automatically when there are too many connections at the same time
+  automatically-remove-bots-from-verifying: true
+
   # Enable this if you want to see all incoming connections in the console
   # It's highly recommended leaving this disabled because it will flood your console
   # during a bot attack
