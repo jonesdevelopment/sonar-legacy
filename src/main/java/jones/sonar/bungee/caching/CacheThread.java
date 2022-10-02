@@ -73,6 +73,16 @@ public final class CacheThread extends Thread implements Runnable {
 
                         SonarBungee.INSTANCE.callEvent(new SonarBlacklistClearEvent(blacklisted));
 
+                        if (Config.Values.AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION) {
+                            final long verifying = ConnectionDataManager.getVerifying();
+
+                            if (verifying > Config.Values.MINIMUM_JOINS_PER_SECOND) {
+                                ConnectionDataManager.removeAllUnused();
+
+                                ConnectionDataManager.getVerifyingData().forEach(ConnectionDataManager::remove);
+                            }
+                        }
+
                         final String alert = Messages.Values.BLACKLIST_AUTO_CLEAR
                                 .replaceAll("%es%", blacklisted == 1 ? "" : "es")
                                 .replaceAll("%have/has%", blacklisted == 1 ? "has" : "have")
