@@ -23,8 +23,10 @@ import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.counter.Counter;
+import jones.sonar.universal.platform.SonarPlatform;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.PerformanceMonitor;
+import jones.sonar.universal.util.logging.AttackLogger;
 import jones.sonar.universal.webhook.WebhookSender;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -81,6 +83,14 @@ public class NotificationManager {
                             .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(encryptions))
                             .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
                             .replaceAll("%cpu-avg%", PerformanceMonitor.formatAverageCPULoad());
+
+                    if (timeStamp - Sensibility.sinceLastAttack > 3000L) {
+                        try {
+                            AttackLogger.logIncomingAttack(SonarPlatform.BUNGEE);
+                        } catch (Exception exception) {
+                            exception.printStackTrace();
+                        }
+                    }
 
                     SonarBungee.INSTANCE.callEvent(new SonarAttackDetectedEvent(cps, ips, joins, pings, encryptions));
 

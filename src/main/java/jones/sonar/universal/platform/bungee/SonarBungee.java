@@ -46,6 +46,7 @@ import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Event;
 
+import java.io.File;
 import java.text.DecimalFormat;
 
 public enum SonarBungee implements SonarBungeePlatform {
@@ -295,6 +296,14 @@ public enum SonarBungee implements SonarBungeePlatform {
         if (!plugin.getDataFolder().exists()) {
             if (!plugin.getDataFolder().mkdir()) {
                 Logger.INFO.log("§cCould not create data folder §7(No permission?)");
+            }
+        }
+
+        final File logsFolder = new File(plugin.getDataFolder(), "logs");
+
+        if (!logsFolder.exists()) {
+            if (!logsFolder.mkdir()) {
+                Logger.INFO.log("§cCould not create logs folder §7(No permission?)");
             }
         }
     }
