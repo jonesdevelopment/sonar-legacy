@@ -105,7 +105,8 @@ notifications:
   automatic:
 
     # The time (in milliseconds) between each automatic blacklist clear
-    blacklist-clear-delay: 90000
+    # 300000 milliseconds = 5 minutes
+    blacklist-clear-delay: 300000
 
     # The message that will be sent to every player with 'ab verbose' enabled
     # when the blacklisted gets cleared automatically
@@ -120,6 +121,8 @@ disconnect:
     too-fast-reconnect:
       - ' '
       - '&cPlease wait %seconds% seconds before reconnecting!'
+      - ' '
+      - '&eSpam re-connecting will get you &6temporarily blocked &efrom the server.'
       - ' '
 
     first-join:

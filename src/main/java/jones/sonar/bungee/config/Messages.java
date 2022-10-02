@@ -113,8 +113,8 @@ public class Messages {
                 // general
                 PREFIX = ColorUtil.format(config.getString("prefix", "&e&lSonar &7» &f"));
                 LIST_SYMBOL = config.getString("commands.listing", "▪");
-                FOOTER_BAR = ColorUtil.format(config.getString("footer-bar", "&7---&r"));
-                HEADER_BAR = ColorUtil.format(config.getString("header-bar", "&7---&r"));
+                FOOTER_BAR = ColorUtil.format(config.getString("footer-bar"));
+                HEADER_BAR = ColorUtil.format(config.getString("header-bar"));
 
                 if (PREFIX.length() > 32) PREFIX = PREFIX.substring(0, 32);
 
