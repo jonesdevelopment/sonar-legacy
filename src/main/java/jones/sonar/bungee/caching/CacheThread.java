@@ -21,11 +21,11 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.notification.NotificationManager;
 import jones.sonar.bungee.notification.counter.ActionBarManager;
-import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
+import jones.sonar.universal.util.Sensibility;
 
 import java.util.Optional;
 

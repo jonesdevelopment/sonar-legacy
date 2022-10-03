@@ -22,6 +22,7 @@ import jones.sonar.universal.config.yaml.Configuration;
 import jones.sonar.universal.config.yaml.ConfigurationProvider;
 import jones.sonar.universal.config.yaml.YamlConfiguration;
 import jones.sonar.universal.platform.bungee.SonarBungee;
+import jones.sonar.universal.util.Sensibility;
 import lombok.experimental.UtilityClass;
 
 import java.io.File;
@@ -92,6 +93,9 @@ public class Config {
                 MAX_PACKET_BYTES = config.getInt("general.maximum-packet-bytes", 2048);
                 MAX_PACKET_CAPACITY = config.getInt("general.maximum-packet-capacity", 4096);
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
+
+                Sensibility.minJoinsPerSecond = MINIMUM_JOINS_PER_SECOND;
+
                 SERVER_BRAND = ColorUtil.format(config.getString("general.fake-server-brand", "Protected"));
                 CACHE_MOTDS = config.getBoolean("general.cache-incoming-motd-requests", true);
                 ACTION_BAR_COUNTER_DELAY = Math.max(Math.min(config.getInt("general.action-bar-counter-delay", 80), 1000), 10);

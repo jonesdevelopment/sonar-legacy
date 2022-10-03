@@ -18,10 +18,10 @@ package jones.sonar.api;
 
 import com.google.gson.annotations.SerializedName;
 import jones.sonar.api.data.BotLevel;
-import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.util.Sensibility;
 import jones.sonar.universal.whitelist.Whitelist;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

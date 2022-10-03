@@ -23,8 +23,8 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.notification.counter.ActionBarManager;
 import jones.sonar.bungee.util.ColorUtil;
-import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.platform.bungee.SonarBungee;
+import jones.sonar.universal.util.Sensibility;
 
 public final class PeakThread extends Thread implements Runnable {
 
