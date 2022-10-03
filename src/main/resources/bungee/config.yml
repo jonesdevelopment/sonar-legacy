@@ -131,7 +131,7 @@ notifications:
     delay: 240000
 
     # The title of the Discord Webhook alert
-    title: 'Sonar Anti Bot Alert'
+    title: 'Sonar Antibot notification'
 
     # You can use the normal Discord formatting here
     format:
