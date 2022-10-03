@@ -16,6 +16,7 @@
 
 package jones.sonar.bungee.filter;
 
+import jones.sonar.bungee.config.Config;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Marker;
@@ -31,10 +32,12 @@ public final class Log4JConsoleFilter implements Filter {
     }
 
     public Result checkMessage(final String message) {
-        if (message.contains(" - encountered exception: ")
-                || message.contains(" <-> InitialHandler has ")
-                || message.contains("No client connected for pending server!")) {
-            return Result.DENY;
+        if (!Config.Values.LOG_CONNECTIONS) {
+            if (message.contains(" - encountered exception: ")
+                    || message.contains(" <-> InitialHandler has ")
+                    || message.contains("No client connected for pending server!")) {
+                return Result.DENY;
+            }
         }
 
         return Result.NEUTRAL;
