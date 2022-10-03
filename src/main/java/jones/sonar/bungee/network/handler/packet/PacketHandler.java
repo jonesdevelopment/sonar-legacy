@@ -34,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
+import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
@@ -98,9 +99,13 @@ public final class PacketHandler extends ChannelDuplexHandler {
             check: {
                 if (packet == null) break check;
 
-                if (playerHandler.getVersion() >= ProtocolVersion.MINECRAFT_1_19_1 && wrapper.packet instanceof LoginRequest && playerHandler.bungee.config.isEnforceSecureProfile()) {
-                    if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
-                        throw SonarBungee.INSTANCE.EXCEPTION;
+                if (wrapper.packet instanceof LoginRequest) {
+                    if (playerHandler.getVersion() >= ProtocolVersion.MINECRAFT_1_19_1
+                            && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())
+                            && playerHandler.bungee.config.isEnforceSecureProfile()) {
+                        if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
+                            throw SonarBungee.INSTANCE.EXCEPTION;
+                        }
                     }
                 }
 
