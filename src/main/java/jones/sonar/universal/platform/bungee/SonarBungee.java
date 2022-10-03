@@ -301,6 +301,7 @@ public enum SonarBungee implements SonarBungeePlatform {
             isReverseProxy = true;
 
             Logger.INFO.log(" §cTCPShield detected! Switching into compatibility mode.");
+            Logger.INFO.log(" §cBad packet checks have been forcefully disabled!️");
         }
     }
 
