@@ -61,11 +61,11 @@ public class Config {
     @UtilityClass
     public class Values {
         public int MAX_PACKET_INDEX, MAX_PACKET_BYTES, MAX_PACKET_CAPACITY,
-                REJOIN_DELAY, MAXIMUM_PACKET_LENGTH, MINIMUM_JOINS_PER_SECOND,
+                REJOIN_DELAY, MINIMUM_KEEP_ALIVE_TICK, MINIMUM_JOINS_PER_SECOND,
                 ACTION_BAR_COUNTER_DELAY, MAXIMUM_ONLINE_PER_IP,
                 MAXIMUM_QUEUE_POLL_RATE, MAX_NAME_LENGTH, WEBHOOK_DELAY,
                 WEBHOOK_COLOR_R, WEBHOOK_COLOR_G, WEBHOOK_COLOR_B,
-                QUEUE_POLL_RATE, MINIMUM_KEEP_ALIVE_TICK;
+                QUEUE_POLL_RATE;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
@@ -105,7 +105,6 @@ public class Config {
                 ALLOW_PING_PASS_THROUGH = config.getBoolean("general.allow-forced-host-ping", false);
                 LOG_CONNECTIONS = config.getBoolean("general.log-connections", false);
                 MINIMUM_KEEP_ALIVE_TICK = Math.max(config.getInt("general.minimum-tick-to-auto-whitelist", 3), 0);
-                MAXIMUM_PACKET_LENGTH = Math.max(config.getInt("general.maximum-packet-length"), 48);
                 FAKE_SERVER_CLIENT_BRAND = config.getString("general.fake-server-client-brand", "%proxy% -> %backend%");
                 AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION = config.getBoolean("general.automatically-remove-bots-from-verifying", true);
 

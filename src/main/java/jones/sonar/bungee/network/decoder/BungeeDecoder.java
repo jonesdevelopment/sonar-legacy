@@ -42,7 +42,7 @@ public final class BungeeDecoder extends ByteToMessageDecoder {
         final byte[] bytes = new byte[byteBuf.readableBytes()];
 
         // check for maximum byte length that kills over-sized packets
-        if (bytes.length > Config.Values.MAXIMUM_PACKET_LENGTH) {
+        if (bytes.length > Config.Values.MAX_PACKET_INDEX) {
             byteBuf.clear();
             throw SonarBungee.INSTANCE.EXCEPTION;
         }
