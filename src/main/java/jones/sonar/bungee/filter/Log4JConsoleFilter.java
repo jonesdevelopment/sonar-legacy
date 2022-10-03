@@ -31,7 +31,6 @@ public final class Log4JConsoleFilter implements Filter {
     }
 
     public Result checkMessage(final String message) {
-        System.out.println("CONSOLEFILTER -> " + message);
         if (message.contains(" - encountered exception: ")
                 || message.contains(" <-> InitialHandler has ")
                 || message.contains("No client connected for pending server!")) {
