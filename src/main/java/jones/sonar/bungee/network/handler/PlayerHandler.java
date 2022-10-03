@@ -69,7 +69,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
 
-    private final BungeeCord bungee = BungeeCord.getInstance();
+    public final BungeeCord bungee = BungeeCord.getInstance();
 
     private final SonarBungee sonar = SonarBungee.INSTANCE;
 

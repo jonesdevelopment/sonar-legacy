@@ -28,12 +28,12 @@ import jones.sonar.universal.data.player.PlayerData;
 import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.ExceptionHandler;
+import jones.sonar.universal.util.ProtocolVersion;
 import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
-import net.md_5.bungee.protocol.ProtocolConstants;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
@@ -59,7 +59,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
                 // don't send a client brand packet if the client's version is below 1.13
                 // since clients below 1.13 do not use the (server) client brand anywhere
-                if (playerHandler.getVersion() < ProtocolConstants.MINECRAFT_1_13) {
+                if (playerHandler.getVersion() < ProtocolVersion.MINECRAFT_1_13) {
                     return;
                 }
 
@@ -98,8 +98,8 @@ public final class PacketHandler extends ChannelDuplexHandler {
             check: {
                 if (packet == null) break check;
 
-                if (wrapper.packet instanceof LoginRequest) {
-                    if (playerHandler.getVersion() >= ProtocolConstants.MINECRAFT_1_19_1 && ((LoginRequest) wrapper.packet).getPublicKey() == null) {
+                if (playerHandler.getVersion() >= ProtocolVersion.MINECRAFT_1_19_1 && wrapper.packet instanceof LoginRequest && playerHandler.bungee.config.isEnforceSecureProfile()) {
+                    if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
                         throw SonarBungee.INSTANCE.EXCEPTION;
                     }
                 }

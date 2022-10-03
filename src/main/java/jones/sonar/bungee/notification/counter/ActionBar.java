@@ -26,11 +26,11 @@ import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.PlayerQueue;
+import jones.sonar.universal.util.ProtocolVersion;
 import jones.sonar.universal.whitelist.Whitelist;
 import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.protocol.ProtocolConstants;
 
 @RequiredArgsConstructor
 public final class ActionBar extends Thread implements Runnable {
@@ -103,7 +103,7 @@ public final class ActionBar extends Thread implements Runnable {
                     legacyCounter.setText(SPACES + counter.getText());
 
                     ActionBarManager.getPlayers().forEach(player -> {
-                        if (player.getPendingConnection().getVersion() < ProtocolConstants.MINECRAFT_1_13) {
+                        if (player.getPendingConnection().getVersion() < ProtocolVersion.MINECRAFT_1_13) {
                             player.sendMessage(ChatMessageType.ACTION_BAR, legacyCounter);
                         } else {
                             player.sendMessage(ChatMessageType.ACTION_BAR, counter);
