@@ -54,11 +54,13 @@ public final class DynamicBossBar {
 
         MonitorManager.getPlayers()
                 .filter(player -> player.getPendingConnection().getVersion() > 47)
+                .filter(player -> !player.getName().startsWith("."))
                 .forEach(player -> player.unsafe().sendPacket(barBuilder));
 
         SonarBungee.INSTANCE.proxy.getPlayers().stream()
                 .filter(player -> !MonitorManager.contains(player.getName()))
                 .filter(player -> player.getPendingConnection().getVersion() > 47)
+                .filter(player -> !player.getName().startsWith("."))
                 .forEach(player -> player.unsafe().sendPacket(removeBar));
     }
 }

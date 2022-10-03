@@ -180,7 +180,16 @@ public enum SonarBungee implements SonarBungeePlatform {
 
         Logger.INFO.log(" §7Setting up commands and features...");
 
-        checkTCPShield();
+        if (proxy.getPluginManager().getPlugin("TCPShield") != null) {
+            isReverseProxy = true;
+
+            Logger.INFO.log(" §cTCPShield detected! §7Switching into compatibility mode.");
+            Logger.INFO.log(" §cBad packet checks have been forcefully disabled!️");
+        }
+
+        if (proxy.getPluginManager().getPlugin("floodgate") != null) {
+            Logger.INFO.log(" §cGeyser detected! §7Geyser players will be fully exempted.");
+        }
 
         proxy.getPluginManager().registerCommand(plugin, new SonarCommand());
 
@@ -297,12 +306,6 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     private void checkTCPShield() {
-        if (proxy.getPluginManager().getPlugin("TCPShield") != null) {
-            isReverseProxy = true;
-
-            Logger.INFO.log(" §cTCPShield detected! Switching into compatibility mode.");
-            Logger.INFO.log(" §cBad packet checks have been forcefully disabled!️");
-        }
     }
 
     public void createDataFolder() {

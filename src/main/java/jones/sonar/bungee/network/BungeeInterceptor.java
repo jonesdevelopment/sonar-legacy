@@ -32,8 +32,6 @@ import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.event.ClientConnectEvent;
-import net.md_5.bungee.connection.InitialHandler;
-import net.md_5.bungee.netty.HandlerBoss;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.*;
 
@@ -61,7 +59,14 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
     @Override
     protected void initChannel(final Channel channel) throws Exception {
-        channel.close();
+        final Channel parent = channel.parent();
+
+        // check for geyser players and don't register the sonar handler for them
+        final boolean isGeyser = parent != null && parent.getClass().getCanonicalName().startsWith("org.geysermc.geyser");
+
+        if (isGeyser) {
+            GeyserInterceptor.handle(channel, protocol);
+        }
     }
 
     @Override
@@ -115,35 +120,24 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             final ChannelPipeline pipeline = channel.pipeline();
 
-            final Channel parent = channel.parent();
-
-            // check for geyser players and don't register the sonar handler for them
-            final boolean isGeyser = parent != null && parent.getClass().getCanonicalName().startsWith("org.geysermc.geyser");
-
-            if (!isGeyser && !SonarBungee.INSTANCE.isReverseProxy) {
+            if (!SonarBungee.INSTANCE.isReverseProxy) {
                 SonarPipelines.register(pipeline);
             }
 
             final ListenerInfo listener = channel.attr(PipelineUtils.LISTENER).get();
 
-            // add the tcp fast open option to non-geyser channels
-            if (!isGeyser) {
-                channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
-            }
+            // add the tcp fast open option
+            channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
 
             // initialize the channel with the pipeline base
             // this is necessary for compatibility reasons
             PipelineUtils.BASE.initChannel(channel);
 
-            // don't modify the channels for geyser connections
-            if (!isGeyser) {
+            // replace the timeout handler to our custom, fixed one
+            pipeline.replace(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
 
-                // replace the timeout handler to our custom, fixed one
-                pipeline.replace(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));
-
-                // replace the inbound boss handler to our custom, fixed one (handle exceptions)
-                pipeline.replace(PipelineUtils.BOSS_HANDLER, PipelineUtils.BOSS_HANDLER, new InboundHandler());
-            }
+            // replace the inbound boss handler to our custom, fixed one (handle exceptions)
+            pipeline.replace(PipelineUtils.BOSS_HANDLER, PipelineUtils.BOSS_HANDLER, new InboundHandler());
 
             // load the default BungeeCord pipelines
             pipeline.addBefore(PipelineUtils.FRAME_DECODER, PipelineUtils.LEGACY_DECODER, new LegacyDecoder());
@@ -151,15 +145,8 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             pipeline.addAfter(PipelineUtils.FRAME_PREPENDER, PipelineUtils.PACKET_ENCODER, new MinecraftEncoder(Protocol.HANDSHAKE, true, protocol));
             pipeline.addBefore(PipelineUtils.FRAME_PREPENDER, PipelineUtils.LEGACY_KICKER, legacyKicker);
 
-            // we don't want geyser players to be falsely flagged
-            // this is why we need to load the original initial handler
-            if (isGeyser) {
-                pipeline.get(HandlerBoss.class).setHandler(new InitialHandler(BungeeCord.getInstance(), listener));
-            } else {
-
-                // normal players will be handled using our custom player handler
-                pipeline.get(InboundHandler.class).setHandler(new PlayerHandler(ctx, listener, throttler));
-            }
+            // normal players will be handled using our custom player handler
+            pipeline.get(InboundHandler.class).setHandler(new PlayerHandler(ctx, listener, throttler));
 
             // the proxy protocol is necessary if you want to use tcp shield
             if (Config.Values.ALLOW_PROXY_PROTOCOL) {
