@@ -35,7 +35,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
-import net.md_5.bungee.protocol.packet.*;
+import net.md_5.bungee.protocol.packet.ClientSettings;
+import net.md_5.bungee.protocol.packet.KeepAlive;
+import net.md_5.bungee.protocol.packet.LoginRequest;
+import net.md_5.bungee.protocol.packet.PluginMessage;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -123,7 +126,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     final byte viewDistance = clientSettings.getViewDistance();
 
                     // don't allow spoofing by the client
-                    playerData.sentClientSettings = viewDistance > 1;
+                    playerData.sentClientSettings = viewDistance > 0;
                 }
 
                 else if (wrapper.packet instanceof PluginMessage) {
@@ -143,7 +146,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
                 // 1.19 clients use signatures and an encrypted, custom chat packet, so we need to check
                 // if that packet is being sent too to avoid exploits
-                else if (wrapper.packet instanceof ClientChat || wrapper.packet instanceof Chat) {
+                else if (wrapper.packet.toString().endsWith("Chat")) {
 
                     // we don't want to allow chat packets if the client
                     // hasn't sent a client settings packet yet
