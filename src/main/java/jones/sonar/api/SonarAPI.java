@@ -33,6 +33,10 @@ import java.util.Collection;
 @APIClass(since = "1.3.1", lastUpdate = "1.3.2")
 public interface SonarAPI {
 
+    default boolean isUnderAttack() {
+        return Sensibility.isUnderAttack();
+    }
+
     @SerializedName("BotLevel")
     default BotLevel getPlayerBotLevel(final InetAddress inetAddress) {
         final ConnectionData data = ConnectionDataManager.get(inetAddress);
@@ -42,10 +46,6 @@ public interface SonarAPI {
         }
 
         return null;
-    }
-
-    default boolean isUnderAttack() {
-        return Sensibility.isUnderAttack();
     }
 
     @SerializedName("BotLevel")
