@@ -120,7 +120,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             // check for geyser players and don't register the sonar handler for them
             final boolean isGeyser = parent != null && parent.getClass().getCanonicalName().startsWith("org.geysermc.geyser");
 
-            if (!isGeyser) {
+            if (!isGeyser && !SonarBungee.INSTANCE.isReverseProxy) {
                 SonarPipelines.register(pipeline);
             }
 

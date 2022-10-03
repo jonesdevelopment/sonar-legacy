@@ -37,6 +37,7 @@ import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.DetectionResult;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.PlayerQueue;
+import jones.sonar.universal.util.ExceptionHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.ConnectionThrottle;
@@ -79,7 +80,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     @Override
     public void exception(final Throwable cause) throws Exception {
-        ctx.channel().unsafe().closeForcibly();
+        ExceptionHandler.handle(ctx.channel(), cause);
     }
 
     @Override

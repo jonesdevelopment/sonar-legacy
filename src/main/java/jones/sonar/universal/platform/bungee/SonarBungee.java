@@ -67,6 +67,8 @@ public enum SonarBungee implements SonarBungeePlatform {
 
     public final SonarPlatform platform = SonarPlatform.BUNGEE;
 
+    public boolean isReverseProxy = false;
+
     public boolean running = false;
 
     public int JAVA_VERSION = 0;
@@ -177,6 +179,8 @@ public enum SonarBungee implements SonarBungeePlatform {
         }
 
         Logger.INFO.log(" §7Setting up commands and features...");
+
+        checkTCPShield();
 
         proxy.getPluginManager().registerCommand(plugin, new SonarCommand());
 
@@ -290,6 +294,14 @@ public enum SonarBungee implements SonarBungeePlatform {
         callEvent(new SonarReloadEvent(startTimeStamp, endTimeStamp, timeTaken));
 
         return timeTaken;
+    }
+
+    private void checkTCPShield() {
+        if (proxy.getPluginManager().getPlugin("TCPShield") != null) {
+            isReverseProxy = true;
+
+            Logger.INFO.log(" §cTCPShield detected! Switching into compatibility mode.");
+        }
     }
 
     public void createDataFolder() {

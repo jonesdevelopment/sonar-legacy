@@ -36,6 +36,7 @@ public class ExceptionHandler {
         // IOException can be thrown by disconnecting from the server
         // We need to exempt clients for that, so they won't get false blacklisted
         if (cause instanceof IOException) return;
+        cause.printStackTrace();
 
         // blacklist the ip address
         Blacklist.addToBlacklist(((InetSocketAddress) channel.remoteAddress()).getAddress());
