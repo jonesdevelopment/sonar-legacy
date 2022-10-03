@@ -52,8 +52,8 @@ public final class LoginHandler implements Detections {
             connectionData.checked = 1;
             connectionData.verifiedName = connectionData.username;
 
-            connectionData.lastJoin = timeStamp;
-            return FIRST_JOIN_KICK;
+            /*connectionData.lastJoin = timeStamp;
+            return FIRST_JOIN_KICK;*/
         }
 
         if (connectionData.checked == 1) {
@@ -80,7 +80,7 @@ public final class LoginHandler implements Detections {
             connectionData.verifiedNames.add(connectionData.username);
 
             connectionData.botLevel++;
-            return FIRST_JOIN_KICK;
+            //return FIRST_JOIN_KICK;
         }
 
         if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {

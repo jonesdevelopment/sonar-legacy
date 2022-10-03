@@ -36,6 +36,7 @@ import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.DetectionResult;
 import jones.sonar.universal.platform.bungee.SonarBungee;
+import jones.sonar.universal.queue.LoginCache;
 import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.util.ExceptionHandler;
 import net.md_5.bungee.BungeeCord;
@@ -253,32 +254,43 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             throw sonar.EXCEPTION;
         }
 
-        final InetAddress inetAddress = inetAddress();
+        currentState = ConnectionState.PROCESSING;
 
-        if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.contains(inetAddress)) {
-            disconnect(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
+        final String username = loginRequest.getData();
+
+        if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {
+            disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
+            LoginCache.HAVE_LOGGED_IN.add(username);
             ServerStatistics.BLOCKED_CONNECTIONS++;
             return;
         }
 
-        currentState = ConnectionState.PROCESSING;
+        final InetAddress inetAddress = inetAddress();
+
+        if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.contains(inetAddress)) {
+            disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
+            ServerStatistics.BLOCKED_CONNECTIONS++;
+            return;
+        }
+
+        if (sonar.proxy.getPlayer(username) != null) {
+            disconnect_(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
+            ServerStatistics.BLOCKED_CONNECTIONS++;
+            return;
+        }
 
         final ConnectionData data = ConnectionDataManager.create(inetAddress);
 
-        data.username = loginRequest.getData();
+        data.username = username;
 
         final Detection detection = LoginHandler.check(data);
 
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.key) {
                 default: {
+                    LoginCache.HAVE_LOGGED_IN.remove(username);
                     ConnectionDataManager.remove(data);
                     throw sonar.EXCEPTION;
-                }
-
-                case 1: {
-                    disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
-                    return;
                 }
 
                 case 2: {
@@ -321,14 +333,9 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             }
         }
 
-        if (sonar.proxy.getPlayer(data.username) != null) {
-            disconnect_(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
-            return;
-        }
+        super.handle(loginRequest);
 
         currentState = ConnectionState.JOINING;
-
-        super.handle(loginRequest);
     }
 
     private InetAddress inetAddress() {
