@@ -24,5 +24,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface APIClass {
+
     String since();
+
+    String lastUpdate() default "unknown";
+
 }

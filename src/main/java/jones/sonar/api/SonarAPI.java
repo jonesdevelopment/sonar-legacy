@@ -18,6 +18,7 @@ package jones.sonar.api;
 
 import com.google.gson.annotations.SerializedName;
 import jones.sonar.api.data.BotLevel;
+import jones.sonar.bungee.util.Sensibility;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
@@ -29,7 +30,7 @@ import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.Collection;
 
-@APIClass(since = "1.3.1")
+@APIClass(since = "1.3.1", lastUpdate = "1.3.2")
 public interface SonarAPI {
 
     @SerializedName("BotLevel")
@@ -41,6 +42,10 @@ public interface SonarAPI {
         }
 
         return null;
+    }
+
+    default boolean isUnderAttack() {
+        return Sensibility.isUnderAttack();
     }
 
     @SerializedName("BotLevel")
