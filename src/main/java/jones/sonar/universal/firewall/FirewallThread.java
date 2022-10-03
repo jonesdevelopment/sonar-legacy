@@ -57,11 +57,16 @@ public final class FirewallThread extends Thread implements Runnable {
                                     .replaceAll("%have/has%", firewalled == 1 ? "has" : "have")
                                     .replaceAll("%has/have%", firewalled == 1 ? "has" : "have");
 
-                            ActionBarManager.getPlayers().forEach(player -> player.sendMessage(alert));
+                            ActionBarManager.getPlayers()
+                                    .collect(Collectors.toSet())
+                                    .forEach(player -> player.sendMessage(alert));
                         }
+
+                        // garbage collect
+                        toRemove.clear();
                     }
                 } catch (Exception exception) {
-                    exception.printStackTrace();
+                   // exception.printStackTrace();
                 }
 
                 Thread.sleep(Firewall.Values.BLACKLIST_DELAY);

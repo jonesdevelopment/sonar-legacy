@@ -35,10 +35,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
-import net.md_5.bungee.protocol.packet.ClientSettings;
-import net.md_5.bungee.protocol.packet.KeepAlive;
-import net.md_5.bungee.protocol.packet.LoginRequest;
-import net.md_5.bungee.protocol.packet.PluginMessage;
+import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -86,6 +83,14 @@ public final class PacketHandler extends ChannelDuplexHandler {
                 pluginMessage.setData(DefinedPacket.toArray(brand));
 
                 brand.release();
+            }
+        }
+
+        else if (msg instanceof Kick) {
+            final Kick kick = (Kick) msg;
+
+            if (kick.getMessage().equals(playerHandler.bungee.getTranslation("already_connected_proxy"))) {
+                kick.setMessage(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
             }
         }
 
