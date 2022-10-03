@@ -31,7 +31,7 @@ import java.net.SocketAddress;
 import java.util.Collection;
 
 @APIClass(since = "1.3.1", lastUpdate = "1.3.2")
-public interface SonarAPIImpl {
+interface SonarAPIImpl {
 
     default boolean isUnderAttack() {
         return Sensibility.isUnderAttack();
