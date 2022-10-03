@@ -43,6 +43,9 @@ public final class InfoCommand extends SubCommand {
 
         final OperatingSystemMXBean operatingSystem = ManagementFactory.getOperatingSystemMXBean();
 
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fProxy: " + SonarBungee.INSTANCE.proxy.getName());
+        execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fProxy protocol version: " + SonarBungee.INSTANCE.proxy.getProtocolVersion());
+
         execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fOperating system: " + OperatingSystem.getOSName());
 
         execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fAvailable processors: " + operatingSystem.getAvailableProcessors() + " cores");

@@ -224,7 +224,7 @@ public enum SonarBungee implements SonarBungeePlatform {
 
         new MonitorThread().start();
 
-        ConsoleFilter.apply(this);
+        ConsoleFilter.apply();
 
         /*
          * Process finished

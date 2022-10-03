@@ -16,17 +16,26 @@
 
 package jones.sonar.bungee.filter;
 
-import jones.sonar.bungee.config.Config;
-import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.experimental.UtilityClass;
+import org.apache.logging.log4j.LogManager;
 
 @UtilityClass
 public final class ConsoleFilter {
-    public void apply(final SonarBungee sonar) {
-        sonar.proxy.getLogger().setFilter(record -> ((!record.getSourceClassName().equals("net.md_5.bungee.connection.InitialHandler")
-                && !(record.getSourceClassName().equals("net.md_5.bungee.netty.HandlerBoss")
-                && record.getMessage().contains(" - encountered exception: ")))
-                || Config.Values.LOG_CONNECTIONS)
-                && !record.getMessage().equals("No client connected for pending server!"));
+    public void apply() {
+        if (isLog4J()) {
+            new Log4JConsoleFilter();
+            return;
+        }
+
+        new DefaultConsoleFilter();
+    }
+
+    private boolean isLog4J() {
+        try {
+            LogManager.getRootLogger();
+            return true;
+        } catch (NoClassDefFoundError classDefFoundError) {
+            return false;
+        }
     }
 }
