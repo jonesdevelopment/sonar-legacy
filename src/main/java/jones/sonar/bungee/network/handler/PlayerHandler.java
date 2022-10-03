@@ -280,7 +280,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         final ProxiedPlayer player = sonar.proxy.getPlayer(username);
 
         if (player != null) {
-            disconnect_(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
+            //disconnect_(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
             player.disconnect(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
             ServerStatistics.BLOCKED_CONNECTIONS++;
             return;
