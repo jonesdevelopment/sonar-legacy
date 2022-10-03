@@ -98,6 +98,12 @@ public final class PacketHandler extends ChannelDuplexHandler {
             check: {
                 if (packet == null) break check;
 
+                if (wrapper.packet instanceof LoginRequest) {
+                    if (playerHandler.getVersion() >= ProtocolConstants.MINECRAFT_1_19_1 && ((LoginRequest) wrapper.packet).getPublicKey() == null) {
+                        throw SonarBungee.INSTANCE.EXCEPTION;
+                    }
+                }
+
                 final ProxiedPlayer proxiedPlayer = SonarBungee.INSTANCE.proxy.getPlayer(playerHandler.getName());
 
                 if (proxiedPlayer == null) break check;
