@@ -85,7 +85,7 @@ public class Messages {
                 ONLY_PLAYERS, FOOTER_BAR, HEADER_BAR, HELP_COMMAND_LAYOUT,
                 NO_PERMISSION_SUB_COMMAND, UNKNOWN_SUB_COMMAND, RELOADING,
                 RELOADED, LIST_SYMBOL, FILTER_SYMBOL_ON, FILTER_SYMBOL_OFF,
-                DISCONNECT_UNSUPPORTED_VERSION, DISCONNECT_ALREADY_CONNECTED,
+                DISCONNECT_ALREADY_CONNECTED, DISCONNECT_PING_BEFORE_JOIN,
                 DISCONNECT_TOO_MANY_ONLINE, DISCONNECT_QUEUED, DISCONNECT_ATTACK,
                 PING_SPECIFY, PING_OTHER, PING, BLACKLIST_EMPTY, BLACKLIST_INVALID_IP,
                 BLACKLIST_NOT, BLACKLIST_ALREADY, BLACKLIST_ADD_PLAYER, BLACKLIST_ADD_IP,
@@ -101,8 +101,7 @@ public class Messages {
                 MONITOR_ENABLED, MONITOR_DISABLED, MONITOR_ENABLED_OTHER, MONITOR_DISABLED_OTHER,
                 MONITOR_FORMAT, MONITOR_GRAPH_FILLED_SAFE, MONITOR_GRAPH_FILLED_UNSAFE, MONITOR_GRAPH_FILLED_BAD,
                 MONITOR_GRAPH_UNFILLED, MONITOR_GRAPH_FILL_SYMBOL, MONITOR_GRAPH_UP, MONITOR_GRAPH_DOWN,
-                MONITOR_GRAPH_STATIC, MONITOR_UNSUPPORTED, MONITOR_UNSUPPORTED_OTHER, BLACKLIST_AUTO_CLEAR,
-                DISCONNECT_PING_BEFORE_JOIN;
+                MONITOR_GRAPH_STATIC, MONITOR_UNSUPPORTED, MONITOR_UNSUPPORTED_OTHER, BLACKLIST_AUTO_CLEAR;
 
         public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY, GRAPH_SYMBOL_COUNT, MONITOR_REFRESH_DELAY,
                 BLACKLIST_CLEAR_TIME;
@@ -234,7 +233,6 @@ public class Messages {
                                 .replaceAll("\\.00", "")));
                 DISCONNECT_FIRST_JOIN = format(fromList(config.getStringList("disconnect.reconnect-check.first-join")));
                 DISCONNECT_INVALID_NAME = format(fromList(config.getStringList("disconnect.invalid-name")));
-                DISCONNECT_UNSUPPORTED_VERSION = format(fromList(config.getStringList("disconnect.unsupported-version")));
                 DISCONNECT_ALREADY_CONNECTED = format(fromList(config.getStringList("disconnect.already-connected")));
                 DISCONNECT_TOO_MANY_ONLINE = format(fromList(config.getStringList("disconnect.too-many-accounts-per-ip"))
                         .replaceAll("%max%", "" + Config.Values.MAXIMUM_ONLINE_PER_IP));
