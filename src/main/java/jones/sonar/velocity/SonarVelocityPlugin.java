@@ -31,7 +31,7 @@ import java.nio.file.Path;
 
 @Plugin(id = "sonar",
         name = "Sonar",
-        version = "1.3.1",
+        version = "1.3.2",
         url = "https://jonesdev.xyz/",
         description = "Anti bot plugin for BungeeCord with 1.7-1.19 support",
         authors = {"jonesdev.xyz"})
