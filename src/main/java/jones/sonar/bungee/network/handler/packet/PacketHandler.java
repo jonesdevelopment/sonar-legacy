@@ -102,7 +102,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                 if (wrapper.packet instanceof LoginRequest) {
                     if (playerHandler.getVersion() >= ProtocolVersion.MINECRAFT_1_19_1
                             && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())
-                            && playerHandler.bungee.config.isEnforceSecureProfile()) {
+                            /*&& playerHandler.bungee.config.isEnforceSecureProfile()*/) {
                         if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
                             throw SonarBungee.INSTANCE.EXCEPTION;
                         }
