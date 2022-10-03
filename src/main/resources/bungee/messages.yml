@@ -59,7 +59,7 @@ notifications:
       - '%footer-bar%'
 
     # The delay between each chat notification in milliseconds
-    delay: 60000
+    delay: 120000
 
   boss-bar:
 

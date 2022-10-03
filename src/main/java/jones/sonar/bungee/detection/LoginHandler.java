@@ -56,20 +56,6 @@ public final class LoginHandler implements Detections {
             return FIRST_JOIN_KICK;
         }
 
-        if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
-                || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
-            if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
-                if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
-                        || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
-                    return BLACKLIST;
-                }
-
-                connectionData.checked = 0;
-                connectionData.botLevel++;
-                return INVALID_NAME;
-            }
-        }
-
         if (connectionData.checked == 1) {
             connectionData.checked = 2;
 
@@ -95,6 +81,21 @@ public final class LoginHandler implements Detections {
 
             connectionData.botLevel++;
             return FIRST_JOIN_KICK;
+        }
+
+        if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
+            if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
+                    || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
+                return BLACKLIST;
+            }
+
+            connectionData.botLevel++;
+
+            if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
+                    || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
+                connectionData.checked = 0;
+                return INVALID_NAME;
+            }
         }
 
         if (underAttack && !Whitelist.isWhitelisted(connectionData.inetAddress)) {
