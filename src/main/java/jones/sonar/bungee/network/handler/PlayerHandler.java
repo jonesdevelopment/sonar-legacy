@@ -47,6 +47,7 @@ import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
@@ -276,8 +277,11 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             return;
         }
 
-        if (sonar.proxy.getPlayer(username) != null) {
+        final ProxiedPlayer player = sonar.proxy.getPlayer(username);
+
+        if (player != null) {
             disconnect_(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
+            player.disconnect(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
             ServerStatistics.BLOCKED_CONNECTIONS++;
             return;
         }
