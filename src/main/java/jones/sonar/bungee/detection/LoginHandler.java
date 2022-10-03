@@ -60,7 +60,8 @@ public final class LoginHandler implements Detections {
             connectionData.checked = 2;
 
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)
-                    && !connectionData.allowedNames.contains(connectionData.username)) {
+                    && !connectionData.allowedNames.contains(connectionData.username)
+                    && Config.Values.ENABLE_RECONNECT_CHECK) {
                 return BLACKLIST;
             }
         }

@@ -259,10 +259,13 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         final String username = loginRequest.getData();
 
         if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {
-            disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
             LoginCache.HAVE_LOGGED_IN.add(username);
-            ServerStatistics.BLOCKED_CONNECTIONS++;
-            return;
+
+            if (Config.Values.ENABLE_FIRST_JOIN) {
+                disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
+                ServerStatistics.BLOCKED_CONNECTIONS++;
+                return;
+            }
         }
 
         final InetAddress inetAddress = inetAddress();
