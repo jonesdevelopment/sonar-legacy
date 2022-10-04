@@ -91,8 +91,11 @@ public final class PacketHandler extends ChannelDuplexHandler {
         }
 
         if (!Blacklist.isBlacklisted(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress())) {
-            super.write(ctx, msg, promise);
+            ctx.pipeline().remove(this);
+            return;
         }
+
+        super.write(ctx, msg, promise);
     }
 
     @Override
