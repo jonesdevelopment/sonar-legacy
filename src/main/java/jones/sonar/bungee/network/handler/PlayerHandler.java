@@ -335,7 +335,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         currentState = ConnectionState.JOINING;
     }
 
-    private InetAddress inetAddress() {
+    public InetAddress inetAddress() {
         return getAddress().getAddress();
     }
 

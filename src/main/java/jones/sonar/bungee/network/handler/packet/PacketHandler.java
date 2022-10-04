@@ -24,6 +24,7 @@ import io.netty.channel.ChannelPromise;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.network.handler.PlayerHandler;
+import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.player.PlayerData;
 import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
@@ -35,7 +36,10 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
-import net.md_5.bungee.protocol.packet.*;
+import net.md_5.bungee.protocol.packet.ClientSettings;
+import net.md_5.bungee.protocol.packet.KeepAlive;
+import net.md_5.bungee.protocol.packet.LoginRequest;
+import net.md_5.bungee.protocol.packet.PluginMessage;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -86,19 +90,13 @@ public final class PacketHandler extends ChannelDuplexHandler {
             }
         }
 
-        else if (msg instanceof Kick) {
-            final Kick kick = (Kick) msg;
-
-            if (kick.getMessage().equals(playerHandler.bungee.getTranslation("already_connected_proxy"))) {
-                kick.setMessage(Messages.Values.DISCONNECT_ALREADY_CONNECTED);
-            }
-        }
-
         super.write(ctx, msg, promise);
     }
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
+        final InetAddress inetAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress();
+
         if (msg instanceof PacketWrapper) {
             final PacketWrapper wrapper = (PacketWrapper) msg;
 
@@ -122,8 +120,6 @@ public final class PacketHandler extends ChannelDuplexHandler {
                 if (proxiedPlayer == null) break check;
 
                 final PlayerData playerData = PlayerDataManager.create(proxiedPlayer.getName());
-
-                final InetAddress inetAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress();
 
                 if (wrapper.packet instanceof ClientSettings) {
                     final ClientSettings clientSettings = (ClientSettings) wrapper.packet;
@@ -180,6 +176,8 @@ public final class PacketHandler extends ChannelDuplexHandler {
             }
         }
 
-        super.channelRead(ctx, msg);
+        if (!Blacklist.isBlacklisted(inetAddress)) {
+            super.channelRead(ctx, msg);
+        }
     }
 }
