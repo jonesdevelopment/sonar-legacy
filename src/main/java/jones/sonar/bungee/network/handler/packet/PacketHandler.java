@@ -97,8 +97,6 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
-        final InetAddress inetAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress();
-
         if (msg instanceof PacketWrapper) {
             final PacketWrapper wrapper = (PacketWrapper) msg;
 
@@ -122,6 +120,8 @@ public final class PacketHandler extends ChannelDuplexHandler {
                 if (proxiedPlayer == null) break check;
 
                 final PlayerData playerData = PlayerDataManager.create(proxiedPlayer.getName());
+
+                final InetAddress inetAddress = ((InetSocketAddress) proxiedPlayer.getSocketAddress()).getAddress();
 
                 if (wrapper.packet instanceof ClientSettings) {
                     final ClientSettings clientSettings = (ClientSettings) wrapper.packet;
@@ -178,8 +178,6 @@ public final class PacketHandler extends ChannelDuplexHandler {
             }
         }
 
-        if (!Blacklist.isBlacklisted(inetAddress)) {
-            super.channelRead(ctx, msg);
-        }
+        super.channelRead(ctx, msg);
     }
 }
