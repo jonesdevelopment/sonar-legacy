@@ -21,9 +21,6 @@ import jones.sonar.bungee.notification.counter.ActionBarManager;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 
-import java.net.InetAddress;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class FirewallThread extends Thread implements Runnable {
@@ -34,7 +31,7 @@ public final class FirewallThread extends Thread implements Runnable {
             try {
                 try {
                     if (Firewall.Values.ENABLE_FIREWALL) {
-                        final Set<InetAddress> toRemove = new HashSet<>();
+                        final long firewalledBefore = Blacklist.FIREWALLED.size();
 
                         Blacklist.BLACKLISTED.stream()
                                 .limit(Firewall.Values.BLACKLIST_CACHE_LIMIT)
@@ -43,14 +40,13 @@ public final class FirewallThread extends Thread implements Runnable {
                                     FirewallManager.execute("ipset add "
                                             + Firewall.Values.BLACKLIST_SET_NAME + " "
                                             + String.valueOf(inetAddress).replace("/", ""));
-                                    toRemove.add(inetAddress);
+
+                                    Blacklist.FIREWALLED.add(inetAddress);
                                 });
 
-                        Blacklist.BLACKLISTED.removeAll(toRemove);
+                        final long firewalled = Math.max(Blacklist.FIREWALLED.size() - firewalledBefore, 0);
 
-                        if (Firewall.Values.BROADCAST && !toRemove.isEmpty()) {
-                            final int firewalled = toRemove.size();
-
+                        if (Firewall.Values.BROADCAST && firewalled > 0) {
                             final String alert = Firewall.Values.BROADCAST_MESSAGE
                                     .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(firewalled))
                                     .replaceAll("%es%", firewalled == 1 ? "" : "es")
@@ -61,9 +57,6 @@ public final class FirewallThread extends Thread implements Runnable {
                                     .collect(Collectors.toSet())
                                     .forEach(player -> player.sendMessage(alert));
                         }
-
-                        // garbage collect
-                        toRemove.clear();
                     }
                 } catch (Exception exception) {
                    // exception.printStackTrace();

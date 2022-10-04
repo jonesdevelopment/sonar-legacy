@@ -24,6 +24,7 @@ import jones.sonar.bungee.notification.counter.ActionBarManager;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
+import jones.sonar.universal.firewall.FirewallManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.Sensibility;
 
@@ -76,9 +77,7 @@ public final class CacheThread extends Thread implements Runnable {
                         SonarBungee.INSTANCE.callEvent(new SonarBlacklistClearEvent(blacklisted));
 
                         if (Config.Values.AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION) {
-                            final long verifying = ConnectionDataManager.getVerifying();
-
-                            if (verifying > Config.Values.MINIMUM_JOINS_PER_SECOND) {
+                            if (ConnectionDataManager.getVerifying() > Config.Values.MINIMUM_JOINS_PER_SECOND) {
                                 ConnectionDataManager.getVerifyingData().forEach(ConnectionDataManager::remove);
                             }
                         }
@@ -87,7 +86,16 @@ public final class CacheThread extends Thread implements Runnable {
                                 .replaceAll("%es%", blacklisted == 1 ? "" : "es")
                                 .replaceAll("%have/has%", blacklisted == 1 ? "has" : "have")
                                 .replaceAll("%has/have%", blacklisted == 1 ? "has" : "have")
-                                .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted));
+                                .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(blacklisted))
+                                .replaceAll("%firewalled%", SonarBungee.INSTANCE.FORMAT.format(Blacklist.FIREWALLED.size()));
+
+                        try {
+                            FirewallManager.clear();
+
+                            Blacklist.FIREWALLED.clear();
+                        } catch (Exception exception) {
+                           // exception.printStackTrace();
+                        }
 
                         ActionBarManager.getPlayers().forEach(player -> player.sendMessage(alert));
 

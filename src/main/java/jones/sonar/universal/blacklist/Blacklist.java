@@ -25,6 +25,7 @@ import java.util.Set;
 @UtilityClass
 public class Blacklist {
     public final Set<InetAddress> BLACKLISTED = new HashSet<>();
+    public final Set<InetAddress> FIREWALLED = new HashSet<>();
 
     public long size() {
         return BLACKLISTED.size();

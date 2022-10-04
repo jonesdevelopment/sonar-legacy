@@ -110,6 +110,11 @@ notifications:
 
     # The message that will be sent to every player with 'ab verbose' enabled
     # when the blacklisted gets cleared automatically
+    # You can use the following variables:
+    #   %ips% - Number of blacklisted ip addresses before the clear
+    #   %firewalled% - Number of firewalled ip addresses before the clear
+    #   %es% - Whether the plural form of ip address should be used
+    #   %have/has% - Whether 'has' or 'have' should be used (formatted)
     blacklist-clear: '%prefix%%ips% &7ip address%es% %have/has% been automatically removed from the blacklist.'
 
 disconnect:
