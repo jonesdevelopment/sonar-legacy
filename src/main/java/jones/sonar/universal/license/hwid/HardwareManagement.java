@@ -26,30 +26,43 @@ import java.util.UUID;
 @UtilityClass
 public class HardwareManagement {
     protected String get() throws Exception {
+        if (OperatingSystem.OS_NAME.toLowerCase().contains("unix")
+                || OperatingSystem.OS_NAME.toLowerCase().contains("linux")
+                || OperatingSystem.OS_NAME.toLowerCase().contains("solaris")) {
 
-        // get network interface
-        final NetworkInterface networkInterface = NetworkInterface.getNetworkInterfaces().nextElement();
+            // get network interface
+            final NetworkInterface networkInterface = NetworkInterface.getNetworkInterfaces().nextElement();
 
-        // get the hardware address of the next element in the interfaces() array
-        final byte[] networkAddress = networkInterface.getHardwareAddress();
+            // get the hardware address of the next element in the interfaces() array
+            final byte[] networkAddress = networkInterface.getHardwareAddress();
 
-        final StringBuilder networkInformationBuilder = new StringBuilder();
+            final StringBuilder networkInformationBuilder = new StringBuilder();
 
-        // cache and save all characters out of the network address
-        for (final byte character : networkAddress) {
-            networkInformationBuilder.append((char) character);
+            // cache and save all characters out of the network address
+            for (final byte character : networkAddress) {
+                networkInformationBuilder.append((char) character);
+            }
+
+            // store the network address dynamically
+            final String networkInformation = networkInformationBuilder.toString();
+
+            // hash and return the hardware id
+            return hash(networkInformation
+
+                    // also include the OS name and arch
+                    + OperatingSystem.getOSName()
+                    + OperatingSystem.OS_ARCH
+                    + OperatingSystem.OS_VERSION);
+        } else if (OperatingSystem.OS_NAME.toLowerCase().contains("wind")) {
+            return hash(OperatingSystem.OS_ARCH
+                    + OperatingSystem.OS_VERSION
+                    + System.getenv("PROCESSOR_IDENTIFIER")
+                    + System.getenv("PROCESSOR_ARCHITECTURE")
+                    + System.getenv("PROCESSOR_ARCHITEW6432")
+                    + System.getenv("NUMBER_OF_PROCESSORS"));
         }
 
-        // store the network address dynamically
-        final String networkInformation = networkInformationBuilder.toString();
-
-        // hash and return the hardware id
-        return hash(networkInformation
-
-                // also include the OS name and arch
-                + OperatingSystem.getOSName()
-                + OperatingSystem.OS_ARCH
-                + OperatingSystem.OS_VERSION);
+        return "OPERATING_SYSTEM_UNSUPPORTED";
     }
 
     private String hash(String information) throws Exception {
