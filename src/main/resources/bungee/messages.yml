@@ -162,14 +162,6 @@ disconnect:
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
-  already-connected:
-    - ' '
-    - '&7Seems like you''re already connected to the server.'
-    - '&7Restarting Minecraft or re-connecting usually fixes this issue.'
-    - ' '
-    - '&cIf this error keeps occurring, please contact an administrator!'
-    - ' '
-
   verification-during-attack:
     - ' '
     - '&cSorry! &7There are too many players logging it at the same time.'
