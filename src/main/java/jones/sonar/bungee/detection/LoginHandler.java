@@ -69,6 +69,8 @@ public final class LoginHandler implements Detections {
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
             connectionData.checked = 2;
             connectionData.failedReconnect++;
+
+            connectionData.lastJoin = (timeStamp - (Config.Values.REJOIN_DELAY / 2L));
             return TOO_FAST_RECONNECT;
         } else if (connectionData.botLevel > 0) {
             connectionData.botLevel--;
