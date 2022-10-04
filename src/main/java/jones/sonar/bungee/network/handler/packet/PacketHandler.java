@@ -56,6 +56,11 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
+        if (Blacklist.isBlacklisted(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress())) {
+            ctx.pipeline().remove(this);
+            return;
+        }
+
         if (msg instanceof PluginMessage) {
             final PluginMessage pluginMessage = (PluginMessage) msg;
 
@@ -88,11 +93,6 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
                 brand.release();
             }
-        }
-
-        if (!Blacklist.isBlacklisted(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress())) {
-            ctx.pipeline().remove(this);
-            return;
         }
 
         super.write(ctx, msg, promise);
