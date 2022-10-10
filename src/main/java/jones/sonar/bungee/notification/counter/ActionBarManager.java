@@ -20,6 +20,7 @@ import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -34,6 +35,10 @@ public class ActionBarManager {
                 .map(SonarBungee.INSTANCE.proxy::getPlayer)
                 .filter(Objects::nonNull)
                 .filter(player -> player.hasPermission("sonar.verbose"));
+    }
+
+    public Collection<String> getVerboseEnabled() {
+        return VERBOSE_ENABLED;
     }
 
     public boolean toggle(final ProxiedPlayer player) {

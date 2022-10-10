@@ -66,49 +66,54 @@ public final class ActionBar extends Thread implements Runnable {
                         lastSwitch = timeStamp;
                     }
 
-                    // this is needed to make the action bar align in the middle
-                    final String GENERAL_FORMAT = timeStamp - lastSwitch > 2500L
-                            ? Messages.Values.COUNTER_WAITING_FORMAT
-                            : Messages.Values.COUNTER_FORMAT;
+                    // only activate the action bar counter if players are online
+                    // this is to save performance and make the server more stable
+                    if (!ActionBarManager.getVerboseEnabled().isEmpty() && !sonar.proxy.getPlayers().isEmpty()) {
 
-                    int colorCodeCount = 0;
+                        // this is needed to make the action bar align in the middle
+                        final String GENERAL_FORMAT = timeStamp - lastSwitch > 2500L
+                                ? Messages.Values.COUNTER_WAITING_FORMAT
+                                : Messages.Values.COUNTER_FORMAT;
 
-                    // counting every color code within the message
-                    for (final char c : GENERAL_FORMAT.toCharArray()) {
-                        if (c == '§') colorCodeCount++;
-                    }
+                        int colorCodeCount = 0;
 
-                    // adding empty lines in front of the message to align the message in
-                    // the center of the players' screen
-                    final String SPACES = repeat(" ", Math.min(colorCodeCount, 24));
-
-                    final TextComponent counter = new TextComponent(GENERAL_FORMAT
-                            .replaceAll("%verify%", sonar.FORMAT.format(ConnectionDataManager.getVerifying()))
-                            .replaceAll("%blocked%", sonar.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS))
-                            .replaceAll("%whitelisted%", sonar.FORMAT.format(Whitelist.size()))
-                            .replaceAll("%blacklisted%", sonar.FORMAT.format(Blacklist.size()))
-                            .replaceAll("%total%", sonar.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS))
-                            .replaceAll("%arrow%", getSpinningSymbol(index++))
-                            .replaceAll("%queue%", sonar.FORMAT.format(PlayerQueue.QUEUE.size()))
-                            .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
-                            .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + sonar.FORMAT.format(cps))
-                            .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + sonar.FORMAT.format(pps))
-                            .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + sonar.FORMAT.format(ips))
-                            .replaceAll("%handshakes%", ColorUtil.getColorForCounter(handshakes) + sonar.FORMAT.format(handshakes))
-                            .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + sonar.FORMAT.format(eps))
-                            .replaceAll("%logins%", ColorUtil.getColorForCounter(jps) + sonar.FORMAT.format(jps)));
-
-                    final TextComponent legacyCounter = new TextComponent(counter);
-
-                    legacyCounter.setText(SPACES + counter.getText());
-
-                    ActionBarManager.getPlayers().forEach(player -> {
-                        if (player.getPendingConnection().getVersion() < ProtocolVersion.MINECRAFT_1_13) {
-                            player.sendMessage(ChatMessageType.ACTION_BAR, legacyCounter);
-                        } else {
-                            player.sendMessage(ChatMessageType.ACTION_BAR, counter);
+                        // counting every color code within the message
+                        for (final char c : GENERAL_FORMAT.toCharArray()) {
+                            if (c == '§') colorCodeCount++;
                         }
-                    });
+
+                        // adding empty lines in front of the message to align the message in
+                        // the center of the players' screen
+                        final String SPACES = repeat(" ", Math.min(colorCodeCount, 24));
+
+                        final TextComponent counter = new TextComponent(GENERAL_FORMAT
+                                .replaceAll("%verify%", createHumanReadableNumber(ConnectionDataManager.getVerifying()))
+                                .replaceAll("%blocked%", createHumanReadableNumber(ServerStatistics.BLOCKED_CONNECTIONS))
+                                .replaceAll("%whitelisted%", createHumanReadableNumber(Whitelist.size()))
+                                .replaceAll("%blacklisted%", createHumanReadableNumber(Blacklist.size()))
+                                .replaceAll("%total%", createHumanReadableNumber(ServerStatistics.TOTAL_CONNECTIONS))
+                                .replaceAll("%arrow%", getSpinningSymbol(index++))
+                                .replaceAll("%queue%", createHumanReadableNumber(PlayerQueue.QUEUE.size()))
+                                .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
+                                .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + createHumanReadableNumber(cps))
+                                .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + createHumanReadableNumber(pps))
+                                .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + createHumanReadableNumber(ips))
+                                .replaceAll("%handshakes%", ColorUtil.getColorForCounter(handshakes) + createHumanReadableNumber(handshakes))
+                                .replaceAll("%encryptions%", ColorUtil.getColorForCounter(eps) + createHumanReadableNumber(eps))
+                                .replaceAll("%logins%", ColorUtil.getColorForCounter(jps) + createHumanReadableNumber(jps)));
+
+                        final TextComponent legacyCounter = new TextComponent(counter);
+
+                        legacyCounter.setText(SPACES + counter.getText());
+
+                        ActionBarManager.getPlayers().forEach(player -> {
+                            if (player.getPendingConnection().getVersion() < ProtocolVersion.MINECRAFT_1_13) {
+                                player.sendMessage(ChatMessageType.ACTION_BAR, legacyCounter);
+                            } else {
+                                player.sendMessage(ChatMessageType.ACTION_BAR, counter);
+                            }
+                        });
+                    }
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }
@@ -118,6 +123,13 @@ public final class ActionBar extends Thread implements Runnable {
                 exception.printStackTrace();
             }
         }
+    }
+
+    private String createHumanReadableNumber(final long number) {
+        if (number >= 1000000) return String.format("%.3fM", number / 1000000D);
+        if (number >= 1000) return String.format("%.2fk", number / 1000D);
+
+        return String.valueOf(number);
     }
 
     // ↺ ↻
