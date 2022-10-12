@@ -6,3 +6,5 @@
 * You are not allowed to re-sell this plugin.
 * Refunds or chargebacks are not accepted. (Refunds will not be given for any reason/disclaimer that is clearly listed on the plugin page, contact me on Discord for questions/support)
 * I can change this Terms of Service without notice.
+
+> https://builtbybit.com/resources/23353/market-place-view-tnc
