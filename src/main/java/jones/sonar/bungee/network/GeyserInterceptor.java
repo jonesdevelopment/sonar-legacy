@@ -35,7 +35,7 @@ import net.md_5.bungee.protocol.*;
 public class GeyserInterceptor {
     private final KickStringWriter legacyKicker = new KickStringWriter();
 
-    protected void handle(final Channel channel, final int protocol) throws Exception {
+    void handle(final Channel channel, final int protocol) throws Exception {
         if (channel.remoteAddress() == null) {
             channel.close();
             return;

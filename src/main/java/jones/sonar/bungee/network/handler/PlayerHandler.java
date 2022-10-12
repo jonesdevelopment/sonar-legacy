@@ -118,7 +118,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         currentState = ConnectionState.PROCESSING;
 
         if (throttler != null && throttler.throttle(getSocketAddress())) {
-            ctx.channel().unsafe().closeForcibly();
+            ctx.close();
             return;
         }
 
@@ -170,7 +170,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             ctx.channel().writeAndFlush(new Kick(ComponentSerializer.toString(new TextComponent(reason))));
         }
 
-        ctx.channel().unsafe().closeForcibly();
+        ctx.close();
     }
 
     @Override
@@ -243,7 +243,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         unsafe().sendPacket(ping);
 
-        ctx.channel().unsafe().closeForcibly();
+        ctx.close();
     }
 
     @Override
