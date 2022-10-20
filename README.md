@@ -1,4 +1,4 @@
-# ⚡ Sonar Anti Bot
+# ⚡ Sonar Antibot
 
 ## Intelligent Minecraft bot protection
 
