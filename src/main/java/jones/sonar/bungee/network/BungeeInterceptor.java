@@ -148,7 +148,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             // normal players will be handled using our custom player handler
             pipeline.get(InboundHandler.class).setHandler(new PlayerHandler(ctx, listener, throttler));
 
-            // the proxy protocol is necessary if you want to use tcp shield
+            // the proxy protocol is necessary if you want to use some kind of reverse proxy
             if (Config.Values.ALLOW_PROXY_PROTOCOL) {
                 if (listener.isProxyProtocol()) {
                     pipeline.addFirst(new HAProxyMessageDecoder());

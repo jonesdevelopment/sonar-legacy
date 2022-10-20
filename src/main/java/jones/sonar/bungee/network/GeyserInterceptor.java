@@ -54,7 +54,7 @@ public class GeyserInterceptor {
 
         channel.pipeline().get(HandlerBoss.class).setHandler(new InitialHandler(BungeeCord.getInstance(), listener));
 
-        // the proxy protocol is necessary if you want to use tcp shield
+        // the proxy protocol is necessary if you want to use some kind of reverse proxy
         if (Config.Values.ALLOW_PROXY_PROTOCOL) {
             if (listener.isProxyProtocol()) {
                 channel.pipeline().addFirst(new HAProxyMessageDecoder());

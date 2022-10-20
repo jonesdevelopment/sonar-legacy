@@ -20,7 +20,7 @@ import jones.sonar.bungee.config.Config;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 
 public final class DefaultConsoleFilter {
-    protected DefaultConsoleFilter() {
+    DefaultConsoleFilter() {
         SonarBungee.INSTANCE.proxy.getLogger().setFilter(record -> {
             final String message = SonarBungee.INSTANCE.proxy.getName().equals("BungeeCord") ? (new ConciseFormatter(true))
                     .formatMessage(record)

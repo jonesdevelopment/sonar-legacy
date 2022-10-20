@@ -23,7 +23,7 @@ import org.apache.logging.log4j.LogManager;
 public final class ConsoleFilter {
     public void apply() {
         if (isLog4J()) {
-            new Log4JConsoleFilter();
+            new Log4JConsoleFilter(); // load the log4j filter if detected
             return;
         }
 

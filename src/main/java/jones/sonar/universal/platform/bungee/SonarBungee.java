@@ -305,9 +305,6 @@ public enum SonarBungee implements SonarBungeePlatform {
         return timeTaken;
     }
 
-    private void checkTCPShield() {
-    }
-
     public void createDataFolder() {
         if (!plugin.getDataFolder().exists()) {
             if (!plugin.getDataFolder().mkdir()) {
