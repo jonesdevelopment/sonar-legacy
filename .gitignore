@@ -3,6 +3,7 @@ out/
 target/
 .gradle/
 gradle/
+.github/
 build/
 gradlew.bat
 gradlew
