@@ -12,4 +12,5 @@
 ### Supported software
 * BungeeCord
   * Waterfall, FlameCord, ...
-* Velocity (soon)
+
+[Read more](https://www.mc-market.org/resources/23353/)
