@@ -16,10 +16,6 @@
 
 package jones.sonar.universal.platform.bungee;
 
-import jones.sonar.universal.license.LicenseLoader;
-import jones.sonar.universal.license.response.LicenseResponse;
-import jones.sonar.universal.platform.SonarPlatform;
-
 public interface SonarBungeePlatform {
     default String getVersion() {
         return SonarBungee.INSTANCE.getPlugin().getDescription().getVersion();
@@ -27,9 +23,5 @@ public interface SonarBungeePlatform {
 
     default void disable() {
         SonarBungee.INSTANCE.getPlugin().onDisable();
-    }
-
-    default LicenseResponse checkLicense() throws Exception {
-        return LicenseLoader.loadFromFile(SonarPlatform.BUNGEE);
     }
 }

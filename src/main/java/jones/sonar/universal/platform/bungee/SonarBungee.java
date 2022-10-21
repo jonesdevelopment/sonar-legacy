@@ -34,8 +34,6 @@ import jones.sonar.bungee.util.Reflection;
 import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.firewall.FirewallManager;
 import jones.sonar.universal.firewall.FirewallThread;
-import jones.sonar.universal.license.response.LicenseResponse;
-import jones.sonar.universal.license.response.WebResponse;
 import jones.sonar.universal.peak.PeakCalculator;
 import jones.sonar.universal.platform.SonarPlatform;
 import jones.sonar.universal.queue.QueueThread;
@@ -80,56 +78,7 @@ public enum SonarBungee implements SonarBungeePlatform {
 
         createDataFolder();
 
-        // cached license response
-        LicenseResponse licenseResponse;
-
-        // cached exception, if something goes wrong
-        Exception unhandledException = null;
-
-        try {
-
-            // try to load the license
-            licenseResponse = checkLicense();
-
-            running = licenseResponse.response == WebResponse.SUCCESS;
-        } catch (Exception exception) {
-
-            // set to null if something goes wrong
-            licenseResponse = null;
-
-            // cache exception
-            unhandledException = exception;
-        }
-
-        // something did go wrong or the license is invalid
-        if (!running) {
-            Logger.INFO.log("§7§m«-----------------------------------------»§r");
-            Logger.INFO.log(" ");
-            Logger.INFO.log(" §cSonar couldn't start because of following error:");
-            Logger.INFO.log(" ");
-
-            // invalid license
-            if (licenseResponse != null) {
-                Logger.INFO.log(" §e" + licenseResponse.errorMessage);
-                Logger.INFO.log(" §7Your hardware id: §f" + licenseResponse.license.hardwareID.encryptedInformation);
-            }
-
-            // general exception
-            else {
-
-                // print the stack trace
-                Logger.INFO.log(" §cException: §e" + unhandledException.getMessage());
-            }
-
-            Logger.INFO.log(" ");
-            Logger.INFO.log(" §7Support Discord:§f https://discord.jonesdev.xyz/");
-            Logger.INFO.log(" ");
-            Logger.INFO.log("§7§m«-----------------------------------------»§r");
-            return;
-        }
-
-        // another check if the license got spoofed
-        running = licenseResponse != null;
+        running = true;
     }
 
     public void onEnable(final SonarBungeePlugin plugin) {
