@@ -10,71 +10,70 @@ body:
   - type: textarea
     id: general
     attributes:
-    label: "General information"
-    description: |
-      Please provide some information about what happened.
-      Is there a known way the issue can be reproduced?
-      Please provide a short list of steps you need to do to reproduce the issue.
-    placeholder: |
-      The issue happens when you ...
-    Reproducing the issue: 1. ...
-      2. ...
+      label: "General information"
+      description: |
+        Please provide some information about what happened.
+        Is there a known way the issue can be reproduced?
+        Please provide a short list of steps you need to do to reproduce the issue.
+      placeholder: |
+        The issue happens when you ...
+        Reproducing the issue:
+        1. ...
+        2. ...
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: additional
     attributes:
-    label: "Additional information"
-    description: |
-      Is there any additional information you want to provide?
-    placeholder: |
-      - ...
+      label: "Additional information"
+      description: |
+        Is there any additional information you want to provide?
+      placeholder: |
+        - ...
     validations:
-    required: false
+      required: false
 
   - type: dropdown
     id: java_version
     attributes:
-    label: "Java version"
-    description: "Please select the current version of Java your server is running."
-    multiple: false
-    options:
-      - Java 8 or under
-      - Java 9
-      - Java 10
-      - Java 11
-      - Java 16
-      - Java 17
-      - Java 18 or above
-      - Other
+      label: "Java version"
+      description: "Please select the current version of Java your server is running."
+      multiple: false
+      options:
+        - Java 8 or under
+        - Java 9
+        - Java 10
+        - Java 11
+        - Java 16
+        - Java 17
+        - Java 18 or above
+        - Other
     validations:
-    required: true
+      required: true
 
   - type: dropdown
     id: proxy_type
     attributes:
-    label: "Server type"
-    description: "Please select the current proxy type you're using."
-    multiple: false
-    options:
-      - BungeeCord
-      - Waterfall
-      - FlameCord
-      - HexaCord
-      - XCord
-      - Travertine
-      - BetterBungee
-      - Other
+      label: "Server type"
+      description: "Please select the current proxy type you're using."
+      multiple: false
+      options:
+        - BungeeCord
+        - Waterfall
+        - FlameCord
+        - HexaCord
+        - Other
     validations:
-    required: true
+      required: true
 
   - type: textarea
     id: proxy_version
     attributes:
-    label: "Server version"
-    description: "Please enter the version of the proxy you're using."
-    placeholder: |
-      Waterfall 1.19-504 (papermc.io)
+      label: "Server version"
+      description: "Please enter the version of the proxy you're using."
+      placeholder: |
+        Waterfall 1.19-500 (papermc.io)
     validations:
-    required: true
+      required: true
+
