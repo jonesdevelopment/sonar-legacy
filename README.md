@@ -24,6 +24,6 @@ Sonar being discontinued does **not** mean that you won't be able to get Sonar a
 Sonar will be a community project, which everyone can contribute to.
 Issues will not be ignored and bugs will be fixed if jones has time to do so.
 
-> You won't be able to download the latest version (ony BuiltByBit) anymore
+> You won't be able to download the **latest version** (on BuiltByBit) anymore
 
 Thank you for everything, especially to the customers and the people I've met along my journey.
