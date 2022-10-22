@@ -4,7 +4,7 @@
 
 ### Building
 
-* [Download latest Waterfall](https://papermc.io/) and put the jar in the project folder
+* [Download latest Waterfall](https://papermc.io/downloads#Waterfall) and put the jar in the project folder
 * Add a gradle configuration with the arguments `shadowJar generateDictionry myProguardTask --stacktrace`
 * Run the configuration
 
