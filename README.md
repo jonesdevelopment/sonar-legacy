@@ -22,8 +22,6 @@
 
 [Read more](https://builtbybit.com/resources/23353/)
 
-[Click here to get information about the Sonar API](https://github.com/jonesdevelopment/sonar-api/) (outdated)
-
 :heavy_exclamation_mark: **Sonar is now officially discontinued**
 
 This is due to it being mostly finished and jones not having enough time to provide proper support.
