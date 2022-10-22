@@ -1,6 +1,6 @@
 # ⚡ Sonar Antibot
 
-## Intelligent Minecraft bot protection
+## Intelligent Minecraft bot :wrench: and exploit :boom: protection
 
 ### Building
 
@@ -22,8 +22,7 @@
 
 [Read more](https://builtbybit.com/resources/23353/)
 
-
-**Sonar is now officially discontinued**
+:heavy_exclamation_mark: **Sonar is now officially discontinued**
 
 This is due to it being mostly finished and jones not having enough time to provide proper support.
 The source code will be available on GitHub and the unlicensed, outdated jar can still be downloaded on BuiltByBit.
