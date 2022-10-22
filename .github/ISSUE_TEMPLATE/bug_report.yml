@@ -12,14 +12,14 @@ body:
   attributes:
   label: "General information"
   description: |
-  Please provide some information about what happened.
-  Is there a known way the issue can be reproduced?
-  Please provide a short list of steps you need to do to reproduce the issue.
+    Please provide some information about what happened.
+    Is there a known way the issue can be reproduced?
+    Please provide a short list of steps you need to do to reproduce the issue.
   placeholder: |
-  The issue happens when you ...
+    The issue happens when you ...
   Reproducing the issue:
-  1. ...
-  2. ...
+    1. ...
+    2. ...
   validations:
   required: true
 
@@ -28,9 +28,9 @@ body:
   attributes:
   label: "Additional information"
   description: |
-  Is there any additional information you want to provide?
+    Is there any additional information you want to provide?
   placeholder: |
-  - ...
+    - ...
   validations:
   required: false
 
@@ -41,14 +41,14 @@ body:
   description: "Please select the current version of Java your server is running."
   multiple: false
   options:
-  - Java 8 or under
-  - Java 9
-  - Java 10
-  - Java 11
-  - Java 16
-  - Java 17
-  - Java 18 or above
-  - Other
+    - Java 8 or under
+    - Java 9
+    - Java 10
+    - Java 11
+    - Java 16
+    - Java 17
+    - Java 18 or above
+    - Other
   validations:
   required: true
 
@@ -59,11 +59,14 @@ body:
   description: "Please select the current proxy type you're using."
   multiple: false
   options:
-  - BungeeCord
-  - Waterfall
-  - FlameCord
-  - HexaCord
-  - Other
+    - BungeeCord
+    - Waterfall
+    - FlameCord
+    - HexaCord
+    - XCord
+    - Travertine
+    - BetterBungee
+    - Other
   validations:
   required: true
 
@@ -73,7 +76,7 @@ body:
   label: "Server version"
   description: "Please enter the version of the proxy you're using."
   placeholder: |
-  Waterfall 1.19-504 (papermc.io)
+    Waterfall 1.19-504 (papermc.io)
   validations:
   required: true
 
