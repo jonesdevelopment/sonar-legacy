@@ -13,4 +13,4 @@
 * BungeeCord
   * Waterfall, FlameCord, ...
 
-[Read more](https://www.mc-market.org/resources/23353/)
+[Read more](https://builtbybit.com/resources/23353/)
