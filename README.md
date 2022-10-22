@@ -2,6 +2,12 @@
 
 ## Intelligent Minecraft bot protection
 
+### Building
+
+* [Download latest Waterfall](https://papermc.io/) and put the jar in the project folder
+* Add a gradle configuration with the arguments `shadowJar generateDictionry myProguardTask --stacktrace`
+* Run the configuration
+
 ### Features:
 * Bad packet filter
 * Join bot prevention
