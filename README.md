@@ -2,6 +2,8 @@
 
 ## Intelligent Minecraft bot protection
 
+#### You're not allowed to use this code for re-selling or commercial use.
+
 ### Features:
 * Bad packet filter
 * Join bot prevention
