@@ -1,15 +1,3 @@
-import java.security.SecureRandom
-
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.guardsquare:proguard-gradle:7.2.2'
-    }
-}
-
 plugins {
     id 'com.github.johnrengelman.shadow' version '5.1.0'
     id 'java'
@@ -36,64 +24,7 @@ dependencies {
     compileOnly 'io.netty:netty-all:4.1.84.Final'
     compileOnly 'io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:3.0.1'
-    compileOnly files("/home/jones/IdeaProjects/waterfall-1.19-504.jar") // important for netty and log4j
-}
-
-def outputJar = "${buildDir}/libs/${rootProject.name}.jar"
-
-task generateDictionry {
-    outputs.file("${buildDir}/../proguard/dictionary")
-
-    doLast {
-        def random = new SecureRandom()
-        def chars = (random.nextInt(5)..40 + random.nextInt(40) + random.nextInt(20))
-                .findAll {
-                    Character.isValidCodePoint(it) && Character.isJavaIdentifierPart(it) && it != 36
-                }
-                .collect {
-                    String.valueOf(Character.toChars(it))
-                }
-
-        // shuffle the character array
-        Collections.shuffle(chars)
-
-        // add characters to an array
-        int max = chars.size()
-        def start = []
-        for (int i = 0; i < max; i++) {
-            char c = chars.get(i).charAt(0)
-            if (Character.isJavaIdentifierStart(c)) {
-                start << String.valueOf(c)
-            }
-        }
-
-        // shuffle the array
-        for (int i = 0; i < 1 + random.nextInt(5); i++) {
-            Collections.shuffle(start)
-        }
-
-        // write dictionary
-        def f = outputs.files.getSingleFile()
-        f.getParentFile().mkdirs()
-        f.withWriter("UTF-8") {
-            it.write(start.join(System.lineSeparator()))
-            it.write()
-        }
-    }
-}
-
-task myProguardTask(type: proguard.gradle.ProGuardTask) {
-
-    // run proguard
-    configuration 'proguard/config'
-
-    // specify input and output files
-    injars "${outputJar}"
-    outjars "${buildDir}/libs/${rootProject.name}_proguard.jar"
-
-    // add the library jars
-    libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
-    libraryjars "/home/jones/IdeaProjects/waterfall-1.19-504.jar"
+    compileOnly files("${buildDir}/../waterfall.jar") // important for netty and log4j
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8

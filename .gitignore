@@ -10,3 +10,4 @@ gradlew
 META-INF
 *.class
 *.iml
+*.jar
