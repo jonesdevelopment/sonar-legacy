@@ -5,6 +5,7 @@
 ### Building
 
 * [Download latest Waterfall](https://papermc.io/downloads#Waterfall) and put the jar in the project folder
+* Rename the `waterfall-xxxx-000.jar` to `waterfall.jar`
 * Add a gradle configuration with the arguments `clean shadowJar --stacktrace`
 * Run the configuration
 
