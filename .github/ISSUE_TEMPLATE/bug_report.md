@@ -1,38 +1,79 @@
----
 name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
+description: Report bugs to improve plugin stability
+title: "Bug report"
+labels: ["bug"]
 
----
+assignees:
+- jonesdevelopment
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+body:
+- type: textarea
+  id: general
+  attributes:
+  label: "General information"
+  description: |
+  Please provide some information about what happened.
+  Is there a known way the issue can be reproduced?
+  Please provide a short list of steps you need to do to reproduce the issue.
+  placeholder: |
+  The issue happens when you ...
+  Reproducing the issue:
+  1. ...
+  2. ...
+  validations:
+  required: true
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+- type: textarea
+  id: additional
+  attributes:
+  label: "Additional information"
+  description: |
+  Is there any additional information you want to provide?
+  placeholder: |
+  - ...
+  validations:
+  required: false
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+- type: dropdown
+  id: java_version
+  attributes:
+  label: "Java version"
+  description: "Please select the current version of Java your server is running."
+  multiple: false
+  options:
+  - Java 8 or under
+  - Java 9
+  - Java 10
+  - Java 11
+  - Java 16
+  - Java 17
+  - Java 18 or above
+  - Other
+  validations:
+  required: true
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+- type: dropdown
+  id: proxy_type
+  attributes:
+  label: "Server type"
+  description: "Please select the current proxy type you're using."
+  multiple: false
+  options:
+  - BungeeCord
+  - Waterfall
+  - FlameCord
+  - HexaCord
+  - Other
+  validations:
+  required: true
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+- type: textarea
+  id: proxy_version
+  attributes:
+  label: "Server version"
+  description: "Please enter the version of the proxy you're using."
+  placeholder: |
+  Waterfall 1.19-504 (papermc.io)
+  validations:
+  required: true
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.

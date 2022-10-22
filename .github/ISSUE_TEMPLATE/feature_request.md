@@ -1,20 +1,56 @@
----
 name: Feature request
-about: Suggest an idea for this project
-title: ''
-labels: ''
-assignees: ''
+description: Suggest a feature to improve the plugin
+title: "Request"
+labels: ["enhancement"]
 
----
+assignees:
+- jonesdevelopment
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+body:
+- type: textarea
+  id: general
+  attributes:
+  label: "General information"
+  description: |
+  Please provide some information about the feature you would like to have implemented in Sonar Anti Bot. Is it related to a problem?
+  Are there any screenshots or video showing the feature to better understand your request?
+  placeholder: |
+  Screenshots:
+  - ...
+  - ...
+  validations:
+  required: true
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+- type: textarea
+  id: reason
+  attributes:
+  label: "Reason"
+  description: |
+  Could you explain why you want this feature implemented in Sonar? Is there a specific reason?
+  placeholder: |
+  ...
+  validations:
+  required: true
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+- type: textarea
+  id: additional
+  attributes:
+  label: "Additional information"
+  description: |
+  Is there any additional information you want to provide?
+  placeholder: |
+  - ...
+  validations:
+  required: false
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+- type: dropdown
+  id: can_be_found
+  attributes:
+  label: "Can this feature be found in other existing plugins?"
+  multiple: false
+  options:
+  - "Yes"
+  - "No"
+  - Unsure
+  validations:
+  required: true
