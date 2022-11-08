@@ -9,16 +9,32 @@
 * Add a gradle configuration with the arguments `clean shadowJar --stacktrace`
 * Run the configuration
 
-### Features:
-* Bad packet filter
-* Join bot prevention
-* Error message filter
-* Optimizing connections
+### Features
+* Bad packet (Netty exploits) filter
+* Join bot (Spam and slow join) prevention
+  * Changeable re-connect delay
+  * First join kick with verification
+  * Custom name regex checks
+  * Weird in-game behaviour (packets)
+* Error message (Exception) filter
+* Optimizing connection speed and stability
+  * This is done using TCP_FASTOPEN
 * Extremely customizable
+  * Nearly 500 (452) lines of configurations
 
 ### Supported software
 * BungeeCord
-  * Waterfall, FlameCord, ...
+  * Waterfall
+  * Travertine _(outdated)_
+  * HexaCord _(outdated)_
+  * _and more ..._
+* Custom BungeeCord forks `*`
+  * XCord
+  * FlameCord
+  * BetterBungee
+  * _and more ..._
+
+`*` It is not guaranteed that all BungeeCord forks are supported.
 
 [Read more](https://builtbybit.com/resources/23353/)
 
