@@ -13,7 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 @UtilityClass
@@ -63,7 +63,7 @@ public class Config {
         public String NAME_VALIDATION_REGEX, SERVER_BRAND, WEBHOOK_URL,
                 WEBHOOK_FORMAT, WEBHOOK_TITLE, FAKE_SERVER_CLIENT_BRAND;
 
-        public List<String> CUSTOM_REGEXES = new ArrayList<>();
+        public List<String> CUSTOM_REGEXES = new CopyOnWriteArrayList<>();
 
         public boolean load() {
             try {
