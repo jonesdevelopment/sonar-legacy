@@ -21,7 +21,7 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-    compileOnly 'io.netty:netty-all:4.1.84.Final'
+    compileOnly 'io.netty:netty-all:4.1.85.Final'
     compileOnly 'io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT'
     compileOnly 'com.velocitypowered:velocity-api:3.0.1'
     compileOnly files("${buildDir}/../waterfall.jar") // important for netty and log4j
