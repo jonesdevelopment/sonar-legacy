@@ -22,21 +22,21 @@
 * Extremely customizable
   * Nearly 500 (452) lines of configurations
 
+> [Read more](https://builtbybit.com/resources/23353/) about Sonar Antibot on the official plugin page
+
 ### Supported software
 * BungeeCord
   * Waterfall
   * Travertine _(outdated)_
   * HexaCord _(outdated)_
   * _and more ..._
-* Custom BungeeCord forks `*`
+* Custom BungeeCord forks
   * XCord
   * FlameCord
   * BetterBungee
   * _and more ..._
 
-`*` It is not guaranteed that all BungeeCord forks are supported.
-
-[Read more](https://builtbybit.com/resources/23353/)
+> **Note** It is not guaranteed that all BungeeCord forks are supported.
 
 :heavy_exclamation_mark: **Sonar is now officially discontinued**
 
