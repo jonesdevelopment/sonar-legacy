@@ -39,6 +39,7 @@ import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
+import java.util.concurrent.CompletableFuture;
 
 public final class PlayerHandler extends InitialHandler implements SonarPipeline {
 
@@ -167,44 +168,56 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
-        final Handshake handshake = getHandshake();
-        final ListenerInfo listener = getListener();
+        // credits to Velocity
+        getAsyncServerPing()
+                .thenAcceptAsync(pingBack -> {
 
-        final ServerInfo forced = ServerDataProvider.getForcedHost(listener, getVirtualHost());
+                    // minecraft keeps the channel opened
+                    // most botting tools or crashers instantly close it
+                    if (!isConnected()) {
+                        ServerStatistics.BLOCKED_CONNECTIONS++;
+                        return;
+                    }
 
-        final Callback<ServerPing> pingBack = (result, error) -> {
+                    final ListenerInfo listener = getListener();
+                    final int protocolVersion = getVersion();
+
+                    final ServerInfo forced = ServerDataProvider.getForcedHost(listener, getVirtualHost());
+
+                    if (forced != null && listener.isPingPassthrough() && Config.Values.ALLOW_PING_PASS_THROUGH) {
+                        ((BungeeServerInfo) forced).ping(pingBack, protocolVersion);
+                    } else {
+                        final ServerPing serverPing = ServerPingCache.getCached(listener, forced != null ? forced.getMotd() : listener.getMotd());
+
+                        serverPing.getVersion().setProtocol(protocolVersion);
+
+                        final Gson gson = getVersion() <= 4 /* 1.7.2 */ ? LegacyGsonFormat.LEGACY : bungee.gson;
+
+                        pingBack.done(serverPing, null);
+
+                        unsafe().sendPacket(new StatusResponse(gson.toJson(serverPing)));
+                    }
+                });
+
+        currentState = ConnectionState.PINGING;
+    }
+
+    private CompletableFuture<Callback<ServerPing>> getAsyncServerPing() {
+        return CompletableFuture.completedFuture((result, error) -> {
             if (error != null) return;
 
             if (!ctx.channel().isActive()) return;
 
-            final Callback<ProxyPingEvent> callback = (pingResult, error1) -> {
+            sonar.callEvent(new ProxyPingEvent(this, result, (pingResult, error1) -> {
                 if (error1 != null) return;
 
                 if (!ctx.channel().isActive()) return;
 
-                final Gson gson = handshake.getProtocolVersion() <= 4 ? LegacyGsonFormat.LEGACY : bungee.gson;
-
-                unsafe().sendPacket(new StatusResponse(gson.toJson(pingResult.getResponse())));
-
                 if (bungee.getConnectionThrottle() != null) {
                     bungee.getConnectionThrottle().unthrottle(getSocketAddress());
                 }
-            };
-
-            sonar.callEvent(new ProxyPingEvent(this, result, callback));
-        };
-
-        if (forced != null && listener.isPingPassthrough() && Config.Values.ALLOW_PING_PASS_THROUGH) {
-            ((BungeeServerInfo) forced).ping(pingBack, handshake.getProtocolVersion());
-        } else {
-            final ServerPing serverPing = ServerPingCache.getCached(listener, forced != null ? forced.getMotd() : listener.getMotd());
-
-            serverPing.getVersion().setProtocol(getVersion());
-
-            pingBack.done(serverPing, null);
-        }
-
-        currentState = ConnectionState.PINGING;
+            }));
+        });
     }
 
     @Override
