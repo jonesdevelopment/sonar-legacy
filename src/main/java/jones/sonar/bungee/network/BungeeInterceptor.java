@@ -3,6 +3,7 @@ package jones.sonar.bungee.network;
 import io.netty.channel.*;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.bungee.config.Config;
+import jones.sonar.bungee.network.decoder.VarIntFrameDecoder;
 import jones.sonar.bungee.network.handler.InboundHandler;
 import jones.sonar.bungee.network.handler.PlayerHandler;
 import jones.sonar.bungee.network.handler.TimeoutHandler;
@@ -116,6 +117,9 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             // initialize the channel with the pipeline base
             // this is necessary for compatibility reasons
             PipelineUtils.BASE.initChannel(channel);
+
+            // replace the frame decoder to avoid further exploits
+            pipeline.replace(PipelineUtils.FRAME_DECODER, PipelineUtils.FRAME_DECODER, new VarIntFrameDecoder());
 
             // replace the timeout handler to our custom, fixed one
             pipeline.replace(PipelineUtils.TIMEOUT_HANDLER, PipelineUtils.TIMEOUT_HANDLER, new TimeoutHandler(SonarBungee.INSTANCE.proxy.getConfig().getTimeout()));

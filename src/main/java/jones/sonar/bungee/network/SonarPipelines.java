@@ -4,7 +4,6 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import jones.sonar.bungee.network.decoder.BungeeDecoder;
 import jones.sonar.bungee.network.handler.BungeeHandler;
 import jones.sonar.universal.util.ExceptionHandler;
 import lombok.experimental.UtilityClass;
@@ -27,6 +26,5 @@ public class SonarPipelines implements SonarPipeline {
 
     public void register(final ChannelPipeline pipeline) {
         pipeline.addFirst(HANDLER, SONAR_HANDLER);
-        pipeline.addFirst(DECODER, new BungeeDecoder());
     }
 }
