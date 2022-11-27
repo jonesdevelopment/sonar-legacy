@@ -20,7 +20,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.CorruptedFrameException;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public final class VarIntFrameDecoder extends ByteToMessageDecoder {
     private static final CorruptedFrameException EXCEPTION_IN_FRAME = new CorruptedFrameException("Corrupted/Mutated frame (Exploit?)");
 
     @Override
-    protected void decode(final @NotNull ChannelHandlerContext ctx,
+    protected void decode(final ChannelHandlerContext ctx,
                           final ByteBuf byteBuf,
                           final List<Object> out) throws Exception {
         if (!ctx.channel().isActive()) {
