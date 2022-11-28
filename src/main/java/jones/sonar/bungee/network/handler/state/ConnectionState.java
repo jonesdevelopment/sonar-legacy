@@ -2,7 +2,7 @@ package jones.sonar.bungee.network.handler.state;
 
 public enum ConnectionState {
     HANDSHAKE,
-    PINGING,
+    STATUS,
     JOINING,
     PROCESSING
 }

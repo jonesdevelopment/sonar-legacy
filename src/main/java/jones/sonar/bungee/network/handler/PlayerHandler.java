@@ -120,7 +120,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                     ServerPingCache.HAS_PINGED.add(inetAddress);
                 }
 
-                currentState = ConnectionState.PINGING;
+                currentState = ConnectionState.STATUS;
                 break;
             }
 
@@ -158,13 +158,19 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         ctx.close();
     }
 
+    private boolean hasPinged = false;
+
     @Override
     public void handle(final StatusRequest statusRequest) throws Exception {
         Counter.PINGS_PER_SECOND.increment();
 
-        if (currentState != ConnectionState.PINGING) {
+        // even though we already have the states, this can fail and the states do not
+        // work properly (I don't really know why, BungeeCord is trash)
+        if (hasPinged || currentState != ConnectionState.STATUS) {
             throw sonar.EXCEPTION;
         }
+
+        hasPinged = true;
 
         currentState = ConnectionState.PROCESSING;
 
@@ -172,34 +178,33 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         getAsyncServerPing()
                 .thenAcceptAsync(pingBack -> {
 
-                    // minecraft keeps the channel opened
-                    // most botting tools or crashers instantly close it
+                    // most botting tools or crashers instantly close the channel/connection
                     if (!isConnected()) {
-                        ServerStatistics.BLOCKED_CONNECTIONS++;
-                        return;
+                        throw sonar.EXCEPTION; // clients always keep the channel opened, so it's safe to blacklist here
                     }
+
+                    currentState = ConnectionState.STATUS;
 
                     final ListenerInfo listener = getListener();
                     final int protocolVersion = getVersion();
 
                     final ServerInfo forced = ServerDataProvider.getForcedHost(listener, getVirtualHost());
 
-                    if (forced != null && listener.isPingPassthrough() && Config.Values.ALLOW_PING_PASS_THROUGH) {
+                    if (Config.Values.ALLOW_PING_PASS_THROUGH && forced != null && listener.isPingPassthrough()) {
                         ((BungeeServerInfo) forced).ping(pingBack, protocolVersion);
-                    } else {
-                        final ServerPing serverPing = ServerPingCache.getCached(listener, forced != null ? forced.getMotd() : listener.getMotd());
-
-                        serverPing.getVersion().setProtocol(protocolVersion);
-
-                        final Gson gson = getVersion() <= 4 /* 1.7.2 */ ? LegacyGsonFormat.LEGACY : bungee.gson;
-
-                        pingBack.done(serverPing, null);
-
-                        unsafe().sendPacket(new StatusResponse(gson.toJson(serverPing)));
+                        return;
                     }
-                });
 
-        currentState = ConnectionState.PINGING;
+                    final ServerPing serverPing = ServerPingCache.getCached(listener, forced != null ? forced.getMotd() : listener.getMotd());
+
+                    serverPing.getVersion().setProtocol(protocolVersion);
+
+                    final Gson gson = getVersion() <= 4 /* 1.7.2 */ ? LegacyGsonFormat.LEGACY : bungee.gson;
+
+                    pingBack.done(serverPing, null);
+
+                    unsafe().sendPacket(new StatusResponse(gson.toJson(serverPing)));
+                });
     }
 
     private CompletableFuture<Callback<ServerPing>> getAsyncServerPing() {
@@ -222,7 +227,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     @Override
     public void handle(final PingPacket ping) throws Exception {
-        if (currentState != ConnectionState.PINGING) {
+        if (currentState != ConnectionState.STATUS) {
             throw sonar.EXCEPTION;
         }
 
