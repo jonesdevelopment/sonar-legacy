@@ -102,13 +102,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
-        if (throttler != null && throttler.throttle(getSocketAddress())) {
-            ctx.close();
-            return;
-        }
-
-        final InetAddress inetAddress = inetAddress();
-
         switch (handshake.getRequestedProtocol()) {
 
             /*
@@ -117,7 +110,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
             case 1: {
                 if (Config.Values.PING_BEFORE_JOIN) {
-                    ServerPingCache.HAS_PINGED.add(inetAddress);
+                    ServerPingCache.HAS_PINGED.add(inetAddress());
                 }
 
                 currentState = ConnectionState.STATUS;
@@ -257,6 +250,11 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         }
 
         currentState = ConnectionState.PROCESSING;
+
+        if (throttler != null && throttler.throttle(getSocketAddress())) {
+            ctx.close();
+            return;
+        }
 
         final String username = loginRequest.getData();
 

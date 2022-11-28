@@ -32,7 +32,7 @@ java.targetCompatibility = JavaVersion.VERSION_1_8
 
 shadowJar() {
    // minimize()
-    archiveFileName = "${project.name}.jar"
+    archiveFileName = "Sonar.jar"
 }
 
 tasks.withType(JavaCompile) {
