@@ -109,8 +109,9 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
              */
 
             case 1: {
-                if (Config.Values.PING_BEFORE_JOIN) {
-                    ServerPingCache.HAS_PINGED.add(inetAddress());
+                if (Config.Values.PING_BEFORE_JOIN
+                        && !ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())) {
+                    ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
                 }
 
                 currentState = ConnectionState.STATUS;
@@ -270,7 +271,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         final InetAddress inetAddress = inetAddress();
 
-        if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.contains(inetAddress)) {
+        if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)) {
             disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
             ServerStatistics.BLOCKED_CONNECTIONS++;
             return;

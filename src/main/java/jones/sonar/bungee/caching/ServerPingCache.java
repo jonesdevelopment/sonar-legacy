@@ -1,5 +1,7 @@
 package jones.sonar.bungee.caching;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.platform.bungee.SonarBungee;
@@ -8,20 +10,22 @@ import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.config.ListenerInfo;
 
 import java.net.InetAddress;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @UtilityClass
 public class ServerPingCache {
 
-    public final Set<InetAddress> HAS_PINGED = new HashSet<>();
+    public final Cache<InetAddress, Byte> HAS_PINGED = CacheBuilder.newBuilder()
+            .initialCapacity(100)
+            .expireAfterWrite(15L, TimeUnit.MINUTES)
+            .build();
 
     public void removeAllUnused() {
-        HAS_PINGED.stream()
+        HAS_PINGED.asMap().keySet().stream()
                 .filter(Blacklist::isBlacklisted)
                 .collect(Collectors.toSet())
-                .forEach(HAS_PINGED::remove);
+                .forEach(HAS_PINGED::invalidate);
     }
 
     public ServerPing cachedServerPing = null;
