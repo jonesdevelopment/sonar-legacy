@@ -20,10 +20,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.protocol.DefinedPacket;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.ProtocolConstants;
-import net.md_5.bungee.protocol.packet.ClientSettings;
-import net.md_5.bungee.protocol.packet.KeepAlive;
-import net.md_5.bungee.protocol.packet.LoginRequest;
-import net.md_5.bungee.protocol.packet.PluginMessage;
+import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -136,7 +133,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
                 // 1.19 clients use signatures and an encrypted, custom chat packet, so we need to check
                 // if that packet is being sent too to avoid exploits
-                else if (wrapper.packet.toString().endsWith("Chat")) {
+                else if (wrapper.packet instanceof Chat || wrapper.packet.toString().startsWith("ClientChat(")) {
 
                     // we don't want to allow chat packets if the client
                     // hasn't sent a client settings packet yet

@@ -64,6 +64,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     private final ChannelPipeline pipeline;
 
+    private boolean hasSuccessfullyPinged = false;
+
     @Override
     public void exception(final Throwable cause) throws Exception {
         ExceptionHandler.handle(ctx.channel(), cause);
@@ -198,6 +200,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                     pingBack.done(serverPing, null);
 
                     unsafe().sendPacket(new StatusResponse(gson.toJson(serverPing)));
+
+                    hasSuccessfullyPinged = true; // only now the player can respond with a PingPacket
                 });
     }
 
@@ -221,7 +225,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     @Override
     public void handle(final PingPacket ping) throws Exception {
-        if (currentState != ConnectionState.STATUS) {
+        if (currentState != ConnectionState.STATUS || !hasPinged || !hasSuccessfullyPinged) {
             throw sonar.EXCEPTION;
         }
 
