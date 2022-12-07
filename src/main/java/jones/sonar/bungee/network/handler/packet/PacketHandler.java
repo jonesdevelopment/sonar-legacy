@@ -90,7 +90,8 @@ public final class PacketHandler extends ChannelDuplexHandler {
                 if (packet == null) break check;
 
                 if (wrapper.packet instanceof LoginRequest) {
-                    if (playerHandler.getVersion() >= ProtocolVersion.MINECRAFT_1_19_1
+                    if (playerHandler.getVersion() > ProtocolVersion.MINECRAFT_1_19
+                            && playerHandler.getVersion() < ProtocolVersion.MINECRAFT_1_19_3
                             && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())
                             /*&& playerHandler.bungee.config.isEnforceSecureProfile()*/) {
                         if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
