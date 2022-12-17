@@ -1,6 +1,5 @@
 package jones.sonar.universal.platform.bungee;
 
-import io.netty.util.ResourceLeakDetector;
 import jones.sonar.api.event.bungee.SonarReloadEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
 import jones.sonar.bungee.caching.CacheThread;
@@ -20,6 +19,8 @@ import jones.sonar.universal.firewall.FirewallManager;
 import jones.sonar.universal.firewall.FirewallThread;
 import jones.sonar.universal.peak.PeakCalculator;
 import jones.sonar.universal.platform.SonarPlatform;
+import jones.sonar.universal.proxy.BlackBoxProxyAPI;
+import jones.sonar.universal.proxy.ProxyAPI;
 import jones.sonar.universal.queue.QueueThread;
 import jones.sonar.universal.util.AssertionHelper;
 import jones.sonar.universal.util.FastException;
@@ -48,6 +49,8 @@ public enum SonarBungee implements SonarBungeePlatform {
             ipSecPeakCalculator = new PeakCalculator();
 
     public final SonarPlatform platform = SonarPlatform.BUNGEE;
+
+    public ProxyAPI selectedAntiProxyProvider = null;
 
     public boolean isReverseProxy = false;
 
@@ -144,9 +147,6 @@ public enum SonarBungee implements SonarBungeePlatform {
             return;
         }
 
-        ResourceLeakDetector.setLevel(ResourceLeakDetector.Level.DISABLED);
-        ResourceLeakDetector.setEnabled(false);
-
         /*
          * Starting threads
          */
@@ -167,6 +167,8 @@ public enum SonarBungee implements SonarBungeePlatform {
         new MonitorThread().start();
 
         ConsoleFilter.apply();
+
+        selectedAntiProxyProvider = getPreferredProvider();
 
         /*
          * Process finished
@@ -228,6 +230,8 @@ public enum SonarBungee implements SonarBungeePlatform {
             FirewallManager.uninstall(platform);
         }
 
+        selectedAntiProxyProvider = getPreferredProvider();
+
         // call the SonarReloadEvent (API)
         final long endTimeStamp = System.currentTimeMillis();
 
@@ -236,6 +240,10 @@ public enum SonarBungee implements SonarBungeePlatform {
         callEvent(new SonarReloadEvent(startTimeStamp, endTimeStamp, timeTaken));
 
         return timeTaken;
+    }
+
+    private static ProxyAPI getPreferredProvider() {
+        return Config.Values.ENABLE_PROXY_CHECK ? new BlackBoxProxyAPI() : null;
     }
 
     public void createDataFolder() {

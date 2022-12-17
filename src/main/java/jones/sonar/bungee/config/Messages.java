@@ -85,7 +85,8 @@ public class Messages {
                 MONITOR_ENABLED, MONITOR_DISABLED, MONITOR_ENABLED_OTHER, MONITOR_DISABLED_OTHER,
                 MONITOR_FORMAT, MONITOR_GRAPH_FILLED_SAFE, MONITOR_GRAPH_FILLED_UNSAFE,
                 MONITOR_GRAPH_UNFILLED, MONITOR_GRAPH_FILL_SYMBOL, MONITOR_GRAPH_UP, MONITOR_GRAPH_DOWN,
-                MONITOR_GRAPH_STATIC, MONITOR_UNSUPPORTED, MONITOR_UNSUPPORTED_OTHER, BLACKLIST_AUTO_CLEAR;
+                MONITOR_GRAPH_STATIC, MONITOR_UNSUPPORTED, MONITOR_UNSUPPORTED_OTHER, BLACKLIST_AUTO_CLEAR,
+                DISCONNECT_VPN_OR_PROXY;
 
         public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY, GRAPH_SYMBOL_COUNT, MONITOR_REFRESH_DELAY,
                 BLACKLIST_CLEAR_TIME;
@@ -224,6 +225,7 @@ public class Messages {
                 DISCONNECT_BOT_BEHAVIOUR = format(fromList(config.getStringList("disconnect.suspicious-behaviour")));
                 DISCONNECT_BOT_DETECTION = format(fromList(config.getStringList("disconnect.bot-detection")));
                 DISCONNECT_PING_BEFORE_JOIN = format(fromList(config.getStringList("disconnect.ping-before-join")));
+                DISCONNECT_VPN_OR_PROXY = format(fromList(config.getStringList("disconnect.vpn-or-proxy")));
                 return true;
             } catch (final Exception exception) {
                 return false;

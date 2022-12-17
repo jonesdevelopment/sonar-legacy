@@ -152,6 +152,15 @@ disconnect:
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
+  vpn-or-proxy:
+    - ' '
+    - '&cYour connection has been analyzed.'
+    - '&eIt seems like you are using a VPN or proxy.'
+    - '&7Make sure you are not connected to a VPN or proxy to play!'
+    - ' '
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
   bot-detection:
     - ' '
     - '&cYour connection needs to be analyzed.'

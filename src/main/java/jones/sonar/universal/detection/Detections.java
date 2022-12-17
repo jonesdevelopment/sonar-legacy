@@ -22,6 +22,9 @@ public interface Detections {
     Detection SUSPICIOUS         = new Detection(DetectionResult.DENIED,
             7);
 
+    Detection VPN_OR_PROXY       = new Detection(DetectionResult.DENIED,
+            8);
+
     Detection BLACKLIST          = new Detection(DetectionResult.DENIED,
             0);
 

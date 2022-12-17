@@ -65,6 +65,11 @@ general:
   #   %backend% - Brand/version of the backend server brand
   fake-server-client-brand: '(Sonar) %proxy% <- %backend%'
 
+anti-proxy:
+  enabled: true
+
+  timeout: 4000
+
 checks:
   reconnect:
 
