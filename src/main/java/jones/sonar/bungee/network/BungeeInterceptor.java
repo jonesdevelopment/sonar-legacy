@@ -97,7 +97,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             final Channel channel = ctx.channel();
 
             if (Blacklist.isBlacklisted(inetAddress)) {
-                channel.unsafe().closeForcibly();
+                channel.close();
 
                 ServerStatistics.BLOCKED_CONNECTIONS++;
                 return;
@@ -145,7 +145,7 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             if (Config.Values.CLIENT_CONNECT_EVENT) {
                 if (SonarBungee.INSTANCE.callEvent(new ClientConnectEvent(remoteAddress, listener)).isCancelled()) {
-                    channel.unsafe().closeForcibly();
+                    channel.close();
 
                     ServerStatistics.BLOCKED_CONNECTIONS++;
                 }

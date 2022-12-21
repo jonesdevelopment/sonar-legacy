@@ -89,14 +89,14 @@ public final class PacketHandler extends ChannelDuplexHandler {
             check: {
                 if (packet == null) break check;
 
-                if (wrapper.packet instanceof LoginRequest) {
-                    if (playerHandler.getVersion() > ProtocolVersion.MINECRAFT_1_19
-                            && playerHandler.getVersion() < ProtocolVersion.MINECRAFT_1_19_3
-                            && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())
-                            /*&& playerHandler.bungee.config.isEnforceSecureProfile()*/) {
-                        if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
-                            throw SonarBungee.INSTANCE.EXCEPTION;
-                        }
+                if (wrapper.packet instanceof LoginRequest
+                        && Config.Values.FORCE_PUBLIC_KEY
+                        && playerHandler.getVersion() > ProtocolVersion.MINECRAFT_1_19
+                        && playerHandler.getVersion() < ProtocolVersion.MINECRAFT_1_19_3
+                        && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())
+                        /*&& playerHandler.bungee.config.isEnforceSecureProfile()*/) {
+                    if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
+                        throw SonarBungee.INSTANCE.EXCEPTION;
                     }
                 }
 
@@ -108,6 +108,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
                 final InetAddress inetAddress = ((InetSocketAddress) proxiedPlayer.getSocketAddress()).getAddress();
 
+                // ClientSettings packet
                 if (wrapper.packet instanceof ClientSettings) {
                     final ClientSettings clientSettings = (ClientSettings) wrapper.packet;
 
@@ -117,6 +118,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     playerData.sentClientSettings = viewDistance > 0;
                 }
 
+                // CustomPayload packet
                 else if (wrapper.packet instanceof PluginMessage) {
                     final PluginMessage customPayload = (PluginMessage) wrapper.packet;
 
@@ -152,7 +154,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                 }
 
                 else if (wrapper.packet instanceof KeepAlive && playerData.passes() && !Whitelist.isWhitelisted(inetAddress)) {
-                    playerData.keepAliveSent++;
+                    playerData.keepAliveSent++; // increment amount of keep alive packets sent by the player
 
                     // we only want to whitelist the player if they already sent
                     // more than a specific amount of keep alive packets to the server

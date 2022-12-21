@@ -148,6 +148,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     public void disconnect_(final String reason) {
         if (reason != null && ctx.channel().isActive()) {
+            // TODO: Cache kick packet?
             ctx.channel().writeAndFlush(new Kick(ComponentSerializer.toString(new TextComponent(reason))));
         }
 
@@ -195,13 +196,15 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
                     serverPing.getVersion().setProtocol(protocolVersion);
 
+                    // handle legacy gson, if needed
                     final Gson gson = getVersion() <= 4 /* 1.7.2 */ ? LegacyGsonFormat.LEGACY : bungee.gson;
 
                     pingBack.done(serverPing, null);
 
                     unsafe().sendPacket(new StatusResponse(gson.toJson(serverPing)));
 
-                    hasSuccessfullyPinged = true; // only now the player can respond with a PingPacket
+                    // clients cannot send multiple status packets without closing the channel once
+                    hasSuccessfullyPinged = true;
                 });
     }
 
@@ -209,13 +212,14 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         return CompletableFuture.completedFuture((result, error) -> {
             if (error != null) return;
 
-            if (!ctx.channel().isActive()) return;
+            if (!isConnected()) return;
 
             sonar.callEvent(new ProxyPingEvent(this, result, (pingResult, error1) -> {
                 if (error1 != null) return;
 
-                if (!ctx.channel().isActive()) return;
+                if (!isConnected()) return;
 
+                // un-throttle connection if needed
                 if (bungee.getConnectionThrottle() != null) {
                     bungee.getConnectionThrottle().unthrottle(getSocketAddress());
                 }
@@ -225,6 +229,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     @Override
     public void handle(final PingPacket ping) throws Exception {
+
+        // clients cannot send multiple ping packets without closing the channel once
         if (currentState != ConnectionState.STATUS || !hasPinged || !hasSuccessfullyPinged) {
             throw sonar.EXCEPTION;
         }
@@ -256,6 +262,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
+        // throttle connection on login only, not handshake
         if (throttler != null && throttler.throttle(getSocketAddress())) {
             ctx.close();
             return;

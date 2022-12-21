@@ -55,7 +55,7 @@ public class Config {
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
                 LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION,
-                PING_BEFORE_JOIN, ENABLE_PROXY_CHECK;
+                PING_BEFORE_JOIN, ENABLE_PROXY_CHECK, FORCE_PUBLIC_KEY;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -81,6 +81,7 @@ public class Config {
                 MAX_PACKET_BYTES = config.getInt("general.maximum-packet-bytes", 2048);
                 MAX_PACKET_CAPACITY = config.getInt("general.maximum-packet-capacity", 4096);
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
+                FORCE_PUBLIC_KEY = config.getBoolean("general.force-valid-public-key", true);
 
                 Sensibility.minJoinsPerSecond = MINIMUM_JOINS_PER_SECOND;
 

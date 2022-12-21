@@ -13,7 +13,7 @@ public class ExceptionHandler {
     public void handle(final Channel channel, final Throwable cause) {
 
         // forcibly close connections without using a future (delayed)
-        channel.unsafe().closeForcibly();
+        channel.close();
 
         ServerStatistics.BLOCKED_CONNECTIONS++;
 

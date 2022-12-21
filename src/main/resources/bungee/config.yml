@@ -49,6 +49,10 @@ general:
   # Number of accounts being removed from the queue
   queue-poll-rate: 2000
 
+  # Some custom 1.19.1/1.19.2 client or mod packs do not send a valid player public key
+  # Disable this if you have experience any issues
+  force-valid-public-key: true
+
   # Number of maximum accounts being removed from the queue
   maximum-queue-poll-rate: 2000
 

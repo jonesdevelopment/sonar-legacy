@@ -31,7 +31,8 @@ import java.util.concurrent.TimeUnit;
 
 public final class BlackBoxProxyAPI implements ProxyAPI {
 
-    @Getter // TODO: Caffeine caching? Probably not needed...
+    // TODO: Caffeine caching? Probably not needed...
+    @Getter
     private final Cache<InetAddress, Boolean> cache = CacheBuilder.newBuilder()
             .expireAfterWrite(1L, TimeUnit.DAYS)
             .build();

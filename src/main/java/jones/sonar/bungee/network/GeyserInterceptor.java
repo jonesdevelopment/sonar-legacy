@@ -47,7 +47,7 @@ public class GeyserInterceptor {
 
         if (Config.Values.CLIENT_CONNECT_EVENT) {
             if (SonarBungee.INSTANCE.callEvent(new ClientConnectEvent(channel.remoteAddress(), listener)).isCancelled()) {
-                channel.unsafe().closeForcibly();
+                channel.close();
 
                 ServerStatistics.BLOCKED_CONNECTIONS++;
             }
