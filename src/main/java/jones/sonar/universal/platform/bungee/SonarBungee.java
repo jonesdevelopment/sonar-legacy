@@ -243,7 +243,7 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     private static ProxyAPI getPreferredProvider() {
-        return Config.Values.ENABLE_PROXY_CHECK ? new BlackBoxProxyAPI() : null;
+        return Config.Values.ENABLE_PROXY_CHECK ? new BlackBoxProxyAPI() : null; // TODO: Check why this doesn't work?!
     }
 
     public void createDataFolder() {

@@ -140,7 +140,7 @@ public final class LoginHandler implements Detections {
             return SUSPICIOUS;
         }
 
-        if (SonarBungee.INSTANCE.selectedAntiProxyProvider != null) {
+        if (Config.Values.ENABLE_PROXY_CHECK && SonarBungee.INSTANCE.selectedAntiProxyProvider != null) {
             if (SonarBungee.INSTANCE.selectedAntiProxyProvider.isUsingProxy(connectionData.inetAddress)) {
                 return VPN_OR_PROXY;
             }
