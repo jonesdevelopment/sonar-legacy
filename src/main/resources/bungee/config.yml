@@ -70,8 +70,11 @@ general:
   fake-server-client-brand: '(Sonar) %proxy% <- %backend%'
 
 anti-proxy:
+
   enabled: true
 
+  # Timeout for the anti-proxy web api (blackbox)
+  # You can add custom anti-proxy apis by using the Sonar API
   timeout: 4000
 
 checks:
