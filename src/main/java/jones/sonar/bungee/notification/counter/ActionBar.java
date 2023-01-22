@@ -35,6 +35,7 @@ public final class ActionBar extends Thread implements Runnable {
                     // caching all values as local variables to save some performance
                     final long cps = Counter.CONNECTIONS_PER_SECOND.get(),
                             pps = Counter.PINGS_PER_SECOND.get(),
+                            sps = Counter.STATUSES_PER_SECOND.get(),
                             eps = Counter.ENCRYPTIONS_PER_SECOND.get(),
                             ips = Counter.IPS_PER_SECOND.get(),
                             jps = Counter.JOINS_PER_SECOND.get(),
@@ -79,6 +80,7 @@ public final class ActionBar extends Thread implements Runnable {
                                 .replaceAll("%arrow%", getSpinningSymbol(index++))
                                 .replaceAll("%queue%", createHumanReadableNumber(PlayerQueue.QUEUE.size()))
                                 .replaceAll("%filter-symbol%", Sensibility.isUnderAttack() ? Messages.Values.FILTER_SYMBOL_ON : Messages.Values.FILTER_SYMBOL_OFF)
+                                .replaceAll("%statuses%", ColorUtil.getColorForCounter(sps) + createHumanReadableNumber(sps))
                                 .replaceAll("%cps%", ColorUtil.getColorForCounter(cps) + createHumanReadableNumber(cps))
                                 .replaceAll("%pings%", ColorUtil.getColorForCounter(pps) + createHumanReadableNumber(pps))
                                 .replaceAll("%ips%", ColorUtil.getColorForCounter(ips) + createHumanReadableNumber(ips))

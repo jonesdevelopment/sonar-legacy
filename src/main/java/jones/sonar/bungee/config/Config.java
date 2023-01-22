@@ -49,13 +49,14 @@ public class Config {
                 ACTION_BAR_COUNTER_DELAY, MAXIMUM_ONLINE_PER_IP,
                 MAXIMUM_QUEUE_POLL_RATE, MAX_NAME_LENGTH, WEBHOOK_DELAY,
                 WEBHOOK_COLOR_R, WEBHOOK_COLOR_G, WEBHOOK_COLOR_B,
-                QUEUE_POLL_RATE, ANTI_PROXY_TIMEOUT;
+                QUEUE_POLL_RATE, ANTI_PROXY_TIMEOUT, MAX_STATUS_DURING_ATTACK;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
                 LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION,
-                PING_BEFORE_JOIN, ENABLE_PROXY_CHECK, FORCE_PUBLIC_KEY;
+                PING_BEFORE_JOIN, ENABLE_PROXY_CHECK, FORCE_PUBLIC_KEY,
+                NO_PING_EVENT_DURING_ATTACK;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -82,6 +83,8 @@ public class Config {
                 MAX_PACKET_CAPACITY = config.getInt("general.maximum-packet-capacity", 4096);
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
                 FORCE_PUBLIC_KEY = config.getBoolean("general.force-valid-public-key", true);
+                NO_PING_EVENT_DURING_ATTACK = config.getBoolean("general.no-ping-event-during-attack", true);
+                MAX_STATUS_DURING_ATTACK = config.getInt("general.maximum-status-requests-for-attack", 256);
 
                 Sensibility.minJoinsPerSecond = MINIMUM_JOINS_PER_SECOND;
 

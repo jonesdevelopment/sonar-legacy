@@ -19,6 +19,7 @@ notifications:
     #   %logins% - Current logins per second count (formatted)
     #   %pings% - Current pings per second count (formatted)
     #   %verify% - Number of verifying players (formatted)
+    #   %statuses% - Current status requests per second count (formatted)
     #   %queue% - Number of players in queue during attack (formatted)
     #   %handshakes% - Current handshakes per second count (formatted)
     #   %encryptions% - Current encryptions per second count (formatted)
@@ -29,7 +30,7 @@ notifications:
     #   %filter-symbol% - Symbol of the current filter status
     #   %arrow% - A arrow symbol which means that the server is working
     # The correct color is automatically applied to each variable
-    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Logins: &f%logins% &3▪ &7Pings: &f%pings% &3▪ &7Handshakes: &f%handshakes% &3▪ &7Verification: &f%verify% &3▪ &7Queue: &f%queue% &3▪ &7Blocked: &f%blocked%'
+    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Logins: &f%logins% &3▪ &7Pings: &f%statuses% &3▪ &7Handshakes: &f%handshakes% &3▪ &7Verification: &f%verify% &3▪ &7Queue: &f%queue% &3▪ &7Blocked: &f%blocked%'
     waiting: '%prefix%&7CPS: &f%cps% &3▪ &7Queue: &f%queue% &3▪ &7Waiting for new attacks to arrive...'
 
     filter-enabled-symbol: '&a✔'

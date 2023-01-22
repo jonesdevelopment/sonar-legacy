@@ -60,6 +60,15 @@ general:
   # This is really powerful against motd/ping spamming attacks
   cache-incoming-motd-requests: true
 
+  # Enable this if you still want Sonar to call the ProxyPingEvent during an attack
+  # It is recommended to leave this 'true' but you can disable this if you have
+  # plugins that rely on the ProxyPingEvent even during attacks
+  # It is also recommended to use the built-in BungeeCord motd system
+  no-ping-event-during-attack: true
+
+  # Number of maximum status requests (pings) before Sonar should not call the ProxyPingEvent anymore
+  maximum-status-requests-for-attack: 256
+
   # Server brand/version that is going to be displayed in the server list
   fake-server-brand: 'Sonar'
 

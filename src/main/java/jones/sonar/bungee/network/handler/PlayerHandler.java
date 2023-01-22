@@ -64,8 +64,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     private final ChannelPipeline pipeline;
 
-    private boolean hasSuccessfullyPinged = false;
-
     @Override
     public void exception(final Throwable cause) throws Exception {
         ExceptionHandler.handle(ctx.channel(), cause);
@@ -155,19 +153,19 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         ctx.close();
     }
 
-    private boolean hasPinged = false;
+    private boolean hasRequestedPing, hasSuccessfullyPinged;
 
     @Override
     public void handle(final StatusRequest statusRequest) throws Exception {
-        Counter.PINGS_PER_SECOND.increment();
+        Counter.STATUSES_PER_SECOND.increment();
 
         // even though we already have the states, this can fail and the states do not
         // work properly (I don't really know why, BungeeCord is trash)
-        if (hasPinged || currentState != ConnectionState.STATUS) {
+        if (hasRequestedPing || hasSuccessfullyPinged || currentState != ConnectionState.STATUS) {
             throw sonar.EXCEPTION;
         }
 
-        hasPinged = true;
+        hasRequestedPing = true;
 
         currentState = ConnectionState.PROCESSING;
 
@@ -212,7 +210,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         return CompletableFuture.completedFuture((result, error) -> {
             if (error != null) return;
 
-            if (!isConnected()) return;
+            if (!isConnected() || (Config.Values.NO_PING_EVENT_DURING_ATTACK && Counter.STATUSES_PER_SECOND.get() > Config.Values.MAX_STATUS_DURING_ATTACK)) return;
 
             sonar.callEvent(new ProxyPingEvent(this, result, (pingResult, error1) -> {
                 if (error1 != null) return;
@@ -229,9 +227,10 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     @Override
     public void handle(final PingPacket ping) throws Exception {
+        Counter.PINGS_PER_SECOND.increment();
 
         // clients cannot send multiple ping packets without closing the channel once
-        if (currentState != ConnectionState.STATUS || !hasPinged || !hasSuccessfullyPinged) {
+        if (currentState != ConnectionState.STATUS || !hasRequestedPing || !hasSuccessfullyPinged) {
             throw sonar.EXCEPTION;
         }
 

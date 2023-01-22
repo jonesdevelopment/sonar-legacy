@@ -55,7 +55,8 @@ public class NotificationManager {
                     // cache all variables
                     final long cps = Counter.CONNECTIONS_PER_SECOND.get(),
                             joins = Counter.JOINS_PER_SECOND.get(),
-                            pings = Counter.PINGS_PER_SECOND.get(),
+                            pings = Counter.PINGS_PER_SECOND.get(), // motds
+                            statuses = Counter.STATUSES_PER_SECOND.get(),
                             encryptions = Counter.ENCRYPTIONS_PER_SECOND.get();
 
                     // save the alert message dynamically to save performance
@@ -63,6 +64,7 @@ public class NotificationManager {
                             .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(cps))
                             .replaceAll("%ips%", SonarBungee.INSTANCE.FORMAT.format(ips))
                             .replaceAll("%logins%", SonarBungee.INSTANCE.FORMAT.format(joins))
+                            .replaceAll("%statuses%", SonarBungee.INSTANCE.FORMAT.format(statuses))
                             .replaceAll("%pings%", SonarBungee.INSTANCE.FORMAT.format(pings))
                             .replaceAll("%encryptions%", SonarBungee.INSTANCE.FORMAT.format(encryptions))
                             .replaceAll("%cpu%", PerformanceMonitor.formatCPULoad())
