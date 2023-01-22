@@ -32,7 +32,6 @@
   * HexaCord _(outdated)_
   * _and more ..._
 * Custom BungeeCord forks
-  * XCord
   * FlameCord
   * BetterBungee
   * _and more ..._
