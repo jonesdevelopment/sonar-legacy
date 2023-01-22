@@ -5,14 +5,14 @@ import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Stream;
 
 @UtilityClass
 public class ActionBarManager {
-    private final Set<String> VERBOSE_ENABLED = new HashSet<>();
+    private final Set<String> VERBOSE_ENABLED = new CopyOnWriteArraySet<>();
 
     public Stream<ProxiedPlayer> getPlayers() {
         return VERBOSE_ENABLED.stream()
