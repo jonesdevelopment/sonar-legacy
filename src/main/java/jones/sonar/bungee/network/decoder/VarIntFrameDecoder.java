@@ -23,7 +23,7 @@ import io.netty.handler.codec.CorruptedFrameException;
 
 import java.util.List;
 
-// © velocitypowered.com / wiseproxy @jonesdev.xyz
+// © velocitypowered.com
 public final class VarIntFrameDecoder extends ByteToMessageDecoder {
 
     private static final CorruptedFrameException EXCEPTION_IN_FRAME = new CorruptedFrameException("Corrupted/Mutated frame (Exploit?)");
@@ -93,7 +93,7 @@ public final class VarIntFrameDecoder extends ByteToMessageDecoder {
                 break;
             }
 
-            case TOO_BIG: {
+            default: {
                 byteBuf.clear();
                 throw EXCEPTION_IN_FRAME;
             }
