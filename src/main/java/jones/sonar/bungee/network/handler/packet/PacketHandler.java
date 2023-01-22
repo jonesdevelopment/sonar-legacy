@@ -1,5 +1,7 @@
 package jones.sonar.bungee.network.handler.packet;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelDuplexHandler;
@@ -24,10 +26,13 @@ import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public final class PacketHandler extends ChannelDuplexHandler {
 
+    // we don't want people like the smog client dude to flood the proxy with BungeeCord commands since they don't have any form of spam limitation
+    private static final Cache<String, Byte> cachedPlayerChatMessages = CacheBuilder.newBuilder().expireAfterWrite(125L, TimeUnit.MILLISECONDS).build();
     private final PlayerHandler playerHandler;
 
     @Override
@@ -151,6 +156,14 @@ public final class PacketHandler extends ChannelDuplexHandler {
                         playerData.keepAliveSent = 0L;
                         return;
                     }
+
+                    // the concept of this check was taken from JProxy (© jonesdev.xyz)
+                    if (cachedPlayerChatMessages.asMap().containsKey(playerData.username)) {
+                        return; // spam limit - 125ms per chat message (3 ticks)
+                    }
+
+                    cachedPlayerChatMessages.cleanUp(); // clean up - TODO: Check if necessary
+                    cachedPlayerChatMessages.put(playerData.username, (byte) 0); // cache
                 }
 
                 else if (wrapper.packet instanceof KeepAlive && playerData.passes() && !Whitelist.isWhitelisted(inetAddress)) {
