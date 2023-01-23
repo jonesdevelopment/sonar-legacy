@@ -15,7 +15,6 @@ import jones.sonar.bungee.network.SonarPipelines;
 import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
 import jones.sonar.bungee.util.json.LegacyGsonFormat;
-import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.ConnectionData;
@@ -46,10 +45,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 public final class PlayerHandler extends InitialHandler implements SonarPipeline {
-
-    private static final Cache<InetAddress, Long> playersLoggingIn = CacheBuilder.newBuilder()
-            .expireAfterWrite(500L, TimeUnit.MILLISECONDS)
-            .build();
 
     public PlayerHandler(final ChannelHandlerContext ctx, final ListenerInfo listener, final ConnectionThrottle throttler) {
         super(BungeeCord.getInstance(), listener);
@@ -277,8 +272,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     @Override
     public void handle(final LoginRequest loginRequest) throws Exception {
-        Counter.JOINS_PER_SECOND.increment();
-
         if (currentState != ConnectionState.JOINING) {
             throw sonar.EXCEPTION;
         }
@@ -291,64 +284,16 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             return;
         }
 
-        final String username = loginRequest.getData();
+        final ConnectionData data = ConnectionDataManager.create(inetAddress());
 
-        if (username.isEmpty()) {
-            throw sonar.EXCEPTION;
-        }
-
-        if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {
-            LoginCache.HAVE_LOGGED_IN.add(username);
-
-            if (Config.Values.ENABLE_FIRST_JOIN) {
-                disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
-                return;
-            }
-        }
-
-        final InetAddress inetAddress = inetAddress();
-
-        if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
-                && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
-            disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
-            return;
-        }
-
-        if (Blacklist.isTempBlacklisted(inetAddress)) {
-            disconnect_(Messages.Values.TEMP_BLACKLISTED);
-            return;
-        }
-
-        if (playersLoggingIn.asMap().containsKey(inetAddress)) {
-            playersLoggingIn.asMap().replace(inetAddress, playersLoggingIn.asMap().get(inetAddress) + 1L);
-
-            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
-                disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
-
-                Blacklist.addToTempBlacklist(inetAddress);
-
-                playersLoggingIn.invalidate(inetAddress);
-                return;
-            }
-
-            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
-                disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
-                return;
-            }
-        } else {
-            playersLoggingIn.asMap().put(inetAddress, 1L);
-        }
-
-        final ConnectionData data = ConnectionDataManager.create(inetAddress);
-
-        data.username = username;
+        data.username = loginRequest.getData();
 
         final Detection detection = LoginHandler.check(data);
 
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.key) {
                 default: {
-                    LoginCache.HAVE_LOGGED_IN.remove(username);
+                    LoginCache.HAVE_LOGGED_IN.remove(loginRequest.getData());
                     ConnectionDataManager.remove(data);
                     throw sonar.EXCEPTION;
                 }

@@ -7,13 +7,16 @@ import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import jones.sonar.bungee.caching.ServerPingCache;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.network.handler.PlayerHandler;
 import jones.sonar.universal.blacklist.Blacklist;
+import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.player.PlayerData;
 import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
+import jones.sonar.universal.queue.LoginCache;
 import jones.sonar.universal.util.ExceptionHandler;
 import jones.sonar.universal.util.ProtocolVersion;
 import jones.sonar.universal.whitelist.Whitelist;
@@ -32,8 +35,11 @@ import java.util.concurrent.TimeUnit;
 public final class PacketHandler extends ChannelDuplexHandler {
 
     // we don't want people like the smog client dude to flood the proxy with BungeeCord commands since they don't have any form of spam limitation
-    private static final Cache<String, Byte> cachedPlayerChatMessages = CacheBuilder.newBuilder().expireAfterWrite(125L, TimeUnit.MILLISECONDS).build();
+    private static final Cache<String, Byte> cachedPlayerChatMessages = CacheBuilder.newBuilder()
+            .expireAfterWrite(125L, TimeUnit.MILLISECONDS).build();
     private final PlayerHandler playerHandler;
+    private static final Cache<InetAddress, Long> playersLoggingIn = CacheBuilder.newBuilder()
+            .expireAfterWrite(500L, TimeUnit.MILLISECONDS).build();
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
@@ -91,17 +97,68 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
             final Object packet = wrapper.packet;
 
-            check: {
+            check:
+            {
                 if (packet == null) break check;
 
-                if (wrapper.packet instanceof LoginRequest
-                        && Config.Values.FORCE_PUBLIC_KEY
-                        && playerHandler.getVersion() > ProtocolVersion.MINECRAFT_1_19
-                        && playerHandler.getVersion() < ProtocolVersion.MINECRAFT_1_19_3
-                        && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())
-                        /*&& playerHandler.bungee.config.isEnforceSecureProfile()*/) {
-                    if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
+                if (wrapper.packet instanceof LoginRequest) {
+                    if (Config.Values.FORCE_PUBLIC_KEY
+                            && playerHandler.getVersion() > ProtocolVersion.MINECRAFT_1_19
+                            && playerHandler.getVersion() < ProtocolVersion.MINECRAFT_1_19_3
+                            && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())) {
+                        if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
+                            throw SonarBungee.INSTANCE.EXCEPTION;
+                        }
+                    }
+
+                    Counter.JOINS_PER_SECOND.increment();
+
+                    final String username = ((LoginRequest) wrapper.packet).getData();
+
+                    if (username.isEmpty()) {
                         throw SonarBungee.INSTANCE.EXCEPTION;
+                    }
+
+                    if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {
+                        LoginCache.HAVE_LOGGED_IN.add(username);
+
+                        if (Config.Values.ENABLE_FIRST_JOIN) {
+                            playerHandler.disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
+                            return;
+                        }
+                    }
+
+                    final InetAddress inetAddress = playerHandler.inetAddress();
+
+                    if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
+                            && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
+                        playerHandler.disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
+                        return;
+                    }
+
+                    if (Blacklist.isTempBlacklisted(inetAddress)) {
+                        playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
+                        return;
+                    }
+
+                    if (playersLoggingIn.asMap().containsKey(inetAddress)) {
+                        playersLoggingIn.asMap().replace(inetAddress, playersLoggingIn.asMap().get(inetAddress) + 1L);
+
+                        if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
+                            playerHandler.disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+
+                            Blacklist.addToTempBlacklist(inetAddress);
+
+                            playersLoggingIn.invalidate(inetAddress);
+                            return;
+                        }
+
+                        if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
+                            playerHandler.disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                            return;
+                        }
+                    } else {
+                        playersLoggingIn.asMap().put(inetAddress, 1L);
                     }
                 }
 
