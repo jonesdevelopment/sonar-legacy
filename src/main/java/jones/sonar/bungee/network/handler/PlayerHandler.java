@@ -269,6 +269,10 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         final String username = loginRequest.getData();
 
+        if (username.isEmpty()) {
+            throw sonar.EXCEPTION;
+        }
+
         if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {
             LoginCache.HAVE_LOGGED_IN.add(username);
 
