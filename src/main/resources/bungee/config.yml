@@ -56,6 +56,12 @@ general:
   # Number of maximum accounts being removed from the queue
   maximum-queue-poll-rate: 2000
 
+  # Number of maximum joins per ip per 0.5 seconds (500ms) to kick the player
+  maximum-joins-per-ip: 3
+
+  # Number of maximum joins per ip per 0.5 seconds (500ms) to temporarily blacklisting the ip
+  maximum-joins-per-ip-blacklist: 9
+
   # Disable this if you don't want Sonar to cache all server list pings
   # This is really powerful against motd/ping spamming attacks
   cache-incoming-motd-requests: true

@@ -49,7 +49,8 @@ public class Config {
                 ACTION_BAR_COUNTER_DELAY, MAXIMUM_ONLINE_PER_IP,
                 MAXIMUM_QUEUE_POLL_RATE, MAX_NAME_LENGTH, WEBHOOK_DELAY,
                 WEBHOOK_COLOR_R, WEBHOOK_COLOR_G, WEBHOOK_COLOR_B,
-                QUEUE_POLL_RATE, ANTI_PROXY_TIMEOUT, MAX_STATUS_DURING_ATTACK;
+                QUEUE_POLL_RATE, ANTI_PROXY_TIMEOUT, MAX_STATUS_DURING_ATTACK,
+                MAXIMUM_JOINS_PER_IP_SEC, MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
@@ -85,6 +86,8 @@ public class Config {
                 FORCE_PUBLIC_KEY = config.getBoolean("general.force-valid-public-key", true);
                 NO_PING_EVENT_DURING_ATTACK = config.getBoolean("general.no-ping-event-during-attack", true);
                 MAX_STATUS_DURING_ATTACK = config.getInt("general.maximum-status-requests-for-attack", 256);
+                MAXIMUM_JOINS_PER_IP_SEC = config.getInt("general.maximum-joins-per-ip", 3);
+                MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST = config.getInt("general.maximum-joins-per-ip-blacklist", 9);
 
                 Sensibility.minJoinsPerSecond = MINIMUM_JOINS_PER_SECOND;
 

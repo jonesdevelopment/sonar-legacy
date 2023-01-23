@@ -1,5 +1,7 @@
 package jones.sonar.bungee.network.handler;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -41,8 +43,13 @@ import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public final class PlayerHandler extends InitialHandler implements SonarPipeline {
+
+    private static final Cache<InetAddress, Long> playersLoggingIn = CacheBuilder.newBuilder()
+            .expireAfterWrite(500L, TimeUnit.MILLISECONDS)
+            .build();
 
     public PlayerHandler(final ChannelHandlerContext ctx, final ListenerInfo listener, final ConnectionThrottle throttler) {
         super(BungeeCord.getInstance(), listener);
@@ -146,6 +153,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     }
 
     public void disconnect_(final String reason) {
+        ServerStatistics.BLOCKED_CONNECTIONS++;
+
         if (reason != null && ctx.channel().isActive()) {
             // TODO: Cache kick packet?
             ctx.channel().writeAndFlush(new Kick(ComponentSerializer.toString(new TextComponent(reason))));
@@ -279,7 +288,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
             if (Config.Values.ENABLE_FIRST_JOIN) {
                 disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
-                ServerStatistics.BLOCKED_CONNECTIONS++;
                 return;
             }
         }
@@ -288,14 +296,32 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)) {
             disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
-            ServerStatistics.BLOCKED_CONNECTIONS++;
             return;
         }
 
         if (Blacklist.isTempBlacklisted(inetAddress)) {
-            disconnect_(Messages.Values.DISCONNECT_BOT_DETECTION);
-            ServerStatistics.BLOCKED_CONNECTIONS++;
+            disconnect_(Messages.Values.TEMP_BLACKLISTED);
             return;
+        }
+
+        if (playersLoggingIn.asMap().containsKey(inetAddress)) {
+            playersLoggingIn.asMap().replace(inetAddress, playersLoggingIn.asMap().get(inetAddress) + 1L);
+
+            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
+                disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+
+                Blacklist.addToTempBlacklist(inetAddress);
+
+                playersLoggingIn.invalidate(inetAddress);
+                return;
+            }
+
+            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
+                disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                return;
+            }
+        } else {
+            playersLoggingIn.asMap().put(inetAddress, 1L);
         }
 
         final ConnectionData data = ConnectionDataManager.create(inetAddress);
@@ -313,25 +339,21 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 }
 
                 case 2: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect_(Messages.Values.DISCONNECT_INVALID_NAME);
                     return;
                 }
 
                 case 3: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
                     return;
                 }
 
                 case 4: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect_(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
                     return;
                 }
 
                 case 5: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect_(Messages.Values.DISCONNECT_QUEUED
                             .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
                             .replaceAll("%size%", sonar.FORMAT.format(PlayerQueue.QUEUE.size())));
@@ -339,19 +361,16 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 }
 
                 case 6: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect_(Messages.Values.DISCONNECT_ATTACK);
                     return;
                 }
 
                 case 7: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
                     return;
                 }
 
                 case 8: {
-                    ServerStatistics.BLOCKED_CONNECTIONS++;
                     disconnect_(Messages.Values.DISCONNECT_VPN_OR_PROXY);
                     return;
                 }

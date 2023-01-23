@@ -165,6 +165,15 @@ disconnect:
     - '&cIf you believe that this is an error, please contact an administrator.'
     - ' '
 
+  temporarily-blacklisted:
+    - ' '
+    - '&cYour connection has been analyzed.'
+    - '&eYour ip address has been &6temporarily &eblacklisted from this server.'
+    - ' '
+    - '&cIf you continue spam re-connecting, you will be permanently blocked from the server.'
+    - '&cIf you believe that this is an error, please contact an administrator.'
+    - ' '
+
   bot-detection:
     - ' '
     - '&cYour connection needs to be analyzed.'
