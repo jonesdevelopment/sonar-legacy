@@ -43,6 +43,15 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter {
                 throw SonarBungee.INSTANCE.EXCEPTION;
             }
 
+            final byte firstByte = byteBuf.readByte();
+            final byte secondByte = byteBuf.readByte();
+
+            // the first byte cannot be below 0 as it's the size of the first packet
+            // the second byte is the handshake packet id which is always 0
+            if (firstByte < 0 || secondByte != 0) {
+                throw SonarBungee.INSTANCE.EXCEPTION;
+            }
+
             byteBuf.resetReaderIndex();
 
             ctx.fireChannelRead(byteBuf);
