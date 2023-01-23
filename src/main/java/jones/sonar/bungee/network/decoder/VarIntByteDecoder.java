@@ -20,7 +20,7 @@ import io.netty.util.ByteProcessor;
 
 // © velocitypowered.com
 public final class VarIntByteDecoder implements ByteProcessor {
-    public DecoderResult result = DecoderResult.TOO_SHORT;
+    public DecoderResult result = DecoderResult.INVALID;
     public int readVarInt, bytesRead;
 
     @Override
@@ -38,7 +38,7 @@ public final class VarIntByteDecoder implements ByteProcessor {
         readVarInt |= (by & 0x7F) << bytesRead++ * 7;
 
         if (bytesRead > 3) {
-            result = DecoderResult.TOO_BIG;
+            result = DecoderResult.INVALID;
             return false;
         }
 
@@ -52,8 +52,7 @@ public final class VarIntByteDecoder implements ByteProcessor {
 
     public enum DecoderResult {
         SUCCESS,
-        TOO_SHORT,
-        TOO_BIG,
+        INVALID,
         RUN_OF_ZEROES
     }
 }
