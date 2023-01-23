@@ -57,7 +57,7 @@ public class Config {
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
                 LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION,
                 PING_BEFORE_JOIN, ENABLE_PROXY_CHECK, FORCE_PUBLIC_KEY,
-                NO_PING_EVENT_DURING_ATTACK;
+                NO_PING_EVENT_DURING_ATTACK, PING_NEEDED_DURING_ATTACK;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -88,6 +88,7 @@ public class Config {
                 MAX_STATUS_DURING_ATTACK = config.getInt("general.maximum-status-requests-for-attack", 256);
                 MAXIMUM_JOINS_PER_IP_SEC = config.getInt("general.maximum-joins-per-ip", 3);
                 MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST = config.getInt("general.maximum-joins-per-ip-blacklist", 9);
+                PING_NEEDED_DURING_ATTACK = config.getBoolean("general.ping-needed-during-attack", true);
 
                 Sensibility.minJoinsPerSecond = MINIMUM_JOINS_PER_SECOND;
 

@@ -308,7 +308,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         final InetAddress inetAddress = inetAddress();
 
-        if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)) {
+        if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
+                && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
             disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
             return;
         }

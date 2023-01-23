@@ -62,6 +62,10 @@ general:
   # Number of maximum joins per ip per 0.5 seconds (500ms) to temporarily blacklisting the ip
   maximum-joins-per-ip-blacklist: 9
 
+  # Should Sonar block joins during an attack if the ip address hasn't pinged the server before?
+  # This is really powerful against free bots that don't send motd requests
+  ping-needed-during-attack: true
+
   # Disable this if you don't want Sonar to cache all server list pings
   # This is really powerful against motd/ping spamming attacks
   cache-incoming-motd-requests: true
