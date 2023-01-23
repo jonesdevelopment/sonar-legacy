@@ -112,8 +112,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
              */
 
             case 1: {
-                if (Config.Values.PING_BEFORE_JOIN
-                        && !ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())) {
+                if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())
+                        && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
                     ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
                 }
 
