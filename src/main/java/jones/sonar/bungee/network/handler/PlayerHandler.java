@@ -13,6 +13,7 @@ import jones.sonar.bungee.network.SonarPipelines;
 import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
 import jones.sonar.bungee.util.json.LegacyGsonFormat;
+import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.ConnectionData;
@@ -287,6 +288,12 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         if (Config.Values.PING_BEFORE_JOIN && !ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)) {
             disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
+            ServerStatistics.BLOCKED_CONNECTIONS++;
+            return;
+        }
+
+        if (Blacklist.isTempBlacklisted(inetAddress)) {
+            disconnect_(Messages.Values.DISCONNECT_BOT_DETECTION);
             ServerStatistics.BLOCKED_CONNECTIONS++;
             return;
         }

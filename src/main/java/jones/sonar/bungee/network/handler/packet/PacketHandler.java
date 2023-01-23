@@ -152,6 +152,9 @@ public final class PacketHandler extends ChannelDuplexHandler {
                         // remove from whitelist, if whitelisted
                         Whitelist.removeFromWhitelist(inetAddress);
 
+                        // add to temporary blacklist
+                        Blacklist.addToTempBlacklist(inetAddress);
+
                         // reset the amount of keep alive packets for automatic whitelisting
                         playerData.keepAliveSent = 0L;
                         return;
