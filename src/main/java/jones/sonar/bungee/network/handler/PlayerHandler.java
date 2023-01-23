@@ -152,12 +152,26 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         super.handle(handshake);
     }
 
+    private static final Cache<String, Kick> kickPacketCache = CacheBuilder.newBuilder()
+            .expireAfterWrite(3L, TimeUnit.MINUTES)
+            .build();
+
     public void disconnect_(final String reason) {
         ServerStatistics.BLOCKED_CONNECTIONS++;
 
         if (reason != null && ctx.channel().isActive()) {
-            // TODO: Cache kick packet?
-            ctx.channel().writeAndFlush(new Kick(ComponentSerializer.toString(new TextComponent(reason))));
+            cache: {
+                if (kickPacketCache.asMap().containsKey(reason)) {
+                    ctx.channel().writeAndFlush(kickPacketCache.asMap().get(reason));
+                    break cache;
+                }
+
+                final Kick kickPacket = new Kick(ComponentSerializer.toString(new TextComponent(reason)));
+
+                kickPacketCache.put(reason, kickPacket); // cache
+
+                ctx.channel().writeAndFlush(kickPacket);
+            }
         }
 
         ctx.close();
