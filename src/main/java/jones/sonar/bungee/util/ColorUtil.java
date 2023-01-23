@@ -1,6 +1,7 @@
 package jones.sonar.bungee.util;
 
 import jones.sonar.bungee.config.Config;
+import jones.sonar.bungee.config.Messages;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.ChatColor;
 
@@ -37,6 +38,7 @@ public class ColorUtil {
     }
 
     public String getColorForCounter(final long counterResult) {
+        if (!Messages.Values.COLOR_ACTION_BAR_COUNTER) return "§f";
         if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 450L) return format("§4");
         if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 340L) return format("§c");
         if (counterResult > Config.Values.MINIMUM_JOINS_PER_SECOND * 200L) return format("§6");

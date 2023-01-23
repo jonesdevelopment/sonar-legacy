@@ -91,7 +91,7 @@ public class Messages {
         public int NOTIFY_DELAY, PEAK_DELAY, PEAK_RESET_DELAY, GRAPH_SYMBOL_COUNT, MONITOR_REFRESH_DELAY,
                 BLACKLIST_CLEAR_TIME;
 
-        public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK;
+        public boolean ENABLE_COUNTER_WAITING_FORMAT, ENABLE_PEAK, COLOR_ACTION_BAR_COUNTER;
 
         public boolean load() {
             try {
@@ -182,6 +182,7 @@ public class Messages {
                 COUNTER_FORMAT = format(config.getString("notifications.action-bar.format"));
                 COUNTER_WAITING_FORMAT = format(config.getString("notifications.action-bar.waiting"));
                 ENABLE_COUNTER_WAITING_FORMAT = config.getBoolean("notifications.action-bar.enable-waiting-message");
+                COLOR_ACTION_BAR_COUNTER = config.getBoolean("notifications.action-bar.colorize-number-counts");
                 FILTER_SYMBOL_ON = format(config.getString("notifications.action-bar.filter-enabled-symbol"));
                 FILTER_SYMBOL_OFF = format(config.getString("notifications.action-bar.filter-disabled-symbol"));
 

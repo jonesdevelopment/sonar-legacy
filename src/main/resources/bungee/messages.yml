@@ -1,9 +1,9 @@
-prefix: '&e&lSonar &7» &f'
+prefix: '&e&lSonar &7▏ &f'
 
 no-permission: '%prefix%&cYou do not have the permission to execute this command.'
 no-permission-sub: '%prefix%&cYou do not have the permission to execute this sub-command. &7(%permission%)'
 no-permission-sub-any: '%prefix%&cYou do not have the permission to execute any sub-commands.'
-unknown-sub-command: '%prefix%&cUnknown sub-command. Try &7/sonar &cfor help.'
+unknown-sub-command: '%prefix%&cUnknown or invalid sub-command. Use &7/sonar &cfor help.'
 only-players: '%prefix%&cYou can only execute this command as a player!'
 
 # You can implement this in your custom messages by using '%header-bar%' or '%footer-bar%'
@@ -30,7 +30,7 @@ notifications:
     #   %filter-symbol% - Symbol of the current filter status
     #   %arrow% - A arrow symbol which means that the server is working
     # The correct color is automatically applied to each variable
-    format: '%prefix%&7CPS: &f%cps% &3▪ &7IPs: &f%ips% &3▪ &7Logins: &f%logins% &3▪ &7Pings: &f%statuses% &3▪ &7Handshakes: &f%handshakes% &3▪ &7Verification: &f%verify% &3▪ &7Queue: &f%queue% &3▪ &7Blocked: &f%blocked%'
+    format: '%prefix%&7CPS &f%cps% &3▪ &7IPs &f%ips% &3▪ &7Logins &f%logins% &e&l≅ &f%encryptions% &3▪ &7Pings &f%statuses% &a≥ &f%pings% &3▪ &7Handshakes &f%handshakes% &3▪ &7Verification &f%verify% &7(%filter-symbol% &7▏ &f%queue%&7) &3▪ &7Blacklist &f%blacklisted% &3▪ &7Blocked &f%blocked%'
     waiting: '%prefix%&7CPS: &f%cps% &3▪ &7Queue: &f%queue% &3▪ &7Waiting for new attacks to arrive...'
 
     filter-enabled-symbol: '&a✔'
@@ -38,6 +38,9 @@ notifications:
 
     # Set this to false if you always want to see the full counter
     enable-waiting-message: true
+
+    # Enable this if you want the counted numbers to be colorized automatically
+    colorize-number-counts: true
 
   chat:
 
