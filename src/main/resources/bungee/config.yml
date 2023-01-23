@@ -76,8 +76,9 @@ general:
   # It is also recommended to use the built-in BungeeCord motd system
   no-ping-event-during-attack: true
 
-  # Number of maximum status requests (pings) before Sonar should not call the ProxyPingEvent anymore
-  maximum-status-requests-for-attack: 256
+  # Number of maximum status requests (pings) per second before Sonar
+  # should not call the ProxyPingEvent anymore
+  maximum-status-requests-for-attack: 128
 
   # Server brand/version that is going to be displayed in the server list
   fake-server-brand: 'Sonar'
