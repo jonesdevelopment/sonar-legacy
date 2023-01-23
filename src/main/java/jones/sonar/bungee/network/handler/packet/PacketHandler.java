@@ -97,8 +97,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
             final Object packet = wrapper.packet;
 
-            check:
-            {
+            check: {
                 if (packet == null) break check;
 
                 if (wrapper.packet instanceof LoginRequest) {
@@ -136,29 +135,35 @@ public final class PacketHandler extends ChannelDuplexHandler {
                         return;
                     }
 
-                    if (Blacklist.isTempBlacklisted(inetAddress)) {
-                        playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
-                        return;
-                    }
+                    login: {
+                        if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress()) {
+                            break login; // this can actually cause a lot of issues
+                        }
 
-                    if (playersLoggingIn.asMap().containsKey(inetAddress)) {
-                        playersLoggingIn.asMap().replace(inetAddress, playersLoggingIn.asMap().get(inetAddress) + 1L);
-
-                        if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
-                            playerHandler.disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
-
-                            Blacklist.addToTempBlacklist(inetAddress);
-
-                            playersLoggingIn.invalidate(inetAddress);
+                        if (Blacklist.isTempBlacklisted(inetAddress)) {
+                            playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
                             return;
                         }
 
-                        if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
-                            playerHandler.disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
-                            return;
+                        if (playersLoggingIn.asMap().containsKey(inetAddress)) {
+                            playersLoggingIn.asMap().replace(inetAddress, playersLoggingIn.asMap().get(inetAddress) + 1L);
+
+                            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
+                                playerHandler.disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+
+                                Blacklist.addToTempBlacklist(inetAddress);
+
+                                playersLoggingIn.invalidate(inetAddress);
+                                return;
+                            }
+
+                            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
+                                playerHandler.disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                                return;
+                            }
+                        } else {
+                            playersLoggingIn.asMap().put(inetAddress, 1L);
                         }
-                    } else {
-                        playersLoggingIn.asMap().put(inetAddress, 1L);
                     }
                 }
 
