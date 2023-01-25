@@ -17,7 +17,7 @@ public final class FirewallThread extends Thread implements Runnable {
                     if (Firewall.Values.ENABLE_FIREWALL) {
                         final long firewalledBefore = Blacklist.FIREWALLED.size();
 
-                        Blacklist.BLACKLISTED.stream()
+                        Blacklist.BLACKLISTED.asMap().keySet().stream()
                                 .limit(Firewall.Values.BLACKLIST_CACHE_LIMIT)
                                 .collect(Collectors.toSet())
                                 .forEach(inetAddress -> {

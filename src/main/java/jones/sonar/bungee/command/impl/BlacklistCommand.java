@@ -88,7 +88,7 @@ public final class BlacklistCommand extends SubCommand {
                         // ===========================================================
 
                         try (final FileWriter fileWriter = new FileWriter(file)) {
-                            Blacklist.BLACKLISTED.stream()
+                            Blacklist.BLACKLISTED.asMap().keySet().stream()
                                     .map(inetAddress -> inetAddress.toString().replace("/", ""))
                                     .forEach(string -> {
                                         try {
@@ -126,7 +126,7 @@ public final class BlacklistCommand extends SubCommand {
                     if (blacklisted > 0) {
 
                         // clear all blacklisted ip addresses
-                        Blacklist.BLACKLISTED.clear();
+                        Blacklist.BLACKLISTED.invalidateAll();
 
                         SonarBungee.INSTANCE.callEvent(new SonarBlacklistClearEvent(blacklisted));
 

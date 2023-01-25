@@ -16,18 +16,23 @@ public class Blacklist {
             .initialCapacity(1)
             .build();
 
-    public final Set<InetAddress> BLACKLISTED = new HashSet<>(), FIREWALLED = new HashSet<>();
+    public final Cache<InetAddress, Byte> BLACKLISTED = CacheBuilder.newBuilder()
+            .expireAfterWrite(30L, TimeUnit.MINUTES)
+            .initialCapacity(1)
+            .build();
+
+    public final Set<InetAddress> FIREWALLED = new HashSet<>();
 
     public long size() {
         return BLACKLISTED.size() + TEMP_BLACKLISTED.size();
     }
 
     public void removeFromBlacklist(final InetAddress inetAddress) {
-        BLACKLISTED.remove(inetAddress);
+        BLACKLISTED.asMap().remove(inetAddress);
     }
 
     public void addToBlacklist(final InetAddress inetAddress) {
-        BLACKLISTED.add(inetAddress);
+        BLACKLISTED.put(inetAddress, (byte) 0);
     }
 
     public void addToTempBlacklist(final InetAddress inetAddress) {
@@ -35,7 +40,7 @@ public class Blacklist {
     }
 
     public boolean isBlacklisted(final InetAddress inetAddress) {
-        return BLACKLISTED.contains(inetAddress);
+        return BLACKLISTED.asMap().containsKey(inetAddress);
     }
 
     public boolean isTempBlacklisted(final InetAddress inetAddress) {

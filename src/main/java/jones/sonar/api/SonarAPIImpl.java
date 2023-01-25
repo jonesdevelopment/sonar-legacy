@@ -79,7 +79,7 @@ interface SonarAPIImpl {
     }
 
     default Collection<InetAddress> getBlacklistedIPAddresses() {
-        return Blacklist.BLACKLISTED;
+        return Blacklist.BLACKLISTED.asMap().keySet();
     }
 
     default Collection<InetAddress> getWhitelistedIPAddresses() {
