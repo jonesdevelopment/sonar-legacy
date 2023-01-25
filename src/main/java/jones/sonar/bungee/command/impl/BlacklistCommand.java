@@ -10,10 +10,16 @@ import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 import jones.sonar.universal.firewall.FirewallManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.Sensibility;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
 public final class BlacklistCommand extends SubCommand {
@@ -22,8 +28,10 @@ public final class BlacklistCommand extends SubCommand {
         super("blacklist",
                 "Blacklist management",
                 "sonar.blacklist",
-                Arrays.asList("size", "clear", "reset", "forceclear", "forcereset", "add", "remove"));
+                Arrays.asList("size", "clear", "reset", "forceclear", "forcereset", "add", "remove", "save"));
     }
+
+    private static volatile long lastBlacklistSave = -1L;
 
     @Override
     public void execute(final CommandExecution execution) {
@@ -38,6 +46,64 @@ public final class BlacklistCommand extends SubCommand {
                                 .replaceAll("%es%", blacklisted == 1 ? "" : "es"));
                     } else {
                         execution.send(Messages.Values.BLACKLIST_EMPTY);
+                    }
+                    return;
+                }
+
+                case "save": {
+                    if (Blacklist.size() == 0) {
+                        execution.send(Messages.Values.BLACKLIST_EMPTY);
+                        return;
+                    }
+
+                    final String fileName = "blacklist_save_"
+                            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy"))
+                            + "_"
+                            + System.currentTimeMillis()
+                            + ".txt";
+                    final File file = new File(SonarBungee.INSTANCE.getPlugin().getDataFolder(), fileName);
+
+                    if (file.exists() && !file.delete()) {
+                        execution.send(Messages.Values.PREFIX + "§cAn error occurred, please check console.");
+                        ProxyServer.getInstance().getLogger().warning("Could not delete old log file: " + fileName);
+                        return;
+                    }
+
+                    try {
+                        if (!file.createNewFile()) {
+                            execution.send(Messages.Values.PREFIX + "§cAn error occurred, please check console.");
+                            ProxyServer.getInstance().getLogger().warning("Could not create new log file [no permission?]: " + fileName);
+                            return;
+                        }
+
+                        // ===========================================================
+                        final long timeStamp = System.currentTimeMillis();
+
+                        if (timeStamp - lastBlacklistSave < 1000L) {
+                            execution.send(Messages.Values.PREFIX + "§cPlease wait a bit before saving the blacklist again.");
+                            return;
+                        }
+
+                        lastBlacklistSave = timeStamp;
+                        // ===========================================================
+
+                        try (final FileWriter fileWriter = new FileWriter(file)) {
+                            Blacklist.BLACKLISTED.stream()
+                                    .map(inetAddress -> inetAddress.toString().replace("/", ""))
+                                    .forEach(string -> {
+                                        try {
+                                            fileWriter.append(string).append("\n");
+                                        } catch (Exception exception) {
+                                            exception.printStackTrace();
+                                            execution.send(Messages.Values.PREFIX + "§cAn error occurred while writing §f" + string);
+                                        }
+                                    });
+                        }
+
+                        execution.send(Messages.Values.PREFIX + "§aSuccessfully saved blacklisted ips to §f" + fileName + "§a.");
+                    } catch (IOException exception) {
+                        execution.send(Messages.Values.PREFIX + "§cAn error occurred, please check console.");
+                        exception.printStackTrace();
                     }
                     return;
                 }
@@ -152,6 +218,6 @@ public final class BlacklistCommand extends SubCommand {
             }
         }
 
-        execution.sendUsage("/ab blacklist <size|clear|remove|add> [ip|username]");
+        execution.sendUsage("/ab blacklist <size|clear|remove|add|save> [ip|username]");
     }
 }
