@@ -15,6 +15,7 @@ import jones.sonar.bungee.network.SonarPipelines;
 import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
 import jones.sonar.bungee.util.json.LegacyGsonFormat;
+import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
 import jones.sonar.universal.data.connection.ConnectionData;
@@ -95,6 +96,9 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         super.handle(encryptionResponse);
     }
 
+    private static final Cache<InetAddress, Long> handshaking = CacheBuilder.newBuilder()
+            .expireAfterWrite(500L, TimeUnit.MILLISECONDS).build();
+
     @Override
     public void handle(final Handshake handshake) throws Exception {
         Counter.HANDSHAKES_PER_SECOND.increment();
@@ -105,6 +109,28 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
+        final InetAddress inetAddress = inetAddress();
+
+        if (handshaking.asMap().containsKey(inetAddress)) {
+            handshaking.asMap().replace(inetAddress, handshaking.asMap().get(inetAddress) + 1L);
+
+            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
+                disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+
+                Blacklist.addToTempBlacklist(inetAddress);
+
+                handshaking.invalidate(inetAddress);
+                return;
+            }
+
+            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
+                disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                return;
+            }
+        } else {
+            handshaking.put(inetAddress, 1L);
+        }
+
         switch (handshake.getRequestedProtocol()) {
 
             /*
@@ -112,7 +138,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
              */
 
             case 1: {
-                if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())
+                if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
                         && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
                     ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
                 }

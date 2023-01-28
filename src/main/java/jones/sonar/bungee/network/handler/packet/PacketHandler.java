@@ -38,8 +38,6 @@ public final class PacketHandler extends ChannelDuplexHandler {
     private static final Cache<String, Byte> cachedPlayerChatMessages = CacheBuilder.newBuilder()
             .expireAfterWrite(125L, TimeUnit.MILLISECONDS).build();
     private final PlayerHandler playerHandler;
-    private static final Cache<InetAddress, Long> playersLoggingIn = CacheBuilder.newBuilder()
-            .expireAfterWrite(500L, TimeUnit.MILLISECONDS).build();
 
     @Override
     public void exceptionCaught(final ChannelHandlerContext ctx, final Throwable cause) throws Exception {
@@ -135,35 +133,9 @@ public final class PacketHandler extends ChannelDuplexHandler {
                         return;
                     }
 
-                    login: {
-                        if (inetAddress.isAnyLocalAddress() || inetAddress.isLoopbackAddress()) {
-                            break login; // this can actually cause a lot of issues
-                        }
-
-                        if (Blacklist.isTempBlacklisted(inetAddress)) {
-                            playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
-                            return;
-                        }
-
-                        if (playersLoggingIn.asMap().containsKey(inetAddress)) {
-                            playersLoggingIn.asMap().replace(inetAddress, playersLoggingIn.asMap().get(inetAddress) + 1L);
-
-                            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
-                                playerHandler.disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
-
-                                Blacklist.addToTempBlacklist(inetAddress);
-
-                                playersLoggingIn.invalidate(inetAddress);
-                                return;
-                            }
-
-                            if (playersLoggingIn.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
-                                playerHandler.disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
-                                return;
-                            }
-                        } else {
-                            playersLoggingIn.asMap().put(inetAddress, 1L);
-                        }
+                    if (Blacklist.isTempBlacklisted(inetAddress)) {
+                        playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
+                        return;
                     }
                 }
 
