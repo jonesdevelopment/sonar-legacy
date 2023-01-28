@@ -114,9 +114,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         if (handshaking.asMap().containsKey(inetAddress)) {
             handshaking.asMap().replace(inetAddress, handshaking.asMap().get(inetAddress) + 1L);
 
-            final int maxForBlacklist = handshake.getRequestedProtocol() == 1 ? Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST + 5 : Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST;
-
-            if (handshaking.asMap().get(inetAddress) >= maxForBlacklist) {
+            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST) {
                 disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
 
                 Blacklist.addToTempBlacklist(inetAddress);
