@@ -56,11 +56,11 @@ general:
   # Number of maximum accounts being removed from the queue
   maximum-queue-poll-rate: 2000
 
-  # Number of maximum joins per ip per 0.5 seconds (500ms) to kick the player
-  maximum-joins-per-ip: 3
+  # Number of maximum handshakes per ip per 0.5 seconds (500ms) to kick the player
+  maximum-handshakes-per-ip: 3
 
-  # Number of maximum joins per ip per 0.5 seconds (500ms) to temporarily blacklisting the ip
-  maximum-joins-per-ip-blacklist: 9
+  # Number of maximum handshakes per ip per 0.5 seconds (500ms) to temporarily blacklisting the ip
+  maximum-handshakes-per-ip-blacklist: 9
 
   # Should Sonar block joins during an attack if the ip address hasn't pinged the server before?
   # This is really powerful against free bots that don't send motd requests

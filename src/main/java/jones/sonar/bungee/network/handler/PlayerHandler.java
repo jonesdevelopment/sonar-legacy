@@ -114,7 +114,9 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         if (handshaking.asMap().containsKey(inetAddress)) {
             handshaking.asMap().replace(inetAddress, handshaking.asMap().get(inetAddress) + 1L);
 
-            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC_BLACKLIST) {
+            final int maxForBlacklist = handshake.getRequestedProtocol() == 1 ? Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST + 5 : Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST;
+
+            if (handshaking.asMap().get(inetAddress) >= maxForBlacklist) {
                 disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
 
                 Blacklist.addToTempBlacklist(inetAddress);
@@ -123,7 +125,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 return;
             }
 
-            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_JOINS_PER_IP_SEC) {
+            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC) {
                 disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
                 return;
             }
@@ -133,24 +135,13 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         switch (handshake.getRequestedProtocol()) {
 
-            /*
-             * ID 1 -> Ping
-             */
-
+            // ID 1 -> Ping
             case 1: {
-                if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
-                        && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
-                    ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
-                }
-
                 currentState = ConnectionState.STATUS;
                 break;
             }
 
-            /*
-             * ID 2 -> Join
-             */
-
+            // ID 2 -> Join
             case 2: {
                 currentState = ConnectionState.JOINING;
                 break;
@@ -221,6 +212,11 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                     // most botting tools or crashers instantly close the channel/connection
                     if (!isConnected()) {
                         throw sonar.EXCEPTION; // clients always keep the channel opened, so it's safe to blacklist here
+                    }
+
+                    if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())
+                            && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
+                        ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
                     }
 
                     currentState = ConnectionState.STATUS;
