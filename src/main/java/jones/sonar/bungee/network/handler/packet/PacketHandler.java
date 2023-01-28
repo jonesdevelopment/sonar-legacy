@@ -104,7 +104,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                             && playerHandler.getVersion() < ProtocolVersion.MINECRAFT_1_19_3
                             && ProtocolConstants.SUPPORTED_VERSION_IDS.contains(playerHandler.getVersion())) {
                         if (((LoginRequest) wrapper.packet).getPublicKey() == null) {
-                            throw SonarBungee.INSTANCE.EXCEPTION;
+                            throw SonarBungee.EXCEPTION;
                         }
                     }
 
@@ -113,7 +113,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     final String username = ((LoginRequest) wrapper.packet).getData();
 
                     if (username.isEmpty()) {
-                        throw SonarBungee.INSTANCE.EXCEPTION;
+                        throw SonarBungee.EXCEPTION;
                     }
 
                     if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {

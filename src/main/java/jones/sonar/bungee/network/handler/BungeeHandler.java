@@ -40,7 +40,7 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter {
                     || byteBuf.readerIndex() > Config.Values.MAX_PACKET_BYTES
                     || byteBuf.readableBytes() <= 0) {
                 byteBuf.clear();
-                throw SonarBungee.INSTANCE.EXCEPTION;
+                throw SonarBungee.EXCEPTION;
             }
 
             final byte firstByte = byteBuf.readByte();
@@ -49,7 +49,7 @@ public final class BungeeHandler extends ChannelInboundHandlerAdapter {
             // the first byte cannot be below 0 as it's the size of the first packet
             // the second byte is the handshake packet id which is always 0
             if (firstByte < 0 || secondByte != 0) {
-                throw SonarBungee.INSTANCE.EXCEPTION;
+                throw SonarBungee.EXCEPTION;
             }
 
             byteBuf.resetReaderIndex();

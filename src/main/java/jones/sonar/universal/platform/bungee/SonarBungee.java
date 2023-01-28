@@ -43,7 +43,7 @@ public enum SonarBungee implements SonarBungeePlatform {
 
     public final DecimalFormat FORMAT = new DecimalFormat("#,###");
 
-    public final FastException EXCEPTION = new FastException();
+    public static final FastException EXCEPTION = new FastException();
 
     public final PeakCalculator cpsPeakCalculator = new PeakCalculator(),
             ipSecPeakCalculator = new PeakCalculator();

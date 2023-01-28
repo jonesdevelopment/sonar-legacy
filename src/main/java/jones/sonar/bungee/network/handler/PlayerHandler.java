@@ -76,12 +76,12 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     @Override
     public void handle(final PacketWrapper packet) throws Exception {
         if (packet == null) {
-            throw sonar.EXCEPTION;
+            throw SonarBungee.EXCEPTION;
         }
 
         if (packet.buf.readableBytes() > Config.Values.MAX_PACKET_BYTES) {
             packet.buf.clear();
-            throw sonar.EXCEPTION;
+            throw SonarBungee.EXCEPTION;
         }
     }
 
@@ -90,7 +90,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         Counter.ENCRYPTIONS_PER_SECOND.increment();
 
         if (currentState != ConnectionState.JOINING) {
-            throw sonar.EXCEPTION;
+            throw SonarBungee.EXCEPTION;
         }
 
         super.handle(encryptionResponse);
@@ -104,7 +104,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         Counter.HANDSHAKES_PER_SECOND.increment();
 
         if (currentState != ConnectionState.HANDSHAKE) {
-            throw sonar.EXCEPTION;
+            throw SonarBungee.EXCEPTION;
         }
 
         currentState = ConnectionState.PROCESSING;
@@ -152,7 +152,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
              */
 
             default: {
-                throw sonar.EXCEPTION;
+                throw SonarBungee.EXCEPTION;
             }
         }
 
@@ -196,7 +196,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         // even though we already have the states, this can fail and the states do not
         // work properly (I don't really know why, BungeeCord is trash)
         if (hasRequestedPing || hasSuccessfullyPinged || currentState != ConnectionState.STATUS) {
-            throw sonar.EXCEPTION;
+            throw SonarBungee.EXCEPTION;
         }
 
         hasRequestedPing = true;
@@ -209,7 +209,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
                     // most botting tools or crashers instantly close the channel/connection
                     if (!isConnected()) {
-                        throw sonar.EXCEPTION; // clients always keep the channel opened, so it's safe to blacklist here
+                        throw SonarBungee.EXCEPTION; // clients always keep the channel opened, so it's safe to blacklist here
                     }
 
                     if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())
@@ -251,6 +251,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
             if (!isConnected() || (Config.Values.NO_PING_EVENT_DURING_ATTACK && Counter.STATUSES_PER_SECOND.get() > Config.Values.MAX_STATUS_DURING_ATTACK)) return;
 
+            // TODO: Only call ProxyPingEvent after the async future is completed and the channel is still opened
             sonar.callEvent(new ProxyPingEvent(this, result, (pingResult, error1) -> {
                 if (error1 != null) return;
 
@@ -270,7 +271,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         // clients cannot send multiple ping packets without closing the channel once
         if (currentState != ConnectionState.STATUS || !hasRequestedPing || !hasSuccessfullyPinged) {
-            throw sonar.EXCEPTION;
+            throw SonarBungee.EXCEPTION;
         }
 
         currentState = ConnectionState.PROCESSING;
@@ -293,7 +294,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     @Override
     public void handle(final LoginRequest loginRequest) throws Exception {
         if (currentState != ConnectionState.JOINING) {
-            throw sonar.EXCEPTION;
+            throw SonarBungee.EXCEPTION;
         }
 
         currentState = ConnectionState.PROCESSING;
@@ -315,7 +316,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 default: {
                     LoginCache.HAVE_LOGGED_IN.remove(loginRequest.getData());
                     ConnectionDataManager.remove(data);
-                    throw sonar.EXCEPTION;
+                    throw SonarBungee.EXCEPTION;
                 }
 
                 case 2: {
