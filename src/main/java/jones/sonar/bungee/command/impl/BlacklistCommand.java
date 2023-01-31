@@ -127,6 +127,7 @@ public final class BlacklistCommand extends SubCommand {
 
                         // clear all blacklisted ip addresses
                         Blacklist.BLACKLISTED.invalidateAll();
+                        Blacklist.TEMP_BLACKLISTED.invalidateAll();
 
                         SonarBungee.INSTANCE.callEvent(new SonarBlacklistClearEvent(blacklisted));
 

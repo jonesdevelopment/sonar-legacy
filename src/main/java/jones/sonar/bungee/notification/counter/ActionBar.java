@@ -75,7 +75,7 @@ public final class ActionBar extends Thread implements Runnable {
                                 .replaceAll("%verify%", createHumanReadableNumber(ConnectionDataManager.getVerifying()))
                                 .replaceAll("%blocked%", createHumanReadableNumber(ServerStatistics.BLOCKED_CONNECTIONS))
                                 .replaceAll("%whitelisted%", createHumanReadableNumber(Whitelist.size()))
-                                .replaceAll("%blacklisted%", createHumanReadableNumber(Blacklist.size()))
+                                .replaceAll("%blacklisted%", createHumanReadableNumber(Blacklist.fullSize()))
                                 .replaceAll("%total%", createHumanReadableNumber(ServerStatistics.TOTAL_CONNECTIONS))
                                 .replaceAll("%arrow%", getSpinningSymbol(index++))
                                 .replaceAll("%queue%", createHumanReadableNumber(PlayerQueue.QUEUE.size()))

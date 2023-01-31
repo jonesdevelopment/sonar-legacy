@@ -24,6 +24,10 @@ public class Blacklist {
     public final Set<InetAddress> FIREWALLED = new HashSet<>();
 
     public long size() {
+        return BLACKLISTED.size();
+    }
+
+    public long fullSize() {
         return BLACKLISTED.size() + TEMP_BLACKLISTED.size();
     }
 

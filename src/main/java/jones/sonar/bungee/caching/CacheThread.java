@@ -57,6 +57,7 @@ public final class CacheThread extends Thread implements Runnable {
 
                     if (timeStamp - lastBlacklistClear > Messages.Values.BLACKLIST_CLEAR_TIME && !Sensibility.isUnderAttack() && blacklisted > 0) {
                         Blacklist.BLACKLISTED.invalidateAll();
+                        Blacklist.TEMP_BLACKLISTED.invalidateAll();
 
                         SonarBungee.INSTANCE.callEvent(new SonarBlacklistClearEvent(blacklisted));
 
