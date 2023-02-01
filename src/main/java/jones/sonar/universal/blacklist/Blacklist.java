@@ -36,10 +36,19 @@ public class Blacklist {
     }
 
     public void addToBlacklist(final InetAddress inetAddress) {
+        if (isBlacklisted(inetAddress)) return;
+
         BLACKLISTED.put(inetAddress, (byte) 0);
+
+        if (isTempBlacklisted(inetAddress)) {
+            TEMP_BLACKLISTED.invalidate(inetAddress);
+        }
     }
 
     public void addToTempBlacklist(final InetAddress inetAddress) {
+        if (isBlacklisted(inetAddress)) return;
+        if (isTempBlacklisted(inetAddress)) return;
+
         TEMP_BLACKLISTED.put(inetAddress, (byte) 0);
     }
 
