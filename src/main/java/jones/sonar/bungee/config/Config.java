@@ -2,12 +2,12 @@ package jones.sonar.bungee.config;
 
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.config.options.CustomRegexOptions;
-import jones.sonar.universal.config.yaml.Configuration;
-import jones.sonar.universal.config.yaml.ConfigurationProvider;
-import jones.sonar.universal.config.yaml.YamlConfiguration;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.Sensibility;
 import lombok.experimental.UtilityClass;
+import net.md_5.bungee.config.Configuration;
+import net.md_5.bungee.config.ConfigurationProvider;
+import net.md_5.bungee.config.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
