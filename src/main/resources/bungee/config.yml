@@ -76,6 +76,18 @@ general:
   # It is also recommended to use the built-in BungeeCord motd system
   no-ping-event-during-attack: true
 
+  # Enable this if you are on Linux and want the TCP connections to be opened faster
+  # This only works if Epoll is supported, and you're running on Linux!
+  # Read more here: https://en.wikipedia.org/wiki/TCP_Fast_Open
+  enable-tcp-fast-open: true
+
+  # TCPFastOpen modes:
+  # 'CLIENT_ONLY' = 1
+  # 'SERVER_ONLY' = 2
+  # 'CLIENT_AND_SERVER' = 3
+  # 'MANGLED' = 4
+  tcp-fast-open-mode: 1
+
   # Number of maximum status requests (pings) per second before Sonar
   # should not call the ProxyPingEvent anymore
   maximum-status-requests-for-attack: 128

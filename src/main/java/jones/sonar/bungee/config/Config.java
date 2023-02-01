@@ -50,14 +50,16 @@ public class Config {
                 MAXIMUM_QUEUE_POLL_RATE, MAX_NAME_LENGTH, WEBHOOK_DELAY,
                 WEBHOOK_COLOR_R, WEBHOOK_COLOR_G, WEBHOOK_COLOR_B,
                 QUEUE_POLL_RATE, ANTI_PROXY_TIMEOUT, MAX_STATUS_DURING_ATTACK,
-                MAXIMUM_HANDSHAKES_PER_IP_SEC, MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST;
+                MAXIMUM_HANDSHAKES_PER_IP_SEC, MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST,
+                TCP_FAST_OPEN_MODE;
 
         public boolean CLIENT_CONNECT_EVENT, ENABLE_RECONNECT_CHECK,
                 ENABLE_INVALID_NAME_CHECK, ENABLE_FIRST_JOIN, CACHE_MOTDS,
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
                 LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION,
                 PING_BEFORE_JOIN, ENABLE_PROXY_CHECK, FORCE_PUBLIC_KEY,
-                NO_PING_EVENT_DURING_ATTACK, PING_NEEDED_DURING_ATTACK;
+                NO_PING_EVENT_DURING_ATTACK, PING_NEEDED_DURING_ATTACK,
+                ENABLE_TCP_FAST_OPEN;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -89,6 +91,8 @@ public class Config {
                 MAXIMUM_HANDSHAKES_PER_IP_SEC = config.getInt("general.maximum-handshakes-per-ip", 3);
                 MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST = config.getInt("general.maximum-handshakes-per-ip-blacklist", 9);
                 PING_NEEDED_DURING_ATTACK = config.getBoolean("general.ping-needed-during-attack", true);
+                ENABLE_TCP_FAST_OPEN = config.getBoolean("general.enable-tcp-fast-open", true);
+                TCP_FAST_OPEN_MODE = config.getInt("general.tcp-fast-open-mode", Math.max(Math.min(TCP_FAST_OPEN_MODE, 4), 1));
 
                 Sensibility.minJoinsPerSecond = MINIMUM_JOINS_PER_SECOND;
 

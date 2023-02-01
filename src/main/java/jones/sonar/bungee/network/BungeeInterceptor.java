@@ -81,6 +81,8 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             final InetAddress inetAddress = ((InetSocketAddress) remoteAddress).getAddress();
 
+            // Increment ips per second counter if the inetAddress is
+            // not in the cache that expires after 1 second (→ ips/sec)
             if (!perIpCount.asMap().containsKey(inetAddress)) {
                 perIpCount.put(inetAddress, (byte) 0);
 
@@ -107,7 +109,9 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
             final ListenerInfo listener = channel.attr(PipelineUtils.LISTENER).get();
 
             // add the tcp fast open option
-            channel.config().setOption(ChannelOption.TCP_FASTOPEN, 3);
+            if (Config.Values.ENABLE_TCP_FAST_OPEN) {
+                channel.config().setOption(ChannelOption.TCP_FASTOPEN, Config.Values.TCP_FAST_OPEN_MODE);
+            }
 
             // initialize the channel with the pipeline base
             // this is necessary for compatibility reasons
