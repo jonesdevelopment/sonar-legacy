@@ -1,5 +1,7 @@
 package jones.sonar.bungee.network;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import io.netty.channel.*;
 import io.netty.handler.codec.haproxy.HAProxyMessageDecoder;
 import jones.sonar.bungee.config.Config;
@@ -23,8 +25,7 @@ import net.md_5.bungee.protocol.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @RequiredArgsConstructor
 public final class BungeeInterceptor extends ChannelInitializer<Channel> implements SonarPipeline {
@@ -33,7 +34,10 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
     private final KickStringWriter legacyKicker = new KickStringWriter();
 
-    private final Map<InetAddress, Long> perIpCount = new ConcurrentHashMap<>();
+    private final Cache<InetAddress, Byte> perIpCount = CacheBuilder.newBuilder()
+            .expireAfterWrite(1L, TimeUnit.SECONDS) // expire after 1 second
+            .initialCapacity(1) // only able to hold 1 ip address
+            .build();
 
     private final int protocol;
 
@@ -71,31 +75,19 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             ServerStatistics.TOTAL_CONNECTIONS++;
 
-            final SocketAddress remoteAddress = ctx.channel().remoteAddress();
+            final Channel channel = ctx.channel();
 
-            if (remoteAddress == null) {
-                ctx.close();
-                return;
-            }
+            final SocketAddress remoteAddress = (channel.remoteAddress() == null) ? channel.parent().localAddress() : channel.remoteAddress();
 
             final InetAddress inetAddress = ((InetSocketAddress) remoteAddress).getAddress();
 
-            final long timeStamp = System.currentTimeMillis();
-
-            if (!perIpCount.containsKey(inetAddress)) {
-                perIpCount.put(inetAddress, timeStamp);
+            if (!perIpCount.asMap().containsKey(inetAddress)) {
+                perIpCount.put(inetAddress, (byte) 0);
 
                 Counter.IPS_PER_SECOND.increment();
-            } else {
-                if (timeStamp - perIpCount.get(inetAddress) > 1000L) {
-                    perIpCount.replace(inetAddress, timeStamp);
-
-                    Counter.IPS_PER_SECOND.increment();
-                }
             }
 
-            final Channel channel = ctx.channel();
-
+            // Just drop the connection whenever the player is blacklisted
             if (Blacklist.isBlacklisted(inetAddress)) {
                 channel.close();
 
@@ -105,6 +97,9 @@ public final class BungeeInterceptor extends ChannelInitializer<Channel> impleme
 
             final ChannelPipeline pipeline = channel.pipeline();
 
+            // TCPShield and other reverse proxies already handle invalid
+            // under-sized or over-sized packets → we can just exempt the player
+            // from the invalid/bad packet checks if TCPShield is detected
             if (!SonarBungee.INSTANCE.isReverseProxy) {
                 SonarPipelines.register(pipeline);
             }
