@@ -10,6 +10,7 @@ import jones.sonar.bungee.config.Firewall;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.filter.ConsoleFilter;
 import jones.sonar.bungee.monitor.MonitorThread;
+import jones.sonar.bungee.monitor.bossbar.BossBarActions;
 import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.notification.counter.ActionBar;
 import jones.sonar.bungee.peak.PeakThread;
@@ -64,6 +65,8 @@ public enum SonarBungee implements SonarBungeePlatform {
         this.plugin = plugin;
 
         createDataFolder();
+
+        BossBarActions.initialize();
 
         running = true;
     }

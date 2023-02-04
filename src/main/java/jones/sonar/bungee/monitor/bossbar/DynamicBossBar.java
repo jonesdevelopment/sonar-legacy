@@ -16,12 +16,15 @@
 package jones.sonar.bungee.monitor.bossbar;
 
 import jones.sonar.bungee.monitor.MonitorManager;
-import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.Getter;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.protocol.packet.BossBar;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 public final class DynamicBossBar {
@@ -30,6 +33,8 @@ public final class DynamicBossBar {
     private final UUID uuid;
 
     private final BossBar barBuilder, removeBar;
+
+    private final Set<String> peopleWhoSeeTheBossBar = new HashSet<>();
 
     public DynamicBossBar() {
         uuid = UUID.randomUUID();
@@ -54,13 +59,24 @@ public final class DynamicBossBar {
 
         MonitorManager.getPlayers()
                 .filter(player -> player.getPendingConnection().getVersion() > 47)
-                .filter(player -> !player.getName().startsWith("."))
-                .forEach(player -> player.unsafe().sendPacket(barBuilder));
+                .filter(player -> !player.getName().startsWith(".")) // Geyser?
+                .filter(player -> !player.getName().startsWith("*")) // Geyser?
+                .forEach(player -> {
+                    peopleWhoSeeTheBossBar.add(player.getName());
 
-        SonarBungee.INSTANCE.proxy.getPlayers().stream()
-                .filter(player -> !MonitorManager.contains(player.getName()))
-                .filter(player -> player.getPendingConnection().getVersion() > 47)
-                .filter(player -> !player.getName().startsWith("."))
-                .forEach(player -> player.unsafe().sendPacket(removeBar));
+                    player.unsafe().sendPacket(barBuilder);
+                });
+
+        peopleWhoSeeTheBossBar.stream()
+                .filter(name -> !MonitorManager.contains(name))
+                .filter(name -> !name.startsWith(".")) // Geyser?
+                .filter(name -> !name.startsWith("*")) // Geyser?
+                .forEach(name -> {
+                    final ProxiedPlayer player = ProxyServer.getInstance().getPlayer(name);
+
+                    if (player != null && player.getPendingConnection().getVersion() > 47) {
+                        player.unsafe().sendPacket(removeBar);
+                    }
+                });
     }
 }
