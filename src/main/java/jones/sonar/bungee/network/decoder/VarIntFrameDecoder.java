@@ -27,12 +27,13 @@ import java.util.List;
 public final class VarIntFrameDecoder extends ByteToMessageDecoder {
 
     private static final CorruptedFrameException EXCEPTION_IN_FRAME = new CorruptedFrameException("Corrupted/Mutated frame (Exploit?)");
+    public static final boolean DEBUG = Boolean.getBoolean("sonar-advanced-traces");
 
     @Override
     protected void decode(final ChannelHandlerContext ctx,
                           final ByteBuf byteBuf,
                           final List<Object> out) throws Exception {
-        if (!ctx.channel().isActive()) {
+        if (!ctx.channel().isActive() || !byteBuf.isReadable()) {
             byteBuf.clear();
             return;
         }
@@ -67,7 +68,9 @@ public final class VarIntFrameDecoder extends ByteToMessageDecoder {
 
                 if (readVarInt < 0) {
                     byteBuf.clear();
-                    throw EXCEPTION_IN_FRAME;
+                    if(DEBUG) {
+                       throw EXCEPTION_IN_FRAME;
+                    }
                 }
 
                 else if (readVarInt == 0) {
@@ -95,7 +98,9 @@ public final class VarIntFrameDecoder extends ByteToMessageDecoder {
 
             default: {
                 byteBuf.clear();
-                throw EXCEPTION_IN_FRAME;
+                if(DEBUG) {
+                   throw EXCEPTION_IN_FRAME;
+                }
             }
         }
     }
