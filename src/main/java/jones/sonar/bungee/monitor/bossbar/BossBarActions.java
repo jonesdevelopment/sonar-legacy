@@ -15,18 +15,9 @@
  */
 package jones.sonar.bungee.monitor.bossbar;
 
-import lombok.experimental.UtilityClass;
-
-@UtilityClass
-public class BossBarActions {
-
-    public void initialize() {
-        TITLE = 3;
-        COLOR_AND_STYLE = 4;
-        PROGRESS = 2;
-        REMOVE = 1;
-    }
-
-    public int TITLE, COLOR_AND_STYLE, PROGRESS, REMOVE;
-
+public interface BossBarActions {
+    int TITLE = 3;
+    int COLOR_AND_STYLE = 4;
+    int PROGRESS = 2;
+    int REMOVE = 1;
 }
