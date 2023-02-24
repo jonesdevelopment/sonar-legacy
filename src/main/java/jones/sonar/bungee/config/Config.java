@@ -58,8 +58,7 @@ public class Config {
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
                 LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION,
                 PING_BEFORE_JOIN, ENABLE_PROXY_CHECK, FORCE_PUBLIC_KEY,
-                NO_PING_EVENT_DURING_ATTACK, PING_NEEDED_DURING_ATTACK,
-                ENABLE_TCP_FAST_OPEN;
+                PING_NEEDED_DURING_ATTACK, ENABLE_TCP_FAST_OPEN;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
@@ -86,7 +85,6 @@ public class Config {
                 MAX_PACKET_CAPACITY = config.getInt("general.maximum-packet-capacity", 4096);
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
                 FORCE_PUBLIC_KEY = config.getBoolean("general.force-valid-public-key", true);
-                NO_PING_EVENT_DURING_ATTACK = config.getBoolean("general.no-ping-event-during-attack", true);
                 MAX_STATUS_DURING_ATTACK = config.getInt("general.maximum-status-requests-for-attack", 256);
                 MAXIMUM_HANDSHAKES_PER_IP_SEC = config.getInt("general.maximum-handshakes-per-ip", 3);
                 MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST = config.getInt("general.maximum-handshakes-per-ip-blacklist", 9);

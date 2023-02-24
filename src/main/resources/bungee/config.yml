@@ -70,12 +70,6 @@ general:
   # This is really powerful against motd/ping spamming attacks
   cache-incoming-motd-requests: true
 
-  # Enable this if you still want Sonar to call the ProxyPingEvent during an attack
-  # It is recommended to leave this 'true' but you can disable this if you have
-  # plugins that rely on the ProxyPingEvent even during attacks
-  # It is also recommended to use the built-in BungeeCord motd system
-  no-ping-event-during-attack: true
-
   # Enable this if you are on Linux and want the TCP connections to be opened faster
   # This only works if Epoll is supported, and you're running on Linux!
   # Read more here: https://en.wikipedia.org/wiki/TCP_Fast_Open

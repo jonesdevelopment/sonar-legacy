@@ -2,11 +2,8 @@ package jones.sonar.bungee.network.handler;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.gson.Gson;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
-import jones.sonar.bungee.caching.ServerDataProvider;
-import jones.sonar.bungee.caching.ServerPingCache;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.detection.LoginHandler;
@@ -14,7 +11,6 @@ import jones.sonar.bungee.network.SonarPipeline;
 import jones.sonar.bungee.network.SonarPipelines;
 import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
-import jones.sonar.bungee.util.json.LegacyGsonFormat;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
@@ -27,14 +23,9 @@ import jones.sonar.universal.queue.LoginCache;
 import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.util.ExceptionHandler;
 import net.md_5.bungee.BungeeCord;
-import net.md_5.bungee.BungeeServerInfo;
 import net.md_5.bungee.ConnectionThrottle;
-import net.md_5.bungee.api.Callback;
-import net.md_5.bungee.api.ServerPing;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ListenerInfo;
-import net.md_5.bungee.api.config.ServerInfo;
-import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
 import net.md_5.bungee.netty.PipelineUtils;
@@ -203,65 +194,31 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
-        // credits to Velocity
-        getAsyncServerPing()
-                .thenAcceptAsync(pingBack -> {
+        // TODO: Perform some tests
+        CompletableFuture.runAsync(() -> {
 
-                    // most botting tools or crashers instantly close the channel/connection
-                    if (!isConnected()) {
-                        throw SonarBungee.EXCEPTION; // clients always keep the channel opened, so it's safe to blacklist here
-                    }
+            // most botting tools or crashers instantly close the channel/connection
+            if (!isConnected()) {
 
-                    if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())
-                            && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
-                        ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
-                    }
+                // clients ALWAYS keep the channel opened, so it's safe to blacklist here
+                throw SonarBungee.EXCEPTION;
+            }
 
-                    currentState = ConnectionState.STATUS;
+            currentState = ConnectionState.STATUS;
 
-                    final ListenerInfo listener = getListener();
-                    final int protocolVersion = getVersion();
+            // clients cannot send multiple status packets without closing the channel once
+            hasSuccessfullyPinged = true;
 
-                    final ServerInfo forced = ServerDataProvider.getForcedHost(listener, getVirtualHost());
+            try {
 
-                    if (Config.Values.ALLOW_PING_PASS_THROUGH && forced != null && listener.isPingPassthrough()) {
-                        ((BungeeServerInfo) forced).ping(pingBack, protocolVersion);
-                        return;
-                    }
-
-                    final ServerPing serverPing = ServerPingCache.getCached(listener, forced != null ? forced.getMotd() : listener.getMotd());
-
-                    serverPing.getVersion().setProtocol(protocolVersion);
-
-                    // handle legacy gson, if needed
-                    final Gson gson = getVersion() <= 4 /* 1.7.2 */ ? LegacyGsonFormat.LEGACY : bungee.gson;
-
-                    pingBack.done(serverPing, null);
-
-                    unsafe().sendPacket(new StatusResponse(gson.toJson(serverPing)));
-
-                    // clients cannot send multiple status packets without closing the channel once
-                    hasSuccessfullyPinged = true;
-                });
-    }
-
-    private CompletableFuture<Callback<ServerPing>> getAsyncServerPing() {
-        return CompletableFuture.completedFuture((result, error) -> {
-            if (error != null) return;
-
-            if (!isConnected() || (Config.Values.NO_PING_EVENT_DURING_ATTACK && Counter.STATUSES_PER_SECOND.get() > Config.Values.MAX_STATUS_DURING_ATTACK)) return;
-
-            // TODO: Only call ProxyPingEvent after the async future is completed and the channel is still opened
-            sonar.callEvent(new ProxyPingEvent(this, result, (pingResult, error1) -> {
-                if (error1 != null) return;
-
-                if (!isConnected()) return;
-
-                // un-throttle connection if needed
-                if (bungee.getConnectionThrottle() != null) {
-                    bungee.getConnectionThrottle().unthrottle(getSocketAddress());
-                }
-            }));
+                // You may ask why I am doing this even though I had a different method before.
+                // I am only using `super.handle(...)` because many MOTD plugins were not supported
+                // and I want to ensure compatibility.
+                // All of this is run asynchronously, and it SHOULD have the same performance
+                super.handle(statusRequest);
+            } catch (Exception exception) {
+                throw SonarBungee.EXCEPTION; // TODO: Different handling?
+            }
         });
     }
 
@@ -275,16 +232,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         }
 
         currentState = ConnectionState.PROCESSING;
-
-        /*
-        final long timeStamp = System.currentTimeMillis();
-        final long delay = timeStamp - ping.getTime();
-
-        // check if the ping packet is extremely delayed
-        if (delay > 10000L && delay < timeStamp) {
-            return;
-        }
-        */
 
         unsafe().sendPacket(ping);
 
