@@ -58,8 +58,6 @@ public enum SonarBungee implements SonarBungeePlatform {
     public int JAVA_VERSION = 0;
 
     public void onLoad(final SonarBungeePlugin plugin) {
-        assert plugin != null : "Error loading Sonar!";
-
         this.plugin = plugin;
 
         createDataFolder();
@@ -67,7 +65,7 @@ public enum SonarBungee implements SonarBungeePlatform {
         running = true;
     }
 
-    public void onEnable(final SonarBungeePlugin plugin) {
+    public void onEnable() {
         assert plugin != null : "Error starting Sonar!";
 
         // we don't want to continue loading Sonar if the license is invalid
@@ -187,7 +185,7 @@ public enum SonarBungee implements SonarBungeePlatform {
         PerformanceMonitor.RUNTIME.addShutdownHook(new Thread(() -> FirewallManager.uninstall(platform)));
     }
 
-    public void onDisable(final SonarBungeePlugin plugin) {
+    public void onDisable() {
         assert plugin != null : "Error stopping Sonar!";
 
         // remove all firewall stuff

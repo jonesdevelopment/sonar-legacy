@@ -29,7 +29,7 @@ public class SonarBridge {
             case BUNGEE: {
 
                 // objects[0] = SonarBungeePlugin
-                SonarBungee.INSTANCE.onEnable((SonarBungeePlugin) objects[0]);
+                SonarBungee.INSTANCE.onEnable();
                 break;
             }
         }
@@ -53,7 +53,7 @@ public class SonarBridge {
             case BUNGEE: {
 
                 // objects[0] = SonarBungeePlugin
-                SonarBungee.INSTANCE.onDisable((SonarBungeePlugin) objects[0]);
+                SonarBungee.INSTANCE.onDisable();
                 break;
             }
         }
