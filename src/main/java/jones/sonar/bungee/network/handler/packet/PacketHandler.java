@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -157,13 +158,19 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     playerData.sentClientSettings = viewDistance > 0;
                 }
 
-                // CustomPayload packet
+                // PluginMessage packet
                 else if (wrapper.packet instanceof PluginMessage) {
-                    final PluginMessage customPayload = (PluginMessage) wrapper.packet;
+                    final PluginMessage pluginMessage = (PluginMessage) wrapper.packet;
 
                     // we only want to check the client brand channel
-                    if (customPayload.getTag().equals("MC|Brand") || customPayload.getTag().equals("minecraft:brand")) {
-                        playerData.clientBrand = new String(customPayload.getData());
+                    if (pluginMessage.getTag().equals("MC|Brand") || pluginMessage.getTag().equals("minecraft:brand")) {
+
+                        // safely read the client brand
+                        final ByteBuf brand = Unpooled.wrappedBuffer(pluginMessage.getData());
+
+                        playerData.clientBrand = DefinedPacket.readString(brand);
+
+                        brand.release(); // important; we don't want memory leaks
 
                         // the client brand has to match a specific validation regex
                         // the client brand cannot be empty and shouldn't be longer than 128 characters
