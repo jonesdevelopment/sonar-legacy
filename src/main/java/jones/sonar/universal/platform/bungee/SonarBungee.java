@@ -22,7 +22,6 @@ import jones.sonar.universal.platform.SonarPlatform;
 import jones.sonar.universal.proxy.BlackBoxProxyAPI;
 import jones.sonar.universal.proxy.ProxyAPI;
 import jones.sonar.universal.queue.QueueThread;
-import jones.sonar.universal.util.AssertionHelper;
 import jones.sonar.universal.util.FastException;
 import jones.sonar.universal.util.PerformanceMonitor;
 import lombok.Getter;
@@ -59,7 +58,7 @@ public enum SonarBungee implements SonarBungeePlatform {
     public int JAVA_VERSION = 0;
 
     public void onLoad(final SonarBungeePlugin plugin) {
-        AssertionHelper.check(plugin != null, "Error loading Sonar!");
+        assert plugin != null : "Error loading Sonar!";
 
         this.plugin = plugin;
 
@@ -69,7 +68,7 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     public void onEnable(final SonarBungeePlugin plugin) {
-        AssertionHelper.check(plugin != null, "Error starting Sonar!");
+        assert plugin != null : "Error starting Sonar!";
 
         // we don't want to continue loading Sonar if the license is invalid
         // or the plugin hasn't started correctly
@@ -189,7 +188,7 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     public void onDisable(final SonarBungeePlugin plugin) {
-        AssertionHelper.check(plugin != null, "Error stopping Sonar!");
+        assert plugin != null : "Error stopping Sonar!";
 
         // remove all firewall stuff
         FirewallManager.uninstall(platform);
@@ -204,7 +203,7 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     public long reload() {
-        AssertionHelper.check(plugin != null, "Error reloading Sonar!");
+        assert plugin != null : "Error reloading Sonar!";
 
         final long startTimeStamp = System.currentTimeMillis();
 
