@@ -179,7 +179,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
                     // we don't want to allow chat packets if the client
                     // hasn't sent a client settings packet yet
-                    if (!playerData.passes()) {
+                    if (!playerData.passes() && !Whitelist.isWhitelisted(inetAddress)) {
                         proxiedPlayer.disconnect(Messages.Values.DISCONNECT_BOT_DETECTION);
                         playerData.lastDetection = System.currentTimeMillis();
 
@@ -203,7 +203,11 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     cachedPlayerChatMessages.put(playerData.username, (byte) 0); // cache
                 }
 
-                else if (wrapper.packet instanceof KeepAlive && playerData.passes() && !Whitelist.isWhitelisted(inetAddress)) {
+                else if (wrapper.packet instanceof KeepAlive) {
+                    if (!playerData.passes() || Whitelist.isWhitelisted(inetAddress)) {
+                        return;
+                    }
+
                     playerData.keepAliveSent++; // increment amount of keep alive packets sent by the player
 
                     // we only want to whitelist the player if they already sent
