@@ -3,19 +3,19 @@ package jones.sonar.universal.data.player.manager;
 import jones.sonar.universal.data.player.PlayerData;
 import lombok.experimental.UtilityClass;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @UtilityClass
 public class PlayerDataManager {
-    public final Map<String, PlayerData> DATA = new ConcurrentHashMap<>(300000);
+    private final Map<String, PlayerData> DATA = new HashMap<>();
 
     public PlayerData get(final String playerName) {
-        if (contains(playerName)) {
-            return DATA.get(playerName);
-        }
+        return DATA.get(playerName);
+    }
 
-        return null;
+    public PlayerData getOrDefault(final String playerName, final PlayerData def) {
+        return DATA.getOrDefault(playerName, def);
     }
 
     public boolean contains(final String playerName) {

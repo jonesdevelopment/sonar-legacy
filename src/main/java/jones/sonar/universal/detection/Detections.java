@@ -1,9 +1,6 @@
 package jones.sonar.universal.detection;
 
 public interface Detections {
-    Detection FIRST_JOIN_KICK    = new Detection(DetectionResult.DENIED,
-            1);
-
     Detection INVALID_NAME       = new Detection(DetectionResult.DENIED,
             2);
 

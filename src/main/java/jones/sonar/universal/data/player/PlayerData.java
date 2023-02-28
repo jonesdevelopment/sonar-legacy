@@ -12,13 +12,13 @@ public final class PlayerData {
 
     public boolean sentClientSettings = false, sentClientBrand = false;
 
-    public void handleLogin() throws Exception {
+    public void handleLogin() {
         sentClientBrand = false;
         sentClientSettings = false;
         clientBrand = "/";
     }
 
-    public boolean passes() throws Exception {
+    public boolean passes() {
         return clientBrand.length() > 3
                 && sentClientBrand
                 && sentClientSettings;

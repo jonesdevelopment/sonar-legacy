@@ -16,12 +16,11 @@
 
 package jones.sonar.universal.proxy;
 
-import com.google.common.cache.Cache;
-
 import java.net.InetAddress;
+import java.util.Collection;
 
 public interface ProxyAPI {
     boolean isUsingProxy(final InetAddress inetAddress);
 
-    Cache<InetAddress, Boolean> getCache();
+    Collection<InetAddress> getProxies();
 }

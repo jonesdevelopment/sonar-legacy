@@ -256,7 +256,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         data.username = loginRequest.getData();
 
-        final Detection detection = LoginHandler.check(data);
+        final Detection detection = LoginHandler.check(data, this);
 
         if (detection.result == DetectionResult.DENIED) {
             switch (detection.key) {
