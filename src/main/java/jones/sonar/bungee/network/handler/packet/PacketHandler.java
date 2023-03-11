@@ -47,11 +47,6 @@ public final class PacketHandler extends ChannelDuplexHandler {
 
     @Override
     public void write(final ChannelHandlerContext ctx, final Object msg, final ChannelPromise promise) throws Exception {
-        if (Blacklist.isBlacklisted(((InetSocketAddress) ctx.channel().remoteAddress()).getAddress())) {
-            ctx.pipeline().remove(this);
-            return;
-        }
-
         if (msg instanceof PluginMessage) {
             final PluginMessage pluginMessage = (PluginMessage) msg;
 
@@ -64,25 +59,27 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     return;
                 }
 
-                String backend;
+                if (!Config.Values.FAKE_SERVER_CLIENT_BRAND.isEmpty()) {
+                    String backend;
 
-                final String data = new String(pluginMessage.getData());
+                    final String data = new String(pluginMessage.getData());
 
-                try {
-                    backend = data.split(" <- ")[1];
-                } catch (Exception exception) {
-                    backend = "unknown";
+                    try {
+                        backend = data.split(" <- ")[1];
+                    } catch (Exception exception) {
+                        backend = "unknown";
+                    }
+
+                    final ByteBuf brand = ByteBufAllocator.DEFAULT.heapBuffer();
+
+                    DefinedPacket.writeString(Config.Values.FAKE_SERVER_CLIENT_BRAND
+                            .replaceAll("%proxy%", SonarBungee.INSTANCE.proxy.getName())
+                            .replaceAll("%backend%", backend), brand);
+
+                    pluginMessage.setData(DefinedPacket.toArray(brand));
+
+                    brand.release();
                 }
-
-                final ByteBuf brand = ByteBufAllocator.DEFAULT.heapBuffer();
-
-                DefinedPacket.writeString(Config.Values.FAKE_SERVER_CLIENT_BRAND
-                        .replaceAll("%proxy%", SonarBungee.INSTANCE.proxy.getName())
-                        .replaceAll("%backend%", backend), brand);
-
-                pluginMessage.setData(DefinedPacket.toArray(brand));
-
-                brand.release();
             }
         }
 
