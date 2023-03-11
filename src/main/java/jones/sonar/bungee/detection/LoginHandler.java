@@ -145,7 +145,7 @@ public final class LoginHandler implements Detections {
         if (Config.Values.ENABLE_PROXY_CHECK && SonarBungee.INSTANCE.selectedAntiProxyProvider != null) {
             handler.ctx.channel().eventLoop().execute(() -> {
                 if (SonarBungee.INSTANCE.selectedAntiProxyProvider.isUsingProxy(connectionData.inetAddress)) {
-                    handler.disconnect(Messages.Values.DISCONNECT_VPN_OR_PROXY);
+                    handler.disconnect_(Messages.Values.DISCONNECT_VPN_OR_PROXY);
                 }
             });
         }
