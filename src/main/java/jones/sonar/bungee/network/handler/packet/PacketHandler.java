@@ -201,26 +201,25 @@ public final class PacketHandler extends ChannelDuplexHandler {
                         return;
                     }
 
-                    // the concept of this check was taken from JProxy (© jonesdev.xyz)
+                    // spam limit - 125ms per chat message (3 ticks)
+                    // the concept of this check was taken from Hyperion
+                    // feel free to steal this :D
                     if (cachedPlayerChatMessages.asMap().containsKey(playerData.username)) {
-                        return; // spam limit - 125ms per chat message (3 ticks)
+                        return;
                     }
 
-                    cachedPlayerChatMessages.cleanUp(); // clean up - TODO: Check if necessary
                     cachedPlayerChatMessages.put(playerData.username, (byte) 0); // cache
                 }
 
                 else if (wrapper.packet instanceof KeepAlive) {
-                    if (!playerData.passes() || Whitelist.isWhitelisted(inetAddress)) {
-                        return;
-                    }
+                    if (playerData.passes() && !Whitelist.isWhitelisted(inetAddress)) {
+                        playerData.keepAliveSent++; // increment amount of keep alive packets sent by the player
 
-                    playerData.keepAliveSent++; // increment amount of keep alive packets sent by the player
-
-                    // we only want to whitelist the player if they already sent
-                    // more than a specific amount of keep alive packets to the server
-                    if (playerData.keepAliveSent > Config.Values.MINIMUM_KEEP_ALIVE_TICK) {
-                        Whitelist.addToWhitelist(inetAddress);
+                        // we only want to whitelist the player if they already sent
+                        // more than a specific amount of keep alive packets to the server
+                        if (playerData.keepAliveSent > Config.Values.MINIMUM_KEEP_ALIVE_TICK) {
+                            Whitelist.addToWhitelist(inetAddress);
+                        }
                     }
                 }
             }

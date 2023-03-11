@@ -2,6 +2,7 @@ package jones.sonar.bungee.detection;
 
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
+import jones.sonar.bungee.network.handler.PlayerHandler;
 import jones.sonar.universal.config.options.CustomRegexOptions;
 import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.player.PlayerData;
@@ -13,17 +14,12 @@ import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.util.Sensibility;
 import jones.sonar.universal.whitelist.Whitelist;
 import lombok.experimental.UtilityClass;
-import net.md_5.bungee.api.connection.PendingConnection;
 
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 @UtilityClass
 public final class LoginHandler implements Detections {
-    private static final ExecutorService asyncProxyExecutor = Executors.newSingleThreadExecutor();
-
-    public Detection check(final ConnectionData connectionData, final PendingConnection connection) throws Exception {
+    public Detection check(final ConnectionData connectionData, final PlayerHandler handler) throws Exception {
         final boolean underAttack = Sensibility.isUnderAttackJoins();
 
         if (connectionData.username.length() > Config.Values.MAX_NAME_LENGTH
@@ -147,12 +143,9 @@ public final class LoginHandler implements Detections {
         }
 
         if (Config.Values.ENABLE_PROXY_CHECK && SonarBungee.INSTANCE.selectedAntiProxyProvider != null) {
-            if (SonarBungee.INSTANCE.selectedAntiProxyProvider.getProxies().contains(connectionData.inetAddress)) {
-                return VPN_OR_PROXY;
-            }
-            asyncProxyExecutor.execute(() -> {
+            handler.ctx.channel().eventLoop().execute(() -> {
                 if (SonarBungee.INSTANCE.selectedAntiProxyProvider.isUsingProxy(connectionData.inetAddress)) {
-                    connection.disconnect(Messages.Values.DISCONNECT_VPN_OR_PROXY);
+                    handler.disconnect(Messages.Values.DISCONNECT_VPN_OR_PROXY);
                 }
             });
         }

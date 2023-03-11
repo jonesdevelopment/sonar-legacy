@@ -55,7 +55,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     private final ConnectionThrottle throttler;
 
-    private final ChannelHandlerContext ctx;
+    public final ChannelHandlerContext ctx;
 
     private final ChannelPipeline pipeline;
 
