@@ -265,51 +265,52 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         final Detection detection = LoginHandler.check(data, this);
 
-        if (detection.result == DetectionResult.DENIED) {
-            switch (detection.key) {
-                default: {
-                    LoginCache.HAVE_LOGGED_IN.remove(loginRequest.getData());
-                    ConnectionDataManager.remove(data);
-                    throw SonarBungee.EXCEPTION;
-                }
+        if (detection.result == DetectionResult.ALLOWED) {
+            super.handle(loginRequest);
 
-                case 2: {
-                    disconnect_(Messages.Values.DISCONNECT_INVALID_NAME);
-                    return;
-                }
-
-                case 3: {
-                    disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
-                    return;
-                }
-
-                case 4: {
-                    disconnect_(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
-                    return;
-                }
-
-                case 5: {
-                    disconnect_(Messages.Values.DISCONNECT_QUEUED
-                            .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
-                            .replaceAll("%size%", sonar.FORMAT.format(PlayerQueue.QUEUE.size())));
-                    return;
-                }
-
-                case 6: {
-                    disconnect_(Messages.Values.DISCONNECT_ATTACK);
-                    return;
-                }
-
-                case 7: {
-                    disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
-                    return;
-                }
-            }
+            currentState = ConnectionState.JOINING;
+            return;
         }
 
-        super.handle(loginRequest);
+        switch (detection.key) {
+            default: {
+                LoginCache.HAVE_LOGGED_IN.remove(loginRequest.getData());
+                ConnectionDataManager.remove(data);
+                throw SonarBungee.EXCEPTION;
+            }
 
-        currentState = ConnectionState.JOINING;
+            case 2: {
+                disconnect_(Messages.Values.DISCONNECT_INVALID_NAME);
+                return;
+            }
+
+            case 3: {
+                disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                return;
+            }
+
+            case 4: {
+                disconnect_(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
+                return;
+            }
+
+            case 5: {
+                disconnect_(Messages.Values.DISCONNECT_QUEUED
+                        .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
+                        .replaceAll("%size%", sonar.FORMAT.format(PlayerQueue.QUEUE.size())));
+                return;
+            }
+
+            case 6: {
+                disconnect_(Messages.Values.DISCONNECT_ATTACK);
+                return;
+            }
+
+            case 7: {
+                disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+                return;
+            }
+        }
     }
 
     @Override
