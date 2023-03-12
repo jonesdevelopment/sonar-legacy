@@ -46,7 +46,10 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         pipeline = ctx.channel().pipeline();
         this.throttler = throttler;
+        inetAddress = getAddress().getAddress();
     }
+
+    private final InetAddress inetAddress;
 
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
 
@@ -100,8 +103,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         }
 
         currentState = ConnectionState.PROCESSING;
-
-        final InetAddress inetAddress = inetAddress();
 
         if (handshaking.asMap().containsKey(inetAddress)) {
             handshaking.asMap().replace(inetAddress, handshaking.asMap().get(inetAddress) + 1L);
@@ -232,9 +233,9 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             throw SonarBungee.EXCEPTION;
         }
 
-        if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())
+        if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
                 && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
-            ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
+            ServerPingCache.HAS_PINGED.put(inetAddress, (byte) 0);
         }
 
         currentState = ConnectionState.PROCESSING;
@@ -258,7 +259,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             return;
         }
 
-        final ConnectionData data = ConnectionDataManager.create(inetAddress());
+        final ConnectionData data = ConnectionDataManager.create(inetAddress);
 
         data.username = loginRequest.getData();
 
@@ -309,10 +310,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         super.handle(loginRequest);
 
         currentState = ConnectionState.JOINING;
-    }
-
-    public InetAddress inetAddress() {
-        return getAddress().getAddress();
     }
 
     @Override
