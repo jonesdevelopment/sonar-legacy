@@ -36,7 +36,6 @@ import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +69,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         final Channel channel = ctx.channel();
 
         pipeline = channel.pipeline();
-        inetAddress = ((InetSocketAddress) channel.remoteAddress()).getAddress();
+        inetAddress = getAddress().getAddress();
     }
 
     @Override
