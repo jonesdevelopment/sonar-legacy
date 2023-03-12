@@ -2,6 +2,7 @@ package jones.sonar.bungee.network.handler;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import jones.sonar.bungee.caching.ServerPingCache;
@@ -29,11 +30,13 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.chat.ComponentSerializer;
 import net.md_5.bungee.connection.InitialHandler;
+import net.md_5.bungee.netty.ChannelWrapper;
 import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -43,13 +46,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         super(BungeeCord.getInstance(), listener);
 
         this.ctx = ctx;
-
-        pipeline = ctx.channel().pipeline();
         this.throttler = throttler;
-        inetAddress = getAddress().getAddress();
     }
-
-    public final InetAddress inetAddress;
 
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
 
@@ -61,7 +59,19 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     public final ChannelHandlerContext ctx;
 
-    private final ChannelPipeline pipeline;
+    public InetAddress inetAddress;
+
+    private ChannelPipeline pipeline;
+
+    @Override
+    public void connected(final ChannelWrapper wrapper) throws Exception {
+        super.connected(wrapper);
+
+        final Channel channel = ctx.channel();
+
+        pipeline = channel.pipeline();
+        inetAddress = ((InetSocketAddress) channel.remoteAddress()).getAddress();
+    }
 
     @Override
     public void exception(final Throwable cause) throws Exception {
@@ -206,7 +216,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 throw SonarBungee.EXCEPTION;
             }
 
-            currentState = ConnectionState.STATUS;
+            currentState = ConnectionState.PINGING;
 
             // clients cannot send multiple status packets without closing the channel once
             hasSuccessfullyPinged = true;
@@ -229,7 +239,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         Counter.PINGS_PER_SECOND.increment();
 
         // clients cannot send multiple ping packets without closing the channel once
-        if (currentState != ConnectionState.STATUS || !hasRequestedPing || !hasSuccessfullyPinged) {
+        if (currentState != ConnectionState.PINGING || !hasRequestedPing || !hasSuccessfullyPinged) {
             throw SonarBungee.EXCEPTION;
         }
 
