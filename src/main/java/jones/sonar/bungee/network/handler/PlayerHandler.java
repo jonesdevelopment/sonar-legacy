@@ -303,11 +303,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                     disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
                     return;
                 }
-
-                case 8: {
-                    disconnect_(Messages.Values.DISCONNECT_VPN_OR_PROXY);
-                    return;
-                }
             }
         }
 
