@@ -49,7 +49,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         inetAddress = getAddress().getAddress();
     }
 
-    private final InetAddress inetAddress;
+    public final InetAddress inetAddress;
 
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
 
@@ -267,8 +267,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         if (detection.result == DetectionResult.ALLOWED) {
             super.handle(loginRequest);
-
-            currentState = ConnectionState.JOINING;
             return;
         }
 
@@ -308,7 +306,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
             case 7: {
                 disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
-                return;
             }
         }
     }

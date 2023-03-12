@@ -123,7 +123,7 @@ public final class PacketHandler extends ChannelDuplexHandler {
                         }
                     }
 
-                    final InetAddress inetAddress = playerHandler.inetAddress();
+                    final InetAddress inetAddress = playerHandler.inetAddress;
 
                     if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
                             && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
