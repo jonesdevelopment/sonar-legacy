@@ -252,7 +252,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
-        // throttle connection on login only, not handshake
+        // throttle connection on login only, not in ClientConnectEvent
         if (throttler != null && throttler.throttle(getSocketAddress())) {
             ctx.close();
             return;
