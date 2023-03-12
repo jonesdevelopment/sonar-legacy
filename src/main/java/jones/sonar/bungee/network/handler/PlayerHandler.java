@@ -57,18 +57,21 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     private final ConnectionThrottle throttler;
 
-    public final ChannelHandlerContext ctx;
+    public String usernameForVerification;
 
     public InetAddress inetAddress;
 
+    public final ChannelHandlerContext ctx;
+
     private ChannelPipeline pipeline;
+
+    public Channel channel;
 
     @Override
     public void connected(final ChannelWrapper wrapper) throws Exception {
         super.connected(wrapper);
 
-        final Channel channel = ctx.channel();
-
+        channel = wrapper.getHandle();
         pipeline = channel.pipeline();
         inetAddress = ((InetSocketAddress) getSocketAddress()).getAddress();
     }

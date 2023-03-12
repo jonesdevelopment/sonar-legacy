@@ -8,6 +8,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.util.concurrent.FastThreadLocalThread;
 import jones.sonar.bungee.caching.ServerPingCache;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
@@ -30,7 +31,8 @@ import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.concurrent.TimeUnit;
+import java.util.Queue;
+import java.util.concurrent.*;
 
 @RequiredArgsConstructor
 public final class PacketHandler extends ChannelDuplexHandler {
@@ -38,6 +40,11 @@ public final class PacketHandler extends ChannelDuplexHandler {
     // we don't want people like the smog client dude to flood the proxy with BungeeCord commands since they don't have any form of spam limitation
     private static final Cache<String, Byte> cachedPlayerChatMessages = CacheBuilder.newBuilder()
             .expireAfterWrite(125L, TimeUnit.MILLISECONDS).build();
+    private static final ExecutorService pool = new ThreadPoolExecutor(0, 256,
+            10L, TimeUnit.SECONDS,
+            new SynchronousQueue<>(),
+            r -> new FastThreadLocalThread(r));
+    public static final Queue<PlayerHandler> connectionQueue = new ConcurrentLinkedQueue<>();
     private final PlayerHandler playerHandler;
 
     @Override
@@ -86,6 +93,32 @@ public final class PacketHandler extends ChannelDuplexHandler {
         super.write(ctx, msg, promise);
     }
 
+    // The concept for this verification queue was taken from Hyperion
+    public static void runQueue() {
+        synchronized (connectionQueue) {
+            for (int i = 0; i < Math.min(connectionQueue.size(), Config.Values.MINIMUM_JOINS_PER_SECOND); i++) {
+                pool.execute(() -> {
+                    final PlayerHandler handler = connectionQueue.poll();
+
+                    if (handler == null
+                            || !handler.isConnected()
+                            || handler.usernameForVerification == null) {
+                        return;
+                    }
+
+                    if (!handler.channel.isActive()) {
+                        ExceptionHandler.handle(handler.channel, SonarBungee.EXCEPTION);
+                        return;
+                    }
+
+                    LoginCache.HAVE_LOGGED_IN.add(handler.usernameForVerification);
+
+                    handler.disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
+                });
+            }
+        }
+    }
+
     @Override
     public void channelRead(final ChannelHandlerContext ctx, final Object msg) throws Exception {
         if (msg instanceof PacketWrapper) {
@@ -115,23 +148,40 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     }
 
                     if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {
-                        LoginCache.HAVE_LOGGED_IN.add(username);
-
-                        if (Config.Values.ENABLE_FIRST_JOIN) {
-                            playerHandler.disconnect_(Messages.Values.DISCONNECT_FIRST_JOIN);
+                        if (!Config.Values.ENABLE_FIRST_JOIN) {
+                            LoginCache.HAVE_LOGGED_IN.add(username);
                             return;
                         }
+
+                        playerHandler.channel.eventLoop().execute(() -> {
+                            if (!playerHandler.channel.isActive()) {
+                                ExceptionHandler.handle(playerHandler.channel, SonarBungee.EXCEPTION);
+                                return;
+                            }
+
+                            playerHandler.usernameForVerification = username;
+
+                            if (!connectionQueue.isEmpty() && connectionQueue.stream()
+                                    .anyMatch(handler -> handler.usernameForVerification.equals(username)
+                                            || handler.getAddress().getAddress().toString().equals(playerHandler.inetAddress.toString()))) {
+                                // TODO: Check if it's safe to temp blacklist here
+                                playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
+                                Blacklist.addToTempBlacklist(playerHandler.inetAddress);
+                                return;
+                            }
+
+                            connectionQueue.add(playerHandler);
+                        });
+                        return;
                     }
 
-                    final InetAddress inetAddress = playerHandler.inetAddress;
-
-                    if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
+                    if (!ServerPingCache.HAS_PINGED.asMap().containsKey(playerHandler.inetAddress)
                             && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
                         playerHandler.disconnect_(Messages.Values.DISCONNECT_PING_BEFORE_JOIN);
                         return;
                     }
 
-                    if (Blacklist.isTempBlacklisted(inetAddress)) {
+                    if (Blacklist.isTempBlacklisted(playerHandler.inetAddress)) {
                         playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
                         return;
                     }

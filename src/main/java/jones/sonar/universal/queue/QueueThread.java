@@ -1,6 +1,7 @@
 package jones.sonar.universal.queue;
 
 import jones.sonar.bungee.config.Config;
+import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.universal.data.connection.manager.ConnectionDataManager;
 
 import java.util.HashMap;
@@ -18,6 +19,10 @@ public final class QueueThread extends Thread implements Runnable {
         while(true) {
             try {
                 try {
+
+                    // run packet handler queue
+                    PacketHandler.runQueue();
+
                     if (!PlayerQueue.QUEUE.isEmpty()) {
                         final Map<String, Long> cleaned = new HashMap<>(PlayerQueue.QUEUE);
 
