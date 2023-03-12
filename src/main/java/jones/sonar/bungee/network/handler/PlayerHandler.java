@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
+import jones.sonar.bungee.caching.ServerPingCache;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
 import jones.sonar.bungee.detection.LoginHandler;
@@ -229,6 +230,11 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         // clients cannot send multiple ping packets without closing the channel once
         if (currentState != ConnectionState.STATUS || !hasRequestedPing || !hasSuccessfullyPinged) {
             throw SonarBungee.EXCEPTION;
+        }
+
+        if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress())
+                && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
+            ServerPingCache.HAS_PINGED.put(inetAddress(), (byte) 0);
         }
 
         currentState = ConnectionState.PROCESSING;
