@@ -148,31 +148,30 @@ public final class PacketHandler extends ChannelDuplexHandler {
                     }
 
                     if (!LoginCache.HAVE_LOGGED_IN.contains(username)) {
-                        if (!Config.Values.ENABLE_FIRST_JOIN) {
-                            LoginCache.HAVE_LOGGED_IN.add(username);
+                        if (Config.Values.ENABLE_FIRST_JOIN) {
+                            playerHandler.channel.eventLoop().execute(() -> {
+                                if (!playerHandler.channel.isActive()) {
+                                    ExceptionHandler.handle(playerHandler.channel, SonarBungee.EXCEPTION);
+                                    return;
+                                }
+
+                                playerHandler.usernameForVerification = username;
+
+                                if (!connectionQueue.isEmpty() && connectionQueue.stream()
+                                        .anyMatch(handler -> handler.usernameForVerification.equals(username)
+                                                || handler.getAddress().getAddress().toString().equals(playerHandler.inetAddress.toString()))) {
+                                    // TODO: Check if it's safe to temp blacklist here
+                                    playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
+                                    Blacklist.addToTempBlacklist(playerHandler.inetAddress);
+                                    return;
+                                }
+
+                                connectionQueue.add(playerHandler);
+                            });
                             return;
                         }
 
-                        playerHandler.channel.eventLoop().execute(() -> {
-                            if (!playerHandler.channel.isActive()) {
-                                ExceptionHandler.handle(playerHandler.channel, SonarBungee.EXCEPTION);
-                                return;
-                            }
-
-                            playerHandler.usernameForVerification = username;
-
-                            if (!connectionQueue.isEmpty() && connectionQueue.stream()
-                                    .anyMatch(handler -> handler.usernameForVerification.equals(username)
-                                            || handler.getAddress().getAddress().toString().equals(playerHandler.inetAddress.toString()))) {
-                                // TODO: Check if it's safe to temp blacklist here
-                                playerHandler.disconnect_(Messages.Values.TEMP_BLACKLISTED);
-                                Blacklist.addToTempBlacklist(playerHandler.inetAddress);
-                                return;
-                            }
-
-                            connectionQueue.add(playerHandler);
-                        });
-                        return;
+                        LoginCache.HAVE_LOGGED_IN.add(username);
                     }
 
                     if (!ServerPingCache.HAS_PINGED.asMap().containsKey(playerHandler.inetAddress)
