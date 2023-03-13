@@ -92,9 +92,6 @@ public class NotificationManager {
                         // check if the webhook url is valid
                         if (Config.Values.WEBHOOK_URL.toLowerCase().startsWith("https://discord.com/api/webhooks/")) {
 
-                            // set the webhook url
-                            WebhookSender.URL = Config.Values.WEBHOOK_URL;
-
                             // send the webhook
                             WebhookSender.sendWebhook(Config.Values.WEBHOOK_FORMAT
                                             .replaceAll("%cps%", SonarBungee.INSTANCE.FORMAT.format(cps))
@@ -108,7 +105,8 @@ public class NotificationManager {
                                     Config.Values.WEBHOOK_TITLE,
                                     new Color(Config.Values.WEBHOOK_COLOR_R,
                                             Config.Values.WEBHOOK_COLOR_G,
-                                            Config.Values.WEBHOOK_COLOR_B));
+                                            Config.Values.WEBHOOK_COLOR_B),
+                                    Config.Values.USE_EMBED_WEBHOOKS);
 
                             SonarBungee.INSTANCE.callEvent(new SonarWebhookSentEvent(Config.Values.WEBHOOK_URL));
 

@@ -58,13 +58,14 @@ public class Config {
                 ALLOW_PROXY_PROTOCOL, ALLOW_PING_PASS_THROUGH, WEBHOOK_ENABLED,
                 LOG_CONNECTIONS, AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION,
                 PING_BEFORE_JOIN, ENABLE_PROXY_CHECK, FORCE_PUBLIC_KEY,
-                PING_NEEDED_DURING_ATTACK, ENABLE_TCP_FAST_OPEN;
+                PING_NEEDED_DURING_ATTACK, ENABLE_TCP_FAST_OPEN, USE_EMBED_WEBHOOKS;
 
         public CustomRegexOptions REGEX_BLACKLIST_MODE = CustomRegexOptions.UNKNOWN,
                 REGEX_CHECK_MODE = CustomRegexOptions.UNKNOWN;
 
         public String NAME_VALIDATION_REGEX, SERVER_BRAND, WEBHOOK_URL,
-                WEBHOOK_FORMAT, WEBHOOK_TITLE, FAKE_SERVER_CLIENT_BRAND;
+                WEBHOOK_FORMAT, WEBHOOK_TITLE, FAKE_SERVER_CLIENT_BRAND,
+                WEBHOOK_USERNAME, WEBHOOK_PING;
 
         public List<String> CUSTOM_REGEXES = new CopyOnWriteArrayList<>();
 
@@ -112,9 +113,12 @@ public class Config {
                 WEBHOOK_FORMAT = Messages.format(Messages.fromList(config.getStringList("notifications.webhook.format"), "\\n"));
                 WEBHOOK_TITLE = Messages.format(config.getString("notifications.webhook.title"));
                 WEBHOOK_URL = Messages.format(config.getString("notifications.webhook.url", ""));
-                WEBHOOK_COLOR_R = Math.min(Math.max(config.getInt("notifications.webhook.color.r", 255), 0), 255);
-                WEBHOOK_COLOR_G = Math.min(Math.max(config.getInt("notifications.webhook.color.g", 50), 0), 255);
-                WEBHOOK_COLOR_B = Math.min(Math.max(config.getInt("notifications.webhook.color.b", 0), 0), 255);
+                WEBHOOK_COLOR_R = Math.min(Math.max(config.getInt("notifications.webhook.embed.color.r", 255), 0), 255);
+                WEBHOOK_COLOR_G = Math.min(Math.max(config.getInt("notifications.webhook.embed.color.g", 50), 0), 255);
+                WEBHOOK_COLOR_B = Math.min(Math.max(config.getInt("notifications.webhook.embed.color.b", 0), 0), 255);
+                USE_EMBED_WEBHOOKS = config.getBoolean("notifications.webhook.embed.enabled", true);
+                WEBHOOK_USERNAME = config.getString("notifications.webhook.username", "Sonar");
+                WEBHOOK_PING = config.getString("notifications.webhook.ping");
 
                 // checks
                 ENABLE_RECONNECT_CHECK = config.getBoolean("checks.reconnect.enabled", true);

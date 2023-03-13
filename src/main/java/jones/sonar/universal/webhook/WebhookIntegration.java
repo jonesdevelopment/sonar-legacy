@@ -115,7 +115,7 @@ public final class WebhookIntegration {
         final HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
 
         connection.addRequestProperty("Content-Type", "application/json");
-        connection.addRequestProperty("User-Agent", "Java_Sonar_jonesdev_xyz");
+        connection.addRequestProperty("User-Agent", "Java-DiscordWebhook-BY-Gelox_"); // Sorry for not crediting earlier :D
         connection.setDoOutput(true);
         connection.setRequestMethod("POST");
 

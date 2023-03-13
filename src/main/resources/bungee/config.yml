@@ -163,6 +163,16 @@ notifications:
     # The delay between each Webhook alert in milliseconds
     delay: 240000
 
+    # The username of the Discord Webhook
+    # Make sure not to use special characters
+    username: 'Sonar'
+
+    # The user/role the Discord Webhook should ping when an attack is detected
+    # You just need to enter the id! This will automatically be formatted to '<@[id of the user]>'
+    # for roles, you need to do '&[role id]'
+    # Leave this empty if you want to disable pinging
+    ping: ''
+
     # The title of the Discord Webhook alert
     title: 'Sonar Antibot notification'
 
@@ -175,9 +185,14 @@ notifications:
       - '> Global CPU load (average/total): **%cpu-avg%%** / **%cpu%%**'
       - '> Online players (right now): **%online%**'
 
-    # Color of the Webhook Embed Object (left sidebar)
-    # You can use https://rgbacolorpicker.com/ for some ideas
-    color:
-      r: 255
-      g: 255
-      b: 255
+    embed:
+
+      # Disable this if you don't want Sonar to format the message as an embed object
+      enabled: true
+
+      # Color of the Webhook Embed Object (left sidebar)
+      # You can use https://rgbacolorpicker.com/ for some ideas
+      color:
+        r: 255
+        g: 255
+        b: 0
