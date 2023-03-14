@@ -57,8 +57,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     private final ConnectionThrottle throttler;
 
-    public String usernameForVerification;
-
     public InetAddress inetAddress;
 
     public final ChannelHandlerContext ctx;
