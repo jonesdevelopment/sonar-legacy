@@ -66,14 +66,7 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     public void onEnable() {
-        assert plugin != null : "Error starting Sonar!";
-
-        // we don't want to continue loading Sonar if the license is invalid
-        // or the plugin hasn't started correctly
-        if (!running) {
-            disable();
-            return;
-        }
+        assert plugin != null : "Error enabling Sonar!";
 
         final long start = System.currentTimeMillis();
 
@@ -188,7 +181,7 @@ public enum SonarBungee implements SonarBungeePlatform {
     }
 
     public void onDisable() {
-        assert plugin != null : "Error stopping Sonar!";
+        assert plugin != null : "Error disabling Sonar!";
 
         // remove all firewall stuff
         FirewallManager.uninstall(platform);
