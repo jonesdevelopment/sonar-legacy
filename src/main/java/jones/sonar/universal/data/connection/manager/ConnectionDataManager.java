@@ -20,7 +20,7 @@ public class ConnectionDataManager {
 
     public Stream<ConnectionData> getVerifyingData() {
         return DATA.values().stream()
-                .filter(connectionData -> connectionData.checked <= 1);
+                .filter(connectionData -> connectionData.checkState <= 1);
     }
 
     public ConnectionData get(final InetAddress inetAddress) {
@@ -36,7 +36,7 @@ public class ConnectionDataManager {
     }
 
     public void resetCheckStage(final int newStage) {
-        DATA.values().forEach(data -> data.checked = newStage);
+        DATA.values().forEach(data -> data.checkState = newStage);
     }
 
     public void removeAllUnused() {

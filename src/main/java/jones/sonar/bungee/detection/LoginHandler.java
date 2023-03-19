@@ -42,20 +42,20 @@ public final class LoginHandler {
                 return cachedDetections[0];
             }
 
-            connectionData.checked = 0;
+            connectionData.checkState = 0;
             return cachedDetections[1];
         }
 
-        if (connectionData.checked == 0) {
-            connectionData.checked = 1;
+        if (connectionData.checkState == 0) {
+            connectionData.checkState = 1;
             connectionData.verifiedName = connectionData.username;
 
             /*connectionData.lastJoin = timeStamp;
             return FIRST_JOIN_KICK;*/
         }
 
-        if (connectionData.checked == 1) {
-            connectionData.checked = 2;
+        if (connectionData.checkState == 1) {
+            connectionData.checkState = 2;
 
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)
                     && !connectionData.allowedNames.contains(connectionData.username)
@@ -66,23 +66,23 @@ public final class LoginHandler {
 
         final long timeStamp = System.currentTimeMillis();
 
-        if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
-            connectionData.checked = 2;
-            connectionData.failedReconnect++;
+        if (timeStamp - connectionData.lastJoinTimestamp <= Config.Values.REJOIN_DELAY) {
+            connectionData.checkState = 2;
+            connectionData.failedReconnectAttempts++;
 
-            connectionData.lastJoin = (timeStamp - (Config.Values.REJOIN_DELAY / 2L));
+            connectionData.lastJoinTimestamp = (timeStamp - (Config.Values.REJOIN_DELAY / 2L));
             return cachedDetections[2];
-        } else if (connectionData.botLevel > 0) {
-            connectionData.botLevel--;
+        } else if (connectionData.threatScore > 0) {
+            connectionData.threatScore--;
         }
 
-        connectionData.lastJoin = timeStamp;
+        connectionData.lastJoinTimestamp = timeStamp;
 
         if (!connectionData.verifiedNames.contains(connectionData.username)
                 && !Objects.equals(connectionData.verifiedName, connectionData.username)) {
             connectionData.verifiedNames.add(connectionData.username);
 
-            connectionData.botLevel++;
+            connectionData.threatScore++;
             //return FIRST_JOIN_KICK;
         }
 
@@ -92,23 +92,23 @@ public final class LoginHandler {
                 return cachedDetections[0];
             }
 
-            connectionData.botLevel++;
+            connectionData.threatScore++;
 
             if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
-                connectionData.checked = 0;
+                connectionData.checkState = 0;
                 return cachedDetections[1];
             }
         }
 
         if (underAttack && !Whitelist.isWhitelisted(connectionData.inetAddress)) {
-            if (connectionData.checked == 2) {
-                connectionData.checked = 3;
+            if (connectionData.checkState == 2) {
+                connectionData.checkState = 3;
                 connectionData.underAttackChecks++;
 
-                if (connectionData.failedReconnect > 2
-                        && connectionData.underAttackChecks < connectionData.failedReconnect) {
-                    connectionData.botLevel++;
+                if (connectionData.failedReconnectAttempts > 2
+                        && connectionData.underAttackChecks < connectionData.failedReconnectAttempts) {
+                    connectionData.threatScore++;
                 }
                 return cachedDetections[4];
             }
@@ -124,26 +124,26 @@ public final class LoginHandler {
             }
         } else {
             connectionData.underAttackChecks = 0;
-            connectionData.failedReconnect = 0;
+            connectionData.failedReconnectAttempts = 0;
         }
 
         final long online = connectionData.getAccountsOnlineWithSameIP();
 
         if (online > Config.Values.MAXIMUM_ONLINE_PER_IP) {
-            connectionData.checked = 2;
+            connectionData.checkState = 2;
             return cachedDetections[3];
         }
 
         // strong intelligent bot detection
         // TODO: update this?
-        if (connectionData.botLevel > 0) {
-            if (connectionData.botLevel > 4) {
-                connectionData.botLevel = 3;
+        if (connectionData.threatScore > 0) {
+            if (connectionData.threatScore > 4) {
+                connectionData.threatScore = 3;
                 return cachedDetections[5];
             }
 
-            if (connectionData.failedReconnect < 3) {
-                connectionData.botLevel--;
+            if (connectionData.failedReconnectAttempts < 3) {
+                connectionData.threatScore--;
             }
         }
 
@@ -153,7 +153,7 @@ public final class LoginHandler {
 
         // don't let bots reconnect too quickly
         if (timeStamp - playerData.lastDetection < Config.Values.REJOIN_DELAY * 2L) {
-            connectionData.botLevel++;
+            connectionData.threatScore++;
             return cachedDetections[5];
         }
 

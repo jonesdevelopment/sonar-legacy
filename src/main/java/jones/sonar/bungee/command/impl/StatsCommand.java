@@ -28,7 +28,7 @@ public final class StatsCommand extends SubCommand {
         execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fMoTDs/Pings per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.PINGS_PER_SECOND.get()));
         execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fJoins/Logins per second: " + SonarBungee.INSTANCE.FORMAT.format(Counter.JOINS_PER_SECOND.get()));
         execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fVerifying players (right now): " + SonarBungee.INSTANCE.FORMAT.format(ConnectionDataManager.DATA.values().stream()
-                .filter(connectionData -> connectionData.checked <= 1)
+                .filter(connectionData -> connectionData.checkState <= 1)
                 .count()));
         execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fTotal connections (session): " + SonarBungee.INSTANCE.FORMAT.format(ServerStatistics.TOTAL_CONNECTIONS));
         execution.send("§7 " + Messages.Values.LIST_SYMBOL + " §fTotal aborted connections (session): " + SonarBungee.INSTANCE.FORMAT.format(ServerStatistics.BLOCKED_CONNECTIONS));

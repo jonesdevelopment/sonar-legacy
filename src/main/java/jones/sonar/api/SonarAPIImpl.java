@@ -26,7 +26,7 @@ interface SonarAPIImpl {
         final ConnectionData data = ConnectionDataManager.get(inetAddress);
 
         if (data != null) {
-            return new BotLevel(data.getAccountsOnlineWithSameIP(), data.botLevel, data.inetAddress);
+            return new BotLevel(data.getAccountsOnlineWithSameIP(), data.threatScore, data.inetAddress);
         }
 
         return null;
