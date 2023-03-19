@@ -15,8 +15,6 @@ import jones.sonar.universal.util.Sensibility;
 import jones.sonar.universal.whitelist.Whitelist;
 import lombok.experimental.UtilityClass;
 
-import java.util.Objects;
-
 @UtilityClass
 public final class LoginHandler {
     private final Detection[] cachedDetections = new Detection[10];
@@ -46,21 +44,21 @@ public final class LoginHandler {
             return cachedDetections[1];
         }
 
-        if (connectionData.checkState == 0) {
-            connectionData.checkState = 1;
-            connectionData.verifiedName = connectionData.username;
+        reconnect_check: {
+            if (connectionData.checkState == 0) {
+                connectionData.checkState = 1;
+                connectionData.verifiedName = connectionData.username;
+                break reconnect_check;
+            }
 
-            /*connectionData.lastJoin = timeStamp;
-            return FIRST_JOIN_KICK;*/
-        }
+            if (connectionData.checkState == 1) {
+                connectionData.checkState = 2;
 
-        if (connectionData.checkState == 1) {
-            connectionData.checkState = 2;
-
-            if (!Objects.equals(connectionData.verifiedName, connectionData.username)
-                    && !connectionData.allowedNames.contains(connectionData.username)
-                    && Config.Values.ENABLE_RECONNECT_CHECK) {
-                return cachedDetections[0];
+                if (Config.Values.ENABLE_RECONNECT_CHECK
+                        && !connectionData.verifiedName.equals(connectionData.username)) {
+                    connectionData.threatScore++;
+                    return cachedDetections[0];
+                }
             }
         }
 
@@ -69,6 +67,7 @@ public final class LoginHandler {
         if (timeStamp - connectionData.lastJoinTimestamp <= Config.Values.REJOIN_DELAY) {
             connectionData.checkState = 2;
             connectionData.failedReconnectAttempts++;
+            connectionData.threatScore++;
 
             connectionData.lastJoinTimestamp = (timeStamp - (Config.Values.REJOIN_DELAY / 2L));
             return cachedDetections[2];
@@ -77,14 +76,6 @@ public final class LoginHandler {
         }
 
         connectionData.lastJoinTimestamp = timeStamp;
-
-        if (!connectionData.verifiedNames.contains(connectionData.username)
-                && !Objects.equals(connectionData.verifiedName, connectionData.username)) {
-            connectionData.verifiedNames.add(connectionData.username);
-
-            connectionData.threatScore++;
-            //return FIRST_JOIN_KICK;
-        }
 
         if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
             if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
@@ -146,8 +137,6 @@ public final class LoginHandler {
                 connectionData.threatScore--;
             }
         }
-
-        connectionData.allowedNames.add(connectionData.username);
 
         final PlayerData playerData = PlayerDataManager.create(connectionData.username);
 
