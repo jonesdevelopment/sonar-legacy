@@ -137,8 +137,10 @@ public enum SonarBungee implements SonarBungeePlatform {
 
         if (!Reflection.inject(new BungeeInterceptor(proxy.getProtocolVersion()), JAVA_VERSION)) {
             Logger.INFO.log(" ");
-            Logger.INFO.log(" §cError setting up the connection interceptor! [v " + JAVA_VERSION + "]");
-            Logger.INFO.log(" §cMake sure you are using the correct version of the proxy and Java.");
+            Logger.INFO.log(" §cError setting up the connection interceptor!");
+            Logger.INFO.log(" §cMake sure you are using the correct version of " + proxy.getName() + " and Java.");
+            Logger.INFO.log(" §cYou are currently using " + JAVA_VERSION + " which is most likely unsupported.");
+            Logger.INFO.log(" §ePlease update to §6Java 8 §eor higher.");
             Logger.INFO.log(" ");
             Logger.INFO.log("§7«§m                                         §7»");
             return;
