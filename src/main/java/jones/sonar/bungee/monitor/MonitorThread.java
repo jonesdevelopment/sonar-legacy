@@ -19,6 +19,7 @@ public final class MonitorThread extends Thread implements Runnable {
                     if (BossBarManager.CURRENT == null) {
                         BossBarManager.CURRENT = new DynamicBossBar();
                     }
+                    if (Messages.Values.MONITOR_FORMAT.isEmpty()) continue;
                     final DynamicBossBar bossBar = BossBarManager.CURRENT;
 
                     final double totalMemory = (double) PerformanceMonitor.getTotalMemory();
@@ -76,12 +77,10 @@ public final class MonitorThread extends Thread implements Runnable {
                         }
                     }
 
-                    final String formatted = Messages.Values.MONITOR_FORMAT
+                    bossBar.update(new TextComponent(Messages.Values.MONITOR_FORMAT
                             .replaceAll("%cpu-graph%", cpuGraph.toString())
                             .replaceAll("%memory-graph%", memoryGraph.toString())
-                            .replaceAll("%up-down%", symbol);
-
-                    bossBar.update(new TextComponent(formatted));
+                            .replaceAll("%up-down%", symbol)));
                 } catch (Exception exception) {
                     exception.printStackTrace();
                 }

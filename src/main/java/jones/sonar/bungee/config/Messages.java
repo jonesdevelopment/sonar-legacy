@@ -188,9 +188,9 @@ public class Messages {
                 FILTER_SYMBOL_OFF = format(config.getString("notifications.action-bar.filter-disabled-symbol"));
 
                 // monitor
-                MONITOR_FORMAT = format(config.getString("notifications.boss-bar.format"));
+                MONITOR_FORMAT = format(config.getString("notifications.boss-bar.format", ""));
                 MONITOR_GRAPH_FILL_SYMBOL = config.getString("notifications.boss-bar.fill-symbol", "|");
-                GRAPH_SYMBOL_COUNT = config.getInt("notifications.boss-bar.fill-symbol-count");
+                GRAPH_SYMBOL_COUNT = config.getInt("notifications.boss-bar.fill-symbol-count", 25);
                 MONITOR_GRAPH_STATIC = ColorUtil.format(config.getString("notifications.boss-bar.static-symbol"));
                 MONITOR_GRAPH_UP = ColorUtil.format(config.getString("notifications.boss-bar.going-up-symbol"));
                 MONITOR_GRAPH_DOWN = ColorUtil.format(config.getString("notifications.boss-bar.going-down-symbol"));
@@ -210,8 +210,8 @@ public class Messages {
                 ENABLE_PEAK = config.getBoolean("notifications.peak.enabled", true);
                 PEAK_DELAY = Math.max(config.getInt("notifications.peak.delay", 1500), 100);
                 PEAK_RESET_DELAY = Math.max(config.getInt("notifications.peak.reset-delay", 8000), 1000);
-                PEAK_FORMAT_CPS = format(config.getString("notifications.peak.format-new-cps"));
-                PEAK_FORMAT_IPS = format(config.getString("notifications.peak.format-new-ips"));
+                PEAK_FORMAT_CPS = format(config.getString("notifications.peak.format-new-cps", "not found"));
+                PEAK_FORMAT_IPS = format(config.getString("notifications.peak.format-new-ips", "not found"));
 
                 // disconnect messages
                 DISCONNECT_TOO_FAST_RECONNECT = format(fromList(config.getStringList("disconnect.reconnect-check.too-fast-reconnect"))
