@@ -81,7 +81,7 @@ public enum SonarBungee implements SonarBungeePlatform {
          * Start-up message
          */
 
-        Logger.INFO.log("§7§m«-----------------------------------------»§r");
+        Logger.INFO.log("§7«§m                                         §7»");
         Logger.INFO.log(" ");
 
         Logger.INFO.log(" §7Starting §eSonar §7version §f" + getVersion() + "§7...");
@@ -140,7 +140,7 @@ public enum SonarBungee implements SonarBungeePlatform {
             Logger.INFO.log(" §cError setting up the connection interceptor! [v " + JAVA_VERSION + "]");
             Logger.INFO.log(" §cMake sure you are using the correct version of the proxy and Java.");
             Logger.INFO.log(" ");
-            Logger.INFO.log("§7§m«-----------------------------------------»§r");
+            Logger.INFO.log("§7«§m                                         §7»");
             return;
         }
 
@@ -173,7 +173,7 @@ public enum SonarBungee implements SonarBungeePlatform {
 
         Logger.INFO.log(" §aSuccessfully started Sonar! §7(" + String.format("%.2f", (System.currentTimeMillis() - start) / 1000D) + " s)");
         Logger.INFO.log(" ");
-        Logger.INFO.log("§7§m«-----------------------------------------»§r");
+        Logger.INFO.log("§7«§m                                         §7»");
 
         if (Firewall.Values.ENABLE_FIREWALL) {
             FirewallManager.install(platform);
