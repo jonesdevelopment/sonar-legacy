@@ -8,7 +8,7 @@ import jones.sonar.universal.data.connection.ConnectionData;
 import jones.sonar.universal.data.player.PlayerData;
 import jones.sonar.universal.data.player.manager.PlayerDataManager;
 import jones.sonar.universal.detection.Detection;
-import jones.sonar.universal.detection.Detections;
+import jones.sonar.universal.detection.DetectionResult;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.util.Sensibility;
@@ -18,7 +18,20 @@ import lombok.experimental.UtilityClass;
 import java.util.Objects;
 
 @UtilityClass
-public final class LoginHandler implements Detections {
+public final class LoginHandler {
+    private final Detection[] cachedDetections = new Detection[10];
+
+    public void updateDetectionCache() {
+        cachedDetections[0] = new Detection(DetectionResult.DENIED, null, true);
+        cachedDetections[1] = new Detection(DetectionResult.DENIED, Messages.Values.DISCONNECT_INVALID_NAME, false);
+        cachedDetections[2] = new Detection(DetectionResult.DENIED, Messages.Values.DISCONNECT_TOO_FAST_RECONNECT, false);
+        cachedDetections[3] = new Detection(DetectionResult.DENIED, Messages.Values.DISCONNECT_TOO_MANY_ONLINE, false);
+        cachedDetections[4] = new Detection(DetectionResult.DENIED, Messages.Values.DISCONNECT_ATTACK, false);
+        cachedDetections[5] = new Detection(DetectionResult.DENIED, Messages.Values.DISCONNECT_BOT_BEHAVIOUR, false);
+        cachedDetections[6] = new Detection(DetectionResult.DENIED, Messages.Values.DISCONNECT_VPN_OR_PROXY, false);
+        cachedDetections[9] = new Detection(DetectionResult.ALLOWED, null, false);
+    }
+
     public Detection check(final ConnectionData connectionData, final PlayerHandler handler) throws Exception {
         final boolean underAttack = Sensibility.isUnderAttackJoins();
 
@@ -26,14 +39,12 @@ public final class LoginHandler implements Detections {
                 || !connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
             if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
-                return BLACKLIST;
+                return cachedDetections[0];
             }
 
             connectionData.checked = 0;
-            return INVALID_NAME;
+            return cachedDetections[1];
         }
-
-        final long timeStamp = System.currentTimeMillis();
 
         if (connectionData.checked == 0) {
             connectionData.checked = 1;
@@ -49,16 +60,18 @@ public final class LoginHandler implements Detections {
             if (!Objects.equals(connectionData.verifiedName, connectionData.username)
                     && !connectionData.allowedNames.contains(connectionData.username)
                     && Config.Values.ENABLE_RECONNECT_CHECK) {
-                return BLACKLIST;
+                return cachedDetections[0];
             }
         }
+
+        final long timeStamp = System.currentTimeMillis();
 
         if (timeStamp - connectionData.lastJoin <= Config.Values.REJOIN_DELAY) {
             connectionData.checked = 2;
             connectionData.failedReconnect++;
 
             connectionData.lastJoin = (timeStamp - (Config.Values.REJOIN_DELAY / 2L));
-            return TOO_FAST_RECONNECT;
+            return cachedDetections[2];
         } else if (connectionData.botLevel > 0) {
             connectionData.botLevel--;
         }
@@ -76,7 +89,7 @@ public final class LoginHandler implements Detections {
         if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
             if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
-                return BLACKLIST;
+                return cachedDetections[0];
             }
 
             connectionData.botLevel++;
@@ -84,7 +97,7 @@ public final class LoginHandler implements Detections {
             if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
                 connectionData.checked = 0;
-                return INVALID_NAME;
+                return cachedDetections[1];
             }
         }
 
@@ -97,13 +110,17 @@ public final class LoginHandler implements Detections {
                         && connectionData.underAttackChecks < connectionData.failedReconnect) {
                     connectionData.botLevel++;
                 }
-                return DURING_ATTACK;
+                return cachedDetections[4];
             }
 
             PlayerQueue.addToQueue(connectionData.username);
 
             if (PlayerQueue.getPosition(connectionData.username) > 1) {
-                return PLAYER_IN_QUEUE;
+                return new Detection(DetectionResult.DENIED,
+                        Messages.Values.DISCONNECT_QUEUED
+                        .replaceAll("%position%", SonarBungee.INSTANCE.FORMAT.format(PlayerQueue.getPosition(connectionData.username)))
+                        .replaceAll("%size%", SonarBungee.INSTANCE.FORMAT.format(PlayerQueue.QUEUE.size())),
+                        false);
             }
         } else {
             connectionData.underAttackChecks = 0;
@@ -114,14 +131,15 @@ public final class LoginHandler implements Detections {
 
         if (online > Config.Values.MAXIMUM_ONLINE_PER_IP) {
             connectionData.checked = 2;
-            return TOO_MANY_ONLINE;
+            return cachedDetections[3];
         }
 
         // strong intelligent bot detection
+        // TODO: update this?
         if (connectionData.botLevel > 0) {
             if (connectionData.botLevel > 4) {
                 connectionData.botLevel = 3;
-                return SUSPICIOUS;
+                return cachedDetections[5];
             }
 
             if (connectionData.failedReconnect < 3) {
@@ -133,22 +151,29 @@ public final class LoginHandler implements Detections {
 
         final PlayerData playerData = PlayerDataManager.create(connectionData.username);
 
-        // handle the login to reset all variables within the player data object
-        playerData.handleLogin();
-
-        // don't let bots reconnect
+        // don't let bots reconnect too quickly
         if (timeStamp - playerData.lastDetection < Config.Values.REJOIN_DELAY * 2L) {
             connectionData.botLevel++;
-            return SUSPICIOUS;
+            return cachedDetections[5];
         }
 
-        if (Config.Values.ENABLE_PROXY_CHECK && SonarBungee.INSTANCE.selectedAntiProxyProvider != null) {
+        if (Config.Values.ENABLE_PROXY_CHECK
+                && SonarBungee.INSTANCE.selectedAntiProxyProvider != null
+                && !connectionData.inetAddress.isLoopbackAddress()) {
+
+            // Run this synchronously but the actual vpn check asynchronously to prevent lag
+            if (SonarBungee.INSTANCE.selectedAntiProxyProvider.isInProxyCache(connectionData.inetAddress)) {
+                return cachedDetections[6];
+            }
+
+            // Async vpn check
+            // TODO: is this really async? lol
             handler.ctx.channel().eventLoop().execute(() -> {
                 if (SonarBungee.INSTANCE.selectedAntiProxyProvider.isUsingProxy(connectionData.inetAddress)) {
                     handler.disconnect_(Messages.Values.DISCONNECT_VPN_OR_PROXY);
                 }
             });
         }
-        return ALLOW;
+        return cachedDetections[9];
     }
 }

@@ -1,5 +1,6 @@
 package jones.sonar.bungee.config;
 
+import jones.sonar.bungee.detection.LoginHandler;
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.experimental.UtilityClass;
@@ -228,6 +229,7 @@ public class Messages {
                 DISCONNECT_PING_BEFORE_JOIN = format(fromList(config.getStringList("disconnect.ping-before-join")));
                 DISCONNECT_VPN_OR_PROXY = format(fromList(config.getStringList("disconnect.vpn-or-proxy")));
                 TEMP_BLACKLISTED = format(fromList(config.getStringList("disconnect.temporarily-blacklisted")));
+                LoginHandler.updateDetectionCache();
                 return true;
             } catch (final Exception exception) {
                 return false;

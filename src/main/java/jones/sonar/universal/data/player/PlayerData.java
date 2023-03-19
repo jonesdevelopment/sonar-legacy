@@ -8,15 +8,9 @@ public final class PlayerData {
 
     public String clientBrand = "/";
 
-    public long lastDetection = 0L, keepAliveSent = 0L;
+    public long lastDetection, keepAliveSent;
 
-    public boolean sentClientSettings = false, sentClientBrand = false;
-
-    public void handleLogin() {
-        sentClientBrand = false;
-        sentClientSettings = false;
-        clientBrand = "/";
-    }
+    public boolean sentClientSettings, sentClientBrand;
 
     public boolean passes() {
         return clientBrand.length() > 3

@@ -22,5 +22,9 @@ import java.util.Collection;
 public interface ProxyAPI {
     boolean isUsingProxy(final InetAddress inetAddress);
 
+    default boolean isInProxyCache(final InetAddress inetAddress) {
+        return isUsingProxy(inetAddress); // @Override this
+    }
+
     Collection<InetAddress> getProxies();
 }

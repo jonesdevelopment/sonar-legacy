@@ -23,7 +23,6 @@ import jones.sonar.universal.detection.Detection;
 import jones.sonar.universal.detection.DetectionResult;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.LoginCache;
-import jones.sonar.universal.queue.PlayerQueue;
 import jones.sonar.universal.util.ExceptionHandler;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ConnectionThrottle;
@@ -299,43 +298,14 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             return;
         }
 
-        switch (detection.key) {
-            default: {
-                LoginCache.HAVE_LOGGED_IN.remove(loginRequest.getData());
-                ConnectionDataManager.remove(data);
-                throw SonarBungee.EXCEPTION;
-            }
+        if (detection.kickReason != null) {
+            disconnect_(detection.kickReason);
+        }
 
-            case 2: {
-                disconnect_(Messages.Values.DISCONNECT_INVALID_NAME);
-                return;
-            }
-
-            case 3: {
-                disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
-                return;
-            }
-
-            case 4: {
-                disconnect_(Messages.Values.DISCONNECT_TOO_MANY_ONLINE);
-                return;
-            }
-
-            case 5: {
-                disconnect_(Messages.Values.DISCONNECT_QUEUED
-                        .replaceAll("%position%", sonar.FORMAT.format(PlayerQueue.getPosition(data.username)))
-                        .replaceAll("%size%", sonar.FORMAT.format(PlayerQueue.QUEUE.size())));
-                return;
-            }
-
-            case 6: {
-                disconnect_(Messages.Values.DISCONNECT_ATTACK);
-                return;
-            }
-
-            case 7: {
-                disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
-            }
+        if (detection.blacklist) {
+            LoginCache.HAVE_LOGGED_IN.remove(data.username);
+            ConnectionDataManager.remove(data);
+            throw SonarBungee.EXCEPTION;
         }
     }
 

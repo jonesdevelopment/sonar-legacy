@@ -26,17 +26,19 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 
 public final class BlackBoxProxyAPI implements ProxyAPI {
 
     @Getter
-    private final Collection<InetAddress> proxies = Collections.synchronizedCollection(new ArrayList<>());
+    private final Collection<InetAddress> proxies = new ArrayList<>();
+
+    @Override
+    public boolean isInProxyCache(final InetAddress inetAddress) {
+        return proxies.contains(inetAddress);
+    }
 
     public boolean isUsingProxy(final InetAddress inetAddress) {
-        if (proxies.contains(inetAddress)) {
-            return true;
-        }
+        if (proxies.contains(inetAddress)) return true;
 
         final String result = fetchSourceCode("https://blackbox.ipinfo.app/lookup/" + String.valueOf(inetAddress).replace("/", ""));
         final boolean proxy = result.equals("Y");
