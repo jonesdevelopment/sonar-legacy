@@ -102,7 +102,6 @@ public class Config {
                 MAXIMUM_QUEUE_POLL_RATE = Math.max(config.getInt("general.maximum-queue-poll-rate", 2000), 1);
                 QUEUE_POLL_RATE = Math.max(Math.min(config.getInt("general.queue-poll-rate", 1000), MAXIMUM_QUEUE_POLL_RATE), 1);
                 ALLOW_PING_PASS_THROUGH = config.getBoolean("general.allow-forced-host-ping", false);
-                LOG_CONNECTIONS = config.getBoolean("general.log-connections", false);
                 MINIMUM_KEEP_ALIVE_TICK = Math.max(config.getInt("general.minimum-tick-to-auto-whitelist", 3), 0);
                 FAKE_SERVER_CLIENT_BRAND = config.getString("general.fake-server-client-brand", "%proxy% -> %backend%");
                 AUTOMATICALLY_REMOVE_BOTS_FROM_VERIFICATION = config.getBoolean("general.automatically-remove-bots-from-verifying", true);

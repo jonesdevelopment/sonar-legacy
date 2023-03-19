@@ -31,11 +31,6 @@ general:
   # to be cleared automatically when there are too many connections at the same time
   automatically-remove-bots-from-verifying: true
 
-  # Enable this if you want to see all incoming connections in the console
-  # It's highly recommended leaving this disabled because it will flood your console
-  # during a bot attack
-  log-connections: false
-
   # Number of minimum joins per second before toggling anti bot mode
   # You can change this number depending on your Minecraft servers' popularity
   minimum-joins-per-second: 6

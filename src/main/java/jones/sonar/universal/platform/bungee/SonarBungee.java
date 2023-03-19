@@ -8,7 +8,6 @@ import jones.sonar.bungee.command.manager.CommandManager;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Firewall;
 import jones.sonar.bungee.config.Messages;
-import jones.sonar.bungee.filter.ConsoleFilter;
 import jones.sonar.bungee.monitor.MonitorThread;
 import jones.sonar.bungee.network.BungeeInterceptor;
 import jones.sonar.bungee.notification.counter.ActionBar;
@@ -157,8 +156,6 @@ public enum SonarBungee implements SonarBungeePlatform {
         new FirewallThread().start();
 
         new MonitorThread().start();
-
-        ConsoleFilter.apply();
 
         selectedAntiProxyProvider = getPreferredProvider();
 
