@@ -13,6 +13,7 @@ import jones.sonar.bungee.network.SonarPipeline;
 import jones.sonar.bungee.network.SonarPipelines;
 import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
+import jones.sonar.bungee.util.logging.Logger;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
@@ -82,27 +83,30 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     @Override
     public void handle(final PacketWrapper packet) throws Exception {
         if (packet == null) {
+            debug("null packet");
             throw SonarBungee.EXCEPTION;
         }
 
         if (packet.buf.readableBytes() > Config.Values.MAX_PACKET_BYTES) {
+            debug("over-sized packet " + packet.buf.readableBytes());
             packet.buf.clear();
             throw SonarBungee.EXCEPTION;
         }
+    }
+
+    // This is just for private testing of Sonar
+    private static void debug(final Object info) {
+        if (false) Logger.INFO.log(String.valueOf(info));
     }
 
     @Override
     public void handle(final EncryptionResponse encryptionResponse) throws Exception {
         Counter.ENCRYPTIONS_PER_SECOND.increment();
 
-        if (currentState != ConnectionState.JOINING) {
-            throw SonarBungee.EXCEPTION;
-        }
-
         super.handle(encryptionResponse);
     }
 
-    private static final Cache<InetAddress, Long> handshaking = CacheBuilder.newBuilder()
+    private static final Cache<InetAddress, Short> handshaking = CacheBuilder.newBuilder()
             .expireAfterWrite(500L, TimeUnit.MILLISECONDS).build();
 
     @Override
@@ -110,15 +114,17 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         Counter.HANDSHAKES_PER_SECOND.increment();
 
         if (currentState != ConnectionState.HANDSHAKE) {
+            debug("invalid handshake state");
             throw SonarBungee.EXCEPTION;
         }
 
         currentState = ConnectionState.PROCESSING;
 
         if (handshaking.asMap().containsKey(inetAddress)) {
-            handshaking.asMap().replace(inetAddress, handshaking.asMap().get(inetAddress) + 1L);
+            handshaking.asMap().replace(inetAddress, (short) (handshaking.asMap().get(inetAddress) + 1));
 
             if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST) {
+                debug("too many handshakes per second");
                 disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
 
                 Blacklist.addToTempBlacklist(inetAddress);
@@ -128,11 +134,12 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             }
 
             if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC) {
+                debug("many handshakes per second");
                 disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
                 return;
             }
         } else {
-            handshaking.put(inetAddress, 1L);
+            handshaking.put(inetAddress, (short) 1);
         }
 
         switch (handshake.getRequestedProtocol()) {
@@ -156,6 +163,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
              */
 
             default: {
+                debug("invalid protocol");
                 throw SonarBungee.EXCEPTION;
             }
         }
@@ -200,6 +208,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         // even though we already have the states, this can fail and the states do not
         // work properly (I don't really know why, BungeeCord is trash)
         if (hasRequestedPing || hasSuccessfullyPinged || currentState != ConnectionState.STATUS) {
+            debug("invalid status #1");
             throw SonarBungee.EXCEPTION;
         }
 
@@ -214,6 +223,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             if (!isConnected()) {
 
                 // clients ALWAYS keep the channel opened, so it's safe to blacklist here
+                debug("invalid status #2");
                 throw SonarBungee.EXCEPTION;
             }
 
@@ -230,6 +240,8 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 // All of this is run asynchronously, and it SHOULD have the same performance
                 super.handle(statusRequest);
             } catch (Exception exception) {
+                exception.printStackTrace();
+                debug("invalid status #3");
                 throw SonarBungee.EXCEPTION; // TODO: Different handling?
             }
         });
@@ -241,12 +253,14 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         // clients cannot send multiple ping packets without closing the channel once
         if (currentState != ConnectionState.PINGING || !hasRequestedPing || !hasSuccessfullyPinged) {
+            debug("invalid ping #1");
             throw SonarBungee.EXCEPTION;
         }
 
         if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
                 && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
             ServerPingCache.HAS_PINGED.put(inetAddress, (byte) 0);
+            debug("validated ping during attack");
         }
 
         currentState = ConnectionState.PROCESSING;
@@ -259,6 +273,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     @Override
     public void handle(final LoginRequest loginRequest) throws Exception {
         if (currentState != ConnectionState.JOINING) {
+            debug("invalid login #1");
             throw SonarBungee.EXCEPTION;
         }
 
@@ -275,6 +290,9 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         data.username = loginRequest.getData();
 
         final Detection detection = LoginHandler.check(data, this);
+        /*debug("==== LOGIN CHECK SUMMARY ====");
+        debug(detection.result);
+        debug(detection.key);*/
 
         if (detection.result == DetectionResult.ALLOWED) {
             super.handle(loginRequest);

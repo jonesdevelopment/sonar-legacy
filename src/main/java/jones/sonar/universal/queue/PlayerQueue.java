@@ -2,13 +2,13 @@ package jones.sonar.universal.queue;
 
 import lombok.experimental.UtilityClass;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @UtilityClass
 public class PlayerQueue {
 
-    public final Map<String, Long> QUEUE = new ConcurrentHashMap<>(50000);
+    public final Map<String, Long> QUEUE = new HashMap<>();
 
     public void remove(final String playerName) {
         if (contains(playerName)) {
@@ -27,17 +27,11 @@ public class PlayerQueue {
     }
 
     public long getPosition(final String playerName) {
-        if (contains(playerName)) {
-            return QUEUE.get(playerName);
-        } else {
-            return -1;
-        }
+        return QUEUE.getOrDefault(playerName, -1L);
     }
 
     public long getPositionOrCreate(final String playerName) {
-        if (!contains(playerName)) {
-            addToQueue(playerName);
-        }
+        addToQueue(playerName);
         return QUEUE.get(playerName);
     }
 }
