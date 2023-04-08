@@ -17,7 +17,6 @@
   * Custom name regex checks
   * Weird in-game behaviour (packets)
 * Unnoticeable Motd/Ping spam prevention
-* Error message (Exception) filter
 * Optimizing connection speed and stability
   * This is done using TCP_FASTOPEN
 * Extremely customizable
