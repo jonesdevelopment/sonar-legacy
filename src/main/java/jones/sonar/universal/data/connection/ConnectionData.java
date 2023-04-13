@@ -17,7 +17,8 @@ public final class ConnectionData {
     // current player + number of all online players with that ip
     public long getAccountsOnlineWithSameIP() {
         return 1 + SonarBungee.INSTANCE.proxy.getPlayers().stream()
-                .filter(player -> inetAddress.toString().equals((((InetSocketAddress) player.getSocketAddress()).getAddress().toString())))
+                .map(player -> ((InetSocketAddress) player.getSocketAddress()).getAddress().toString())
+                .filter(playerInetAddress -> inetAddress.toString().equals(playerInetAddress))
                 .count();
     }
 }

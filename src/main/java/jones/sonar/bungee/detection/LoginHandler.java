@@ -118,9 +118,7 @@ public final class LoginHandler {
             connectionData.failedReconnectAttempts = 0;
         }
 
-        final long online = connectionData.getAccountsOnlineWithSameIP();
-
-        if (online > Config.Values.MAXIMUM_ONLINE_PER_IP) {
+        if (Config.Values.MAXIMUM_ONLINE_PER_IP > 1 && connectionData.getAccountsOnlineWithSameIP() > Config.Values.MAXIMUM_ONLINE_PER_IP) {
             connectionData.checkState = 2;
             return cachedDetections[3];
         }
