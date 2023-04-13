@@ -13,19 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee.monitor.bossbar.enums;
+package jones.sonar.bungee.bossbar;
 
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
-public enum BarStyle {
-
-    SOLID(0),
-    SEGMENTED_6(1),
-    SEGMENTED_10(2),
-    SEGMENTED_12(3),
-    SEGMENTED_20(4);
-
-    public final int index;
-
+public interface BossBarActions {
+    int TITLE = 3;
+    int COLOR_AND_STYLE = 4;
+    int PROGRESS = 2;
+    int REMOVE = 1;
 }

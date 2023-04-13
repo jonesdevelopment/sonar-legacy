@@ -1,11 +1,11 @@
-package jones.sonar.bungee.peak;
+package jones.sonar.bungee.notification.peak;
 
 import jones.sonar.api.enums.PeakType;
 import jones.sonar.api.event.bungee.SonarPeakChangedEvent;
 import jones.sonar.api.event.bungee.SonarPeakResetEvent;
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;
-import jones.sonar.bungee.notification.counter.ActionBarManager;
+import jones.sonar.bungee.notification.actionbar.ActionBarManager;
 import jones.sonar.bungee.util.ColorUtil;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.Sensibility;

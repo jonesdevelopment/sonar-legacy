@@ -13,9 +13,9 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee.monitor.bossbar;
+package jones.sonar.bungee.bossbar;
 
-import jones.sonar.bungee.monitor.MonitorManager;
+import jones.sonar.bungee.notification.monitor.MonitorManager;
 import lombok.Getter;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;

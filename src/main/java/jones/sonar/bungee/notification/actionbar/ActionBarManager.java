@@ -1,23 +1,28 @@
-package jones.sonar.bungee.monitor;
+package jones.sonar.bungee.notification.actionbar;
 
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import lombok.experimental.UtilityClass;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.stream.Stream;
 
 @UtilityClass
-public class MonitorManager {
-    public final Set<String> MONITOR_ENABLED = new HashSet<>();
+public class ActionBarManager {
+    private final Set<String> VERBOSE_ENABLED = new CopyOnWriteArraySet<>();
 
     public Stream<ProxiedPlayer> getPlayers() {
-        return MONITOR_ENABLED.stream()
+        return VERBOSE_ENABLED.stream()
                 .map(SonarBungee.INSTANCE.proxy::getPlayer)
                 .filter(Objects::nonNull)
-                .filter(player -> player.hasPermission("sonar.monitor"));
+                .filter(player -> player.hasPermission("sonar.verbose"));
+    }
+
+    public Collection<String> getVerboseEnabled() {
+        return VERBOSE_ENABLED;
     }
 
     public boolean toggle(final ProxiedPlayer player) {
@@ -32,17 +37,17 @@ public class MonitorManager {
 
     public void add(final String playerName) {
         if (!contains(playerName)) {
-            MONITOR_ENABLED.add(playerName);
+            VERBOSE_ENABLED.add(playerName);
         }
     }
 
     public void remove(final String playerName) {
         if (contains(playerName)) {
-            MONITOR_ENABLED.remove(playerName);
+            VERBOSE_ENABLED.remove(playerName);
         }
     }
 
     public boolean contains(final String playerName) {
-        return MONITOR_ENABLED.contains(playerName);
+        return VERBOSE_ENABLED.contains(playerName);
     }
 }

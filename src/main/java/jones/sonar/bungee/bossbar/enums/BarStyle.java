@@ -13,11 +13,19 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee.monitor.bossbar;
+package jones.sonar.bungee.bossbar.enums;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
 
-@UtilityClass
-public class BossBarManager {
-    public DynamicBossBar CURRENT = null;
+@RequiredArgsConstructor
+public enum BarStyle {
+
+    SOLID(0),
+    SEGMENTED_6(1),
+    SEGMENTED_10(2),
+    SEGMENTED_12(3),
+    SEGMENTED_20(4);
+
+    public final int index;
+
 }

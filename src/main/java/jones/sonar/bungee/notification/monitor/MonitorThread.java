@@ -1,8 +1,8 @@
-package jones.sonar.bungee.monitor;
+package jones.sonar.bungee.notification.monitor;
 
+import jones.sonar.bungee.bossbar.BossBarManager;
+import jones.sonar.bungee.bossbar.DynamicBossBar;
 import jones.sonar.bungee.config.Messages;
-import jones.sonar.bungee.monitor.bossbar.BossBarManager;
-import jones.sonar.bungee.monitor.bossbar.DynamicBossBar;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.PerformanceMonitor;
 import net.md_5.bungee.api.chat.TextComponent;

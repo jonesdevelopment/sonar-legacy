@@ -3,7 +3,7 @@ package jones.sonar.bungee.command.impl;
 import jones.sonar.bungee.command.CommandExecution;
 import jones.sonar.bungee.command.SubCommand;
 import jones.sonar.bungee.config.Messages;
-import jones.sonar.bungee.monitor.MonitorManager;
+import jones.sonar.bungee.notification.monitor.MonitorManager;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 

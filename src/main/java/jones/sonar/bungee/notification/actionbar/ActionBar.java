@@ -1,4 +1,4 @@
-package jones.sonar.bungee.notification.counter;
+package jones.sonar.bungee.notification.actionbar;
 
 import jones.sonar.bungee.config.Config;
 import jones.sonar.bungee.config.Messages;

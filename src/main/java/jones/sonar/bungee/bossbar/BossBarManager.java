@@ -13,11 +13,11 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package jones.sonar.bungee.monitor.bossbar;
+package jones.sonar.bungee.bossbar;
 
-public interface BossBarActions {
-    int TITLE = 3;
-    int COLOR_AND_STYLE = 4;
-    int PROGRESS = 2;
-    int REMOVE = 1;
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
+public class BossBarManager {
+    public DynamicBossBar CURRENT = null;
 }

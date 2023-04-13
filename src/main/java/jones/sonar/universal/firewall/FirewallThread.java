@@ -1,7 +1,7 @@
 package jones.sonar.universal.firewall;
 
 import jones.sonar.bungee.config.Firewall;
-import jones.sonar.bungee.notification.counter.ActionBarManager;
+import jones.sonar.bungee.notification.actionbar.ActionBarManager;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 
