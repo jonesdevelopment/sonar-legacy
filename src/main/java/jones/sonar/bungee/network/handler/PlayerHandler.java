@@ -117,28 +117,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
-        if (handshaking.asMap().containsKey(inetAddress)) {
-            handshaking.asMap().replace(inetAddress, (short) (handshaking.asMap().get(inetAddress) + 1));
-
-            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST) {
-                debug("too many handshakes per second");
-                disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
-
-                Blacklist.addToTempBlacklist(inetAddress);
-
-                handshaking.invalidate(inetAddress);
-                return;
-            }
-
-            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC) {
-                //debug("many handshakes per second"); // Do not log - this can be executed millions of times per second
-                disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
-                return;
-            }
-        } else {
-            handshaking.put(inetAddress, (short) 1);
-        }
-
         switch (handshake.getRequestedProtocol()) {
 
             // ID 1 -> Ping
@@ -163,6 +141,28 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 //debug("invalid protocol"); // Do not log - this can be executed millions of times per second
                 throw SonarBungee.EXCEPTION;
             }
+        }
+
+        if (handshaking.asMap().containsKey(inetAddress)) {
+            handshaking.asMap().replace(inetAddress, (short) (handshaking.asMap().get(inetAddress) + 1));
+
+            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST) {
+                handshaking.invalidate(inetAddress);
+
+                debug("too many handshakes per second");
+                disconnect_(Messages.Values.DISCONNECT_BOT_BEHAVIOUR);
+
+                Blacklist.addToTempBlacklist(inetAddress);
+                return;
+            }
+
+            if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC) {
+                //debug("many handshakes per second"); // Do not log - this can be executed millions of times per second
+                disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
+                return;
+            }
+        } else {
+            handshaking.put(inetAddress, (short) 1);
         }
 
         pipeline.addBefore(PipelineUtils.BOSS_HANDLER, PACKET_INTERCEPTOR, new PacketHandler(this));
