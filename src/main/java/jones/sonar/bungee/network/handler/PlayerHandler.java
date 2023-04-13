@@ -37,6 +37,8 @@ import net.md_5.bungee.protocol.packet.*;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -113,7 +115,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         Counter.HANDSHAKES_PER_SECOND.increment();
 
         if (currentState != ConnectionState.HANDSHAKE) {
-            debug("invalid handshake state");
+            //debug("invalid handshake state"); // Do not log - this can be executed millions of times per second
             throw SonarBungee.EXCEPTION;
         }
 
@@ -133,7 +135,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             }
 
             if (handshaking.asMap().get(inetAddress) >= Config.Values.MAXIMUM_HANDSHAKES_PER_IP_SEC) {
-                debug("many handshakes per second");
+                //debug("many handshakes per second"); // Do not log - this can be executed millions of times per second
                 disconnect_(Messages.Values.DISCONNECT_TOO_FAST_RECONNECT);
                 return;
             }
@@ -162,7 +164,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
              */
 
             default: {
-                debug("invalid protocol");
+                //debug("invalid protocol"); // Do not log - this can be executed millions of times per second
                 throw SonarBungee.EXCEPTION;
             }
         }
@@ -173,23 +175,26 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         super.handle(handshake);
     }
 
-    private static final Cache<String, Kick> kickPacketCache = CacheBuilder.newBuilder()
-            .expireAfterWrite(3L, TimeUnit.MINUTES)
-            .build();
+    private static final Map<String, Kick> kickPacketCache = new HashMap<>();
 
     public void disconnect_(final String reason) {
         ServerStatistics.BLOCKED_CONNECTIONS++;
 
         if (reason != null && ctx.channel().isActive()) {
             cache: {
-                if (kickPacketCache.asMap().containsKey(reason)) {
-                    ctx.channel().writeAndFlush(kickPacketCache.asMap().get(reason));
+                Kick kickPacket = kickPacketCache.get(reason);
+
+                if (kickPacket != null) {
+                    ctx.channel().writeAndFlush(kickPacket);
                     break cache;
                 }
 
-                final Kick kickPacket = new Kick(ComponentSerializer.toString(new TextComponent(reason)));
+                kickPacket = new Kick(ComponentSerializer.toString(new TextComponent(reason)));
 
-                kickPacketCache.put(reason, kickPacket); // cache
+                // Cache the kick packet, so we can reuse it without
+                // needing to create a new ByteBuf
+                // TODO: check if this can potentially cause memory leaks
+                kickPacketCache.put(reason, kickPacket);
 
                 ctx.channel().writeAndFlush(kickPacket);
             }
@@ -207,7 +212,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         // even though we already have the states, this can fail and the states do not
         // work properly (I don't really know why, BungeeCord is trash)
         if (hasRequestedPing || hasSuccessfullyPinged || currentState != ConnectionState.STATUS) {
-            debug("invalid status #1");
+            //debug("invalid status #1"); // Do not log - this can be executed millions of times per second
             throw SonarBungee.EXCEPTION;
         }
 
@@ -215,14 +220,14 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
         currentState = ConnectionState.PROCESSING;
 
-        // TODO: Perform some tests
+        // TODO: Perform some tests; seems to work for now
         CompletableFuture.runAsync(() -> {
 
             // most botting tools or crashers instantly close the channel/connection
             if (!isConnected()) {
 
                 // clients ALWAYS keep the channel opened, so it's safe to blacklist here
-                debug("invalid status #2");
+                //debug("invalid status #2"); // Do not log - this can be executed millions of times per second
                 throw SonarBungee.EXCEPTION;
             }
 
@@ -240,7 +245,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
                 super.handle(statusRequest);
             } catch (Exception exception) {
                 exception.printStackTrace();
-                debug("invalid status #3");
+                //debug("invalid status #3"); // Do not log - this can be executed millions of times per second
                 throw SonarBungee.EXCEPTION; // TODO: Different handling?
             }
         });
@@ -259,7 +264,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         if (!ServerPingCache.HAS_PINGED.asMap().containsKey(inetAddress)
                 && (Config.Values.PING_BEFORE_JOIN || Counter.JOINS_PER_SECOND.get() >= Config.Values.MINIMUM_JOINS_PER_SECOND)) {
             ServerPingCache.HAS_PINGED.put(inetAddress, (byte) 0);
-            debug("validated ping during attack");
         }
 
         currentState = ConnectionState.PROCESSING;
@@ -272,7 +276,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
     @Override
     public void handle(final LoginRequest loginRequest) throws Exception {
         if (currentState != ConnectionState.JOINING) {
-            debug("invalid login #1");
+            //debug("invalid login #1"); // Do not log - this can be executed millions of times per second
             throw SonarBungee.EXCEPTION;
         }
 
@@ -289,9 +293,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         data.username = loginRequest.getData();
 
         final Detection detection = LoginHandler.check(data, this);
-        /*debug("==== LOGIN CHECK SUMMARY ====");
-        debug(detection.result);
-        debug(detection.key);*/
 
         if (detection.result == DetectionResult.ALLOWED) {
             super.handle(loginRequest);
