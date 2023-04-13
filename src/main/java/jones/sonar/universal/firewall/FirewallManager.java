@@ -1,7 +1,7 @@
 package jones.sonar.universal.firewall;
 
 import jones.sonar.bungee.config.Firewall;
-import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.bungee.util.Logger;
 import jones.sonar.universal.platform.SonarPlatform;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.util.GeneralException;

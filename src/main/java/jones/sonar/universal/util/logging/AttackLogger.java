@@ -1,6 +1,6 @@
 package jones.sonar.universal.util.logging;
 
-import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.bungee.util.Logger;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.platform.SonarPlatform;

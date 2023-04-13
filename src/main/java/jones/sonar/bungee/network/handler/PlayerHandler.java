@@ -12,7 +12,7 @@ import jones.sonar.bungee.network.SonarPipeline;
 import jones.sonar.bungee.network.SonarPipelines;
 import jones.sonar.bungee.network.handler.packet.PacketHandler;
 import jones.sonar.bungee.network.handler.state.ConnectionState;
-import jones.sonar.bungee.util.logging.Logger;
+import jones.sonar.bungee.util.Logger;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.counter.Counter;
 import jones.sonar.universal.data.ServerStatistics;
