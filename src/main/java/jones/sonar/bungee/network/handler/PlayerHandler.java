@@ -2,7 +2,6 @@ package jones.sonar.bungee.network.handler;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import jones.sonar.bungee.caching.ServerPingCache;
@@ -24,6 +23,7 @@ import jones.sonar.universal.detection.DetectionResult;
 import jones.sonar.universal.platform.bungee.SonarBungee;
 import jones.sonar.universal.queue.LoginCache;
 import jones.sonar.universal.util.ExceptionHandler;
+import lombok.Getter;
 import net.md_5.bungee.BungeeCord;
 import net.md_5.bungee.ConnectionThrottle;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -44,18 +44,17 @@ import java.util.concurrent.TimeUnit;
 
 public final class PlayerHandler extends InitialHandler implements SonarPipeline {
 
-    public PlayerHandler(final ChannelHandlerContext ctx, final ListenerInfo listener, final ConnectionThrottle throttler) {
+    public PlayerHandler(final ChannelHandlerContext ctx,
+                         final ListenerInfo listener,
+                         final ConnectionThrottle throttler) {
         super(BungeeCord.getInstance(), listener);
 
         this.ctx = ctx;
         this.throttler = throttler;
     }
 
+    @Getter
     private ConnectionState currentState = ConnectionState.HANDSHAKE;
-
-    public final BungeeCord bungee = BungeeCord.getInstance();
-
-    private final SonarBungee sonar = SonarBungee.INSTANCE;
 
     private final ConnectionThrottle throttler;
 
@@ -63,16 +62,18 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
 
     public final ChannelHandlerContext ctx;
 
-    private ChannelPipeline pipeline;
+    public ChannelPipeline pipeline;
 
-    public Channel channel;
+    // This is just for private testing of Sonar
+    private static void debug(final Object info) {
+        if (false) Logger.INFO.log(String.valueOf(info));
+    }
 
     @Override
     public void connected(final ChannelWrapper wrapper) throws Exception {
         super.connected(wrapper);
 
-        channel = wrapper.getHandle();
-        pipeline = channel.pipeline();
+        pipeline = wrapper.getHandle().pipeline();
         inetAddress = ((InetSocketAddress) getSocketAddress()).getAddress();
     }
 
@@ -93,11 +94,6 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             packet.buf.clear();
             throw SonarBungee.EXCEPTION;
         }
-    }
-
-    // This is just for private testing of Sonar
-    private static void debug(final Object info) {
-        if (false) Logger.INFO.log(String.valueOf(info));
     }
 
     @Override
