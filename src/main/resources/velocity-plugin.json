@@ -1,7 +1,0 @@
-{
-  "id": "sonar",
-  "name": "Sonar",
-  "version": "1.4.8",
-  "main": "jones.sonar.velocity.SonarVelocityPlugin",
-  "authors": ["jonesdev.xyz"]
-}

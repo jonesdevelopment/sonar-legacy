@@ -1,6 +1,6 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.1.0'
-    id 'java'
+    id "java"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 apply plugin: 'java'
@@ -21,20 +21,17 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.24'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-    compileOnly 'io.netty:netty-all:4.1.85.Final'
-    compileOnly 'io.github.waterfallmc:waterfall-api:1.19-R0.1-SNAPSHOT'
-    compileOnly 'com.velocitypowered:velocity-api:3.0.1'
-    compileOnly files("${buildDir}/../waterfall.jar") // important for netty and log4j
+    compileOnly 'net.md-5:bungeecord-api:1.19-R0.1-SNAPSHOT'
+    compileOnly files('waterfall.jar') // Sadly, there's no other (known) way of using internals :/
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
 
 shadowJar() {
-   // minimize()
-    archiveFileName = "Sonar.jar"
+    archiveFileName = "${rootProject.name}.jar"
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }

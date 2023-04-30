@@ -1,12 +1,8 @@
 package jones.sonar.universal.platform;
 
-import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
-import com.velocitypowered.api.event.proxy.ProxyShutdownEvent;
 import jones.sonar.bungee.SonarBungeePlugin;
 import jones.sonar.universal.platform.bungee.SonarBungee;
-import jones.sonar.universal.platform.velocity.SonarVelocity;
 import jones.sonar.universal.util.GeneralException;
-import jones.sonar.velocity.SonarVelocityPlugin;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -22,7 +18,7 @@ public class SonarBridge {
 
                 // objects[0] = SonarVelocityPlugin
                 // objects[1] = ProxyInitializeEvent
-                SonarVelocity.INSTANCE.onInitialize((SonarVelocityPlugin) objects[0], (ProxyInitializeEvent) objects[1]);
+                //SonarVelocity.INSTANCE.onInitialize((SonarVelocityPlugin) objects[0], (ProxyInitializeEvent) objects[1]);
                 break;
             }
 
@@ -46,7 +42,7 @@ public class SonarBridge {
 
                 // objects[0] = SonarVelocityPlugin
                 // objects[1] = ProxyShutdownEvent
-                SonarVelocity.INSTANCE.onShutDown((SonarVelocityPlugin) objects[0], (ProxyShutdownEvent) objects[1]);
+                //SonarVelocity.INSTANCE.onShutDown((SonarVelocityPlugin) objects[0], (ProxyShutdownEvent) objects[1]);
                 break;
             }
 
