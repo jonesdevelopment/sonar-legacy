@@ -87,8 +87,8 @@ public class Config {
                 MINIMUM_JOINS_PER_SECOND = config.getInt("general.minimum-joins-per-second", 6);
                 FORCE_PUBLIC_KEY = config.getBoolean("general.force-valid-public-key", true);
                 MAX_STATUS_DURING_ATTACK = config.getInt("general.maximum-status-requests-for-attack", 256);
-                MAXIMUM_HANDSHAKES_PER_IP_SEC = config.getInt("general.maximum-handshakes-per-ip", 3);
-                MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST = config.getInt("general.maximum-handshakes-per-ip-blacklist", 9);
+                MAXIMUM_HANDSHAKES_PER_IP_SEC = config.getInt("general.maximum-handshakes-per-ip", 8);
+                MAXIMUM_HANDSHAKES_PER_IP_SEC_BLACKLIST = config.getInt("general.maximum-handshakes-per-ip-blacklist", 16);
                 PING_NEEDED_DURING_ATTACK = config.getBoolean("general.ping-needed-during-attack", true);
                 ENABLE_TCP_FAST_OPEN = config.getBoolean("general.enable-tcp-fast-open", true);
                 TCP_FAST_OPEN_MODE = config.getInt("general.tcp-fast-open-mode", Math.max(Math.min(TCP_FAST_OPEN_MODE, 4), 1));

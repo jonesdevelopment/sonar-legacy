@@ -37,10 +37,12 @@ public final class LoginHandler {
                 || !connectionData.username.matches(Config.Values.NAME_VALIDATION_REGEX)) {
             if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
+                //System.out.println(connectionData.username + " - regex [1]");
                 return cachedDetections[0];
             }
 
             connectionData.checkState = 0;
+            //System.out.println(connectionData.username + " - invalid name, cs reset");
             return cachedDetections[1];
         }
 
@@ -48,6 +50,7 @@ public final class LoginHandler {
             if (connectionData.checkState == 0) {
                 connectionData.checkState = 1;
                 connectionData.verifiedName = connectionData.username;
+                //System.out.println(connectionData.username + " - cache username for verification cs=1");
                 break reconnect_check;
             }
 
@@ -57,6 +60,7 @@ public final class LoginHandler {
                 if (Config.Values.ENABLE_RECONNECT_CHECK
                         && !connectionData.verifiedName.equals(connectionData.username)) {
                     connectionData.threatScore++;
+                    //System.out.println(connectionData.username + " - TS=" + connectionData.threatScore + " VN=" + connectionData.verifiedName + " [ne] cs=" + connectionData.checkState);
                     return cachedDetections[0];
                 }
             }
@@ -70,6 +74,7 @@ public final class LoginHandler {
             connectionData.threatScore++;
 
             connectionData.lastJoinTimestamp = (timeStamp - (Config.Values.REJOIN_DELAY / 2L));
+            //System.out.println(connectionData.username + " - too fast reconnect");
             return cachedDetections[2];
         } else if (connectionData.threatScore > 0) {
             connectionData.threatScore--;
@@ -80,6 +85,7 @@ public final class LoginHandler {
         if (Config.Values.CUSTOM_REGEXES.stream().anyMatch(connectionData.username::matches)) {
             if ((Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_BLACKLIST_MODE == CustomRegexOptions.ALWAYS) {
+                //System.out.println(connectionData.username + " - regex always");
                 return cachedDetections[0];
             }
 
@@ -88,6 +94,7 @@ public final class LoginHandler {
             if ((Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.DURING_ATTACK && underAttack)
                     || Config.Values.REGEX_CHECK_MODE == CustomRegexOptions.ALWAYS) {
                 connectionData.checkState = 0;
+                //System.out.println(connectionData.username + " - regex, reset threat score");
                 return cachedDetections[1];
             }
         }
@@ -100,13 +107,16 @@ public final class LoginHandler {
                 if (connectionData.failedReconnectAttempts > 2
                         && connectionData.underAttackChecks < connectionData.failedReconnectAttempts) {
                     connectionData.threatScore++;
+                    //System.out.println(connectionData.username + " - threat score increment; wl check under attack");
                 }
+                //System.out.println(connectionData.username + " - threat score check reset");
                 return cachedDetections[4];
             }
 
             PlayerQueue.addToQueue(connectionData.username);
 
             if (PlayerQueue.getPosition(connectionData.username) > 1) {
+                //System.out.println(connectionData.username + " - added to queue");
                 return new Detection(DetectionResult.DENIED,
                         Messages.Values.DISCONNECT_QUEUED
                         .replaceAll("%position%", SonarBungee.INSTANCE.FORMAT.format(PlayerQueue.getPosition(connectionData.username)))
@@ -114,12 +124,14 @@ public final class LoginHandler {
                         false);
             }
         } else {
+            //System.out.println(connectionData.username + " - fine - reset");
             connectionData.underAttackChecks = 0;
             connectionData.failedReconnectAttempts = 0;
         }
 
         if (Config.Values.MAXIMUM_ONLINE_PER_IP > 1 && connectionData.getAccountsOnlineWithSameIP() > Config.Values.MAXIMUM_ONLINE_PER_IP) {
             connectionData.checkState = 2;
+            //System.out.println(connectionData.username + " - check 2");
             return cachedDetections[3];
         }
 
@@ -128,10 +140,12 @@ public final class LoginHandler {
         if (connectionData.threatScore > 0) {
             if (connectionData.threatScore > 4) {
                 connectionData.threatScore = 3;
+                //System.out.println(connectionData.username + " - threat score check 1");
                 return cachedDetections[5];
             }
 
             if (connectionData.failedReconnectAttempts < 3) {
+                //System.out.println(connectionData.username + " - threat score decrement");
                 connectionData.threatScore--;
             }
         }
@@ -141,6 +155,7 @@ public final class LoginHandler {
         // don't let bots reconnect too quickly
         if (timeStamp - playerData.lastDetection < Config.Values.REJOIN_DELAY * 2L) {
             connectionData.threatScore++;
+            //System.out.println(playerData.username + " - threat score " + connectionData.threatScore);
             return cachedDetections[5];
         }
 
@@ -150,6 +165,7 @@ public final class LoginHandler {
 
             // Run this synchronously but the actual vpn check asynchronously to prevent lag
             if (SonarBungee.INSTANCE.selectedAntiProxyProvider.isInProxyCache(connectionData.inetAddress)) {
+                //System.out.println(playerData.username + " - proxy cache");
                 return cachedDetections[6];
             }
 
@@ -157,10 +173,12 @@ public final class LoginHandler {
             // TODO: is this really async? lol
             handler.ctx.channel().eventLoop().execute(() -> {
                 if (SonarBungee.INSTANCE.selectedAntiProxyProvider.isUsingProxy(connectionData.inetAddress)) {
+                    //System.out.println(playerData.username + " - proxy new");
                     handler.disconnect_(Messages.Values.DISCONNECT_VPN_OR_PROXY);
                 }
             });
         }
+        //System.out.println("ALLOWING " + playerData.username);
         return cachedDetections[9];
     }
 }
