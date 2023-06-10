@@ -34,7 +34,7 @@ public final class VarIntFrameDecoder extends ByteToMessageDecoder {
                           final ByteBuf byteBuf,
                           final List<Object> out) throws Exception {
         if (!ctx.channel().isActive() || !byteBuf.isReadable()) {
-            byteBuf.clear();
+            //byteBuf.clear();
             return;
         }
 
