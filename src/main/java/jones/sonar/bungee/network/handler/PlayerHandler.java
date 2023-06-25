@@ -35,10 +35,12 @@ import net.md_5.bungee.netty.PipelineUtils;
 import net.md_5.bungee.protocol.PacketWrapper;
 import net.md_5.bungee.protocol.packet.*;
 
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -305,6 +307,24 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             throw SonarBungee.EXCEPTION;
         }
     }
+
+    // Can through reflection to modify uniqueId - @FallenCrystal
+    // -- Start
+    private UUID uniqueId;
+
+    @Override
+    public void setUniqueId(UUID uuid) {
+        this.uniqueId=uuid;
+        Class<InitialHandler> parent = InitialHandler.class;
+        try {
+            Field field = parent.getDeclaredField("uniqueId");
+            field.setAccessible(true);
+            field.set(parent, uniqueId);
+        } catch (NoSuchFieldException | IllegalAccessException exception) { exception.printStackTrace(); }
+    }
+    // -- End
+
+    public UUID getUniqueId() {return uniqueId != null ? uniqueId : super.getUniqueId();}
 
     @Override
     public String toString() {
