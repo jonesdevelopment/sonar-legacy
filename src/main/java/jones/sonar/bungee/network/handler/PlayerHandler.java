@@ -322,9 +322,10 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
             field.set(parent, uniqueId);
         } catch (NoSuchFieldException | IllegalAccessException exception) { exception.printStackTrace(); }
     }
-    // -- End
 
-    public UUID getUniqueId() {return uniqueId != null ? uniqueId : super.getUniqueId();}
+    public UUID getUniqueId() { return uniqueId != null ? uniqueId : super.getUniqueId(); }
+
+    // -- End
 
     @Override
     public String toString() {
