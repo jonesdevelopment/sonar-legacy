@@ -323,6 +323,7 @@ public final class PlayerHandler extends InitialHandler implements SonarPipeline
         } catch (NoSuchFieldException | IllegalAccessException exception) { exception.printStackTrace(); }
     }
 
+    @Override
     public UUID getUniqueId() { return uniqueId != null ? uniqueId : super.getUniqueId(); }
 
     // -- End
