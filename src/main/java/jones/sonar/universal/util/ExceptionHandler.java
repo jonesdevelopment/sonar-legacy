@@ -1,6 +1,7 @@
 package jones.sonar.universal.util;
 
 import io.netty.channel.Channel;
+import io.netty.handler.timeout.ReadTimeoutException;
 import jones.sonar.universal.blacklist.Blacklist;
 import jones.sonar.universal.data.ServerStatistics;
 import lombok.experimental.UtilityClass;
@@ -19,7 +20,7 @@ public class ExceptionHandler {
 
         // IOException can be thrown by disconnecting from the server
         // We need to exempt clients for that, so they won't get false blacklisted
-        if (cause instanceof IOException) return;
+        if (cause instanceof IOException && ReadTimeoutException) return;
         /*
         System.out.println("===========================================================");
         System.out.println(channel.remoteAddress() + " has thrown: " + cause);
