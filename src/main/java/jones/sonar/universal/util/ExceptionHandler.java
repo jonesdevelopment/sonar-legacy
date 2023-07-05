@@ -20,7 +20,7 @@ public class ExceptionHandler {
 
         // IOException can be thrown by disconnecting from the server
         // We need to exempt clients for that, so they won't get false blacklisted
-        if (cause instanceof IOException && ReadTimeoutException) return;
+        if (cause instanceof IOException || cause instanceof ReadTimeoutException) return;
         /*
         System.out.println("===========================================================");
         System.out.println(channel.remoteAddress() + " has thrown: " + cause);
